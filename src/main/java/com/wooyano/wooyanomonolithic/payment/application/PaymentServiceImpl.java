@@ -6,6 +6,8 @@ import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.
 import com.wooyano.wooyanomonolithic.global.config.toss.TossPaymentConfig;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentType;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentRequest;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentResponse;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentResultResponse;
@@ -38,7 +40,7 @@ public class PaymentServiceImpl implements PaymentService  {
     private final TossPaymentConfig tossPaymentConfig;
     @Override
     public PaymentResponse approvePayment(String paymentKey, String orderId, Long amount) {
-        verifyPayment(orderId, amount);
+        //verifyPayment(orderId, amount);
         PaymentResponse paymentResponse = requestPaymentAccept(paymentKey, orderId, amount);
         return paymentResponse;
     }
@@ -60,6 +62,7 @@ public class PaymentServiceImpl implements PaymentService  {
         PaymentResponse paymentSuccessDto = restTemplate.postForObject(u,
                 jsonObjectHttpEntity,
                 PaymentResponse.class);
+
 
         return paymentSuccessDto;
 
@@ -88,7 +91,12 @@ public class PaymentServiceImpl implements PaymentService  {
 
     @Override
     public void savePayment(PaymentRequest paymentRequest) {
-
+        Payment payment = Payment.builder()
+                .totalAmount(paymentRequest.getTotalAmount())
+                .paymentStatus(PaymentStatus.WAIT)
+                .paymentType(PaymentType.WAIT)
+                .orderId(paymentRequest.getOrderId()).build();
+        paymentRepository.save(payment);
     }
 
     @Override

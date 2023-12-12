@@ -4,10 +4,11 @@ package com.wooyano.wooyanomonolithic.payment.domain.enumPackage;
 import com.wooyano.wooyanomonolithic.global.common.CodeValue;
 
 public enum PaymentStatus implements CodeValue {
-    DONE("0","결제 완료"),
-    CANCEL("1","결제 취소"),
+    WAIT("0","결제 대기"),
+    DONE("1","결제 완료"),
+    CANCEL("2","결제 취소");
 
-    SETTLED("2","정산 완료");
+
 
     private final String code;
     private final String value;
