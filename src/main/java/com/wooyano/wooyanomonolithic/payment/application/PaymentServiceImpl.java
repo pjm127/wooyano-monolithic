@@ -69,7 +69,8 @@ public class PaymentServiceImpl implements PaymentService  {
         String status = paymentSuccessDto.getStatus();
         log.info("orderId1 : {}", method);
         log.info("orderId1 : {}", status);
-       // Payment byOrderId = paymentRepository.findByOrderId(orderId1);
+        Payment byOrderId = paymentRepository.findByOrderId(orderId1);
+
 
         return paymentSuccessDto;
 

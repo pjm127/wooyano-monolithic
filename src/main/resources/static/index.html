@@ -65,11 +65,44 @@
             .then(data => {
                 // 서버 응답을 처리하고 페이지 이동
                 console.log(data);
+                sendReservationRequest(totalAmount, orderId);
                 window.location.href = 'payment.html';
             })
             .catch(error => {
                 // 에러 처리
                 console.error('Error:', error);
+            });
+    }
+
+    function sendReservationRequest(totalAmount, orderId) {
+        // 예약 정보 생성
+        let reservationDto = {
+            reservationGoodsId: [2], // Provided goods IDs
+            orderId: orderId,
+            serviceId: 2,
+            workerId: 3,
+            userEmail: "qwe@naber.com",
+            reservationDate: "2023-11-15",
+            serviceStart: "12:00",
+            serviceEnd: "15:00",
+            paymentAmount:totalAmount,
+            request: "!!!!!!",
+            address: "부산시 해운대구 우동 센텀 리더스마크 4층",
+        };
+        // Send POST request to '/api/v1/reservation/create'
+        fetch('http://localhost:9000/api/v1/reservation/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reservationDto),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Reservation Request:', data);
+            })
+            .catch(error => {
+                console.error('Error sending reservation request:', error);
             });
     }
 </script>
