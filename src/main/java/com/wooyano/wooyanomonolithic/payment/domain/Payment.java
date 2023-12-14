@@ -49,8 +49,11 @@ public class Payment {
     @Column(name = "order_Id")
     private String orderId;
 
+    @Column(name = "payment_Key")
+    private String paymentKey;
+
     private Payment(String clientEmail, PaymentType payType, int totalAmount,
-                    LocalDateTime approvedAt, PaymentStatus payStatus,String orderId) {
+                    LocalDateTime approvedAt, PaymentStatus payStatus,String orderId,String paymentKey) {
         this.clientEmail = clientEmail;
         this.paymentType = payType;
         this.totalAmount = totalAmount;
@@ -60,9 +63,9 @@ public class Payment {
     }
 
     public static Payment createPayment(String clientEmail, PaymentType payType, int totalAmount,
-                                        LocalDateTime approvedAt, PaymentStatus paymentStatus,String orderId) {
+                                        LocalDateTime approvedAt, PaymentStatus paymentStatus,String orderId,String paymentKey) {
         return new Payment(clientEmail, payType,
-                totalAmount, approvedAt,paymentStatus,orderId);
+                totalAmount, approvedAt,paymentStatus,orderId,paymentKey);
     }
 
     public void finishSettlement(PaymentStatus paymentStatus) {
