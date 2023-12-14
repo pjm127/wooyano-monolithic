@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public interface PaymentService {
-    PaymentResponse approvePayment(String paymentKey, String orderId, Long amount);
+    PaymentResponse approvePayment(String paymentKey, String orderId, Integer amount);
     void savePayment(PaymentRequest paymentRequest);
 
     List<PaymentResultResponse> getPaymentsList();

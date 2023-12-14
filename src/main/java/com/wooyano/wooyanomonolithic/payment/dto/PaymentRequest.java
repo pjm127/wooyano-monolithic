@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class PaymentRequest {
-    private int totalAmount; //사업자 이메일
+    private int totalAmount;
     private String orderId; //주문번호
 
 }

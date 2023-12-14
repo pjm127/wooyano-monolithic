@@ -17,6 +17,6 @@ public class PaymentTypeConverter implements AttributeConverter<PaymentType, Str
         return EnumSet.allOf(PaymentType.class).stream()
                 .filter(c -> c.getCode().equals(dbData))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 포인트 상태입니다."));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 결제 타입입니다."));
     }
 }

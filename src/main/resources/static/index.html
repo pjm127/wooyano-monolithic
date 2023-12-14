@@ -46,16 +46,20 @@
 <script>
     function reserve() {
         // 사용자 입력값 가져오기
-        let amount = document.getElementById('amount').value;
+        let totalAmount = document.getElementById('amount').value;
         let orderId = document.getElementById('orderId').value;
 
+        amount = parseFloat(amount);
+        // localStorage에 예약 정보 저장
+        localStorage.setItem("reservationAmount", totalAmount);
+        localStorage.setItem("reservationOrderId", orderId);
         // 서버에 HTTP 요청 보내기
         fetch('http://localhost:9000/request', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ amount, orderId }),
+            body: JSON.stringify({ totalAmount, orderId }),
         })
             .then(response => response.json())
             .then(data => {

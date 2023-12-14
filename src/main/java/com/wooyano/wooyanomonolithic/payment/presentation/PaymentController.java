@@ -67,7 +67,7 @@ public class PaymentController {
           description = "토스 api로 통신")
     @GetMapping("/success")
     public BaseResponse<?> reservationApproveService( @RequestParam(value = "orderId") String orderId,
-                                                      @RequestParam(value = "amount") Long amount,
+                                                      @RequestParam(value = "amount") Integer amount,
                                                       @RequestParam(value = "paymentKey") String paymentKey) {
 
         PaymentResponse paymentResponse = paymentService.approvePayment(paymentKey, orderId, amount);

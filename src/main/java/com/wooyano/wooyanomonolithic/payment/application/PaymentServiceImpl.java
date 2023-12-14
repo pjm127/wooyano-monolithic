@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,13 +40,13 @@ public class PaymentServiceImpl implements PaymentService  {
     private final ReservationRepository reservationRepository;
     private final TossPaymentConfig tossPaymentConfig;
     @Override
-    public PaymentResponse approvePayment(String paymentKey, String orderId, Long amount) {
-        //verifyPayment(orderId, amount);
+    public PaymentResponse approvePayment(String paymentKey, String orderId, Integer amount) {
+        verifyPayment(orderId, amount);
         PaymentResponse paymentResponse = requestPaymentAccept(paymentKey, orderId, amount);
         return paymentResponse;
     }
 
-    private PaymentResponse requestPaymentAccept(String paymentKey, String orderId, Long amount) {
+    private PaymentResponse requestPaymentAccept(String paymentKey, String orderId, Integer amount) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = getHeaders();
         JSONObject params = new JSONObject();
@@ -62,7 +63,13 @@ public class PaymentServiceImpl implements PaymentService  {
         PaymentResponse paymentSuccessDto = restTemplate.postForObject(u,
                 jsonObjectHttpEntity,
                 PaymentResponse.class);
-
+        log.info("paymentSuccessDto : {}", paymentSuccessDto);
+        String orderId1 = paymentSuccessDto.getOrderId();
+        String method = paymentSuccessDto.getMethod();
+        String status = paymentSuccessDto.getStatus();
+        log.info("orderId1 : {}", method);
+        log.info("orderId1 : {}", status);
+       // Payment byOrderId = paymentRepository.findByOrderId(orderId1);
 
         return paymentSuccessDto;
 
@@ -82,15 +89,19 @@ public class PaymentServiceImpl implements PaymentService  {
         return headers;
     }
 
-    private void verifyPayment(String orderId, Long amount) {
-        Reservation reservation = reservationRepository.findByOrderId(orderId);
-        if (!reservation.getPaymentAmount().equals(amount)) {
+    private void verifyPayment(String orderId, Integer amount) {
+        Payment payment = paymentRepository.findByOrderId(orderId);
+        log.info("payment : {}", payment.getOrderId());
+        if (!Objects.equals(payment.getTotalAmount(), amount)) {
             throw new CustomException(PAYMENT_AMOUNT_MISMATCH);
         }
     }
 
     @Override
     public void savePayment(PaymentRequest paymentRequest) {
+        log.info("paymentRequest : {}", paymentRequest.getTotalAmount());
+        log.info("paymentRequest : {}", paymentRequest.getOrderId());
+
         Payment payment = Payment.builder()
                 .totalAmount(paymentRequest.getTotalAmount())
                 .paymentStatus(PaymentStatus.WAIT)
