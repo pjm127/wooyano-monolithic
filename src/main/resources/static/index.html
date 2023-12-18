@@ -36,6 +36,18 @@
             </div>
         </div>
         <div class="field">
+            <label class="label">서비스 ID</label>
+            <div class="control">
+                <input class="input" type="text" id="serviceId" placeholder="서비스 ID를 입력하세요">
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">작업자 ID</label>
+            <div class="control">
+                <input class="input" type="text" id="workerId" placeholder="작업자 ID를 입력하세요">
+            </div>
+        </div>
+        <div class="field">
             <div class="control">
                 <button class="button is-link" onclick="reserve()">예약하기</button>
             </div>
@@ -48,48 +60,29 @@
         // 사용자 입력값 가져오기
         let totalAmount = document.getElementById('amount').value;
         let orderId = document.getElementById('orderId').value;
+        let serviceId = document.getElementById('serviceId').value;
+        let workerId = document.getElementById('workerId').value;
 
         amount = parseFloat(amount);
-        // localStorage에 예약 정보 저장
         localStorage.setItem("reservationAmount", totalAmount);
         localStorage.setItem("reservationOrderId", orderId);
-        // 서버에 HTTP 요청 보내기
-        fetch('http://localhost:9000/request', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ totalAmount, orderId }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                // 서버 응답을 처리하고 페이지 이동
-                console.log(data);
-                sendReservationRequest(totalAmount, orderId);
-                window.location.href = 'payment.html';
-            })
-            .catch(error => {
-                // 에러 처리
-                console.error('Error:', error);
-            });
-    }
 
-    function sendReservationRequest(totalAmount, orderId) {
         // 예약 정보 생성
         let reservationDto = {
             reservationGoodsId: [2], // Provided goods IDs
             orderId: orderId,
-            serviceId: 2,
-            workerId: 3,
+            serviceId: serviceId,
+            workerId: workerId,
             userEmail: "qwe@naber.com",
             reservationDate: "2023-11-15",
             serviceStart: "12:00",
             serviceEnd: "15:00",
-            paymentAmount:totalAmount,
+            paymentAmount: totalAmount,
             request: "!!!!!!",
             address: "부산시 해운대구 우동 센텀 리더스마크 4층",
         };
-        // Send POST request to '/api/v1/reservation/create'
+
+        // 서버에 HTTP 요청 보내기
         fetch('http://localhost:9000/api/v1/reservation/create', {
             method: 'POST',
             headers: {
@@ -99,10 +92,13 @@
         })
             .then(response => response.json())
             .then(data => {
+                // 서버 응답을 처리하고 페이지 이동
                 console.log('Reservation Request:', data);
+                window.location.href = 'payment.html';
             })
             .catch(error => {
-                console.error('Error sending reservation request:', error);
+                // 에러 처리
+                console.error('Error:', error);
             });
     }
 </script>

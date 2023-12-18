@@ -7,6 +7,10 @@ import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
+import com.wooyano.wooyanomonolithic.payment.domain.Payment;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentType;
+import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
@@ -35,6 +39,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final ReservationGoodsRepository reservationGoodsRepository;
+
+    private final PaymentRepository paymentRepository;
+
     @Override
     public String createReservation(CreateReservationDto request) {
         log.info("createReservation");
@@ -61,6 +68,13 @@ public class ReservationServiceImpl implements ReservationService {
                     .address(request.getAddress())
                     .build();
         }).forEach(reservationRepository::save);
+
+        Payment payment = Payment.builder()
+                .totalAmount(request.getPaymentAmount())
+                .paymentStatus(PaymentStatus.WAIT)
+                .paymentType(PaymentType.WAIT)
+                .orderId(request.getOrderId()).build();
+        paymentRepository.save(payment);
         return request.getOrderId();
     }
 
