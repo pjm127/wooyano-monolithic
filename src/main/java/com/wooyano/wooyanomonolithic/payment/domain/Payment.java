@@ -1,9 +1,10 @@
 package com.wooyano.wooyanomonolithic.payment.domain;
 
+import com.wooyano.wooyanomonolithic.global.common.domain.BaseEntity;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatusConverter;
-import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentType;
-import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentTypeConverter;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentMethod;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentMethodConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Payment {
+public class Payment  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +33,9 @@ public class Payment {
 
     @Column(name = "client_Email")
     private String clientEmail; //사업자 이메일
-    @Column(name = "payment_Type")
-    @Convert(converter = PaymentTypeConverter.class)
-    private PaymentType paymentType; //결제수단  카드, 간편결제
+    @Column(name = "payment_Method")
+    @Convert(converter = PaymentMethodConverter.class)
+    private PaymentMethod paymentType; //결제수단  카드, 간편결제
 
     @Column(name = "total_Amount")
     private int totalAmount; //결제 금액
@@ -52,8 +53,8 @@ public class Payment {
     @Column(name = "payment_Key")
     private String paymentKey;
 
-    private Payment(String clientEmail, PaymentType payType, int totalAmount,
-                    LocalDateTime approvedAt, PaymentStatus payStatus,String orderId,String paymentKey) {
+    private Payment(String clientEmail, PaymentMethod payType, int totalAmount,
+                    LocalDateTime approvedAt, PaymentStatus payStatus, String orderId, String paymentKey) {
         this.clientEmail = clientEmail;
         this.paymentType = payType;
         this.totalAmount = totalAmount;
@@ -62,13 +63,14 @@ public class Payment {
         this.orderId = orderId;
     }
 
-    public static Payment createPayment(String clientEmail, PaymentType payType, int totalAmount,
-                                        LocalDateTime approvedAt, PaymentStatus paymentStatus,String orderId,String paymentKey) {
+    public static Payment createPayment(String clientEmail, PaymentMethod payType, int totalAmount,
+                                        LocalDateTime approvedAt, PaymentStatus paymentStatus, String orderId, String paymentKey) {
         return new Payment(clientEmail, payType,
                 totalAmount, approvedAt,paymentStatus,orderId,paymentKey);
     }
 
-    public void finishSettlement(PaymentStatus paymentStatus) {
+    public void approvePaymentStatus(PaymentStatus paymentStatus, PaymentMethod paymentType) {
+        this.paymentType = paymentType;
         this.paymentStatus = paymentStatus;
     }
 }

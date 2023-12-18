@@ -9,16 +9,16 @@ import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
-import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentType;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentMethod;
 import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
-import com.wooyano.wooyanomonolithic.reservation.dto.ChangeReservationRequest;
 import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationDto;
 import com.wooyano.wooyanomonolithic.reservation.dto.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +72,9 @@ public class ReservationServiceImpl implements ReservationService {
         Payment payment = Payment.builder()
                 .totalAmount(request.getPaymentAmount())
                 .paymentStatus(PaymentStatus.WAIT)
-                .paymentType(PaymentType.WAIT)
+                .paymentType(PaymentMethod.WAIT)
+                .approvedAt(LocalDateTime.now())
+                .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
                 .orderId(request.getOrderId()).build();
         paymentRepository.save(payment);
         return request.getOrderId();

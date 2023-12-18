@@ -7,16 +7,13 @@ import com.wooyano.wooyanomonolithic.global.config.toss.TossPaymentConfig;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
-import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentType;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentMethod;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentRequest;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentResponse;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentResultResponse;
 import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
-import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +25,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -39,13 +37,23 @@ public class PaymentServiceImpl implements PaymentService  {
     private final PaymentRepository paymentRepository;
     private final ReservationRepository reservationRepository;
     private final TossPaymentConfig tossPaymentConfig;
+
+    @Transactional
     @Override
     public PaymentResponse approvePayment(String paymentKey, String orderId, Integer amount) {
         verifyPayment(orderId, amount);
         PaymentResponse paymentResponse = requestPaymentAccept(paymentKey, orderId, amount);
+        String method = paymentResponse.getMethod(); //간단결제
+        String status = paymentResponse.getStatus(); //DONE
+        PaymentMethod paymentMethod = PaymentMethod.fromCode(method);
+        PaymentStatus paymentStatus = PaymentStatus.fromCode(status);
+
+        Payment payment = paymentRepository.findByOrderId(orderId);
+        payment.approvePaymentStatus(paymentStatus, paymentMethod);
         return paymentResponse;
     }
 
+    //토스페이먼츠 외부 api 결제 승인 요청
     private PaymentResponse requestPaymentAccept(String paymentKey, String orderId, Integer amount) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = getHeaders();
@@ -64,14 +72,6 @@ public class PaymentServiceImpl implements PaymentService  {
                 jsonObjectHttpEntity,
                 PaymentResponse.class);
         log.info("paymentSuccessDto : {}", paymentSuccessDto);
-        String orderId1 = paymentSuccessDto.getOrderId();
-        String method = paymentSuccessDto.getMethod();
-        String status = paymentSuccessDto.getStatus();
-        log.info("orderId1 : {}", method);
-        log.info("orderId1 : {}", status);
-        Payment byOrderId = paymentRepository.findByOrderId(orderId1);
-
-
         return paymentSuccessDto;
 
     }
@@ -106,7 +106,7 @@ public class PaymentServiceImpl implements PaymentService  {
         Payment payment = Payment.builder()
                 .totalAmount(paymentRequest.getTotalAmount())
                 .paymentStatus(PaymentStatus.WAIT)
-                .paymentType(PaymentType.WAIT)
+                .paymentType(PaymentMethod.WAIT)
                 .orderId(paymentRequest.getOrderId()).build();
         paymentRepository.save(payment);
     }

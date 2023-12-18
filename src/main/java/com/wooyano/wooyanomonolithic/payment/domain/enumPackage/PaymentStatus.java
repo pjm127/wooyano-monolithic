@@ -4,9 +4,9 @@ package com.wooyano.wooyanomonolithic.payment.domain.enumPackage;
 import com.wooyano.wooyanomonolithic.global.common.CodeValue;
 
 public enum PaymentStatus implements CodeValue {
-    WAIT("0","결제 대기"),
-    DONE("1","결제 완료"),
-    CANCEL("2","결제 취소");
+    WAIT("0","READY"),
+    DONE("1","DONE"),
+    CANCEL("2","CANCELED");
 
 
 
@@ -27,12 +27,12 @@ public enum PaymentStatus implements CodeValue {
     public String getValue() {
         return value;
     }
-    public static PaymentStatus fromCode(String code) {
+    public static PaymentStatus fromCode(String value) {
         for (PaymentStatus status : values()) {
-            if (status.code.equals(code)) {
+            if (status.value.equals(value)) {
                 return status;
             }
         }
-        throw new IllegalArgumentException("No enum constant for code: " + code);
+        throw new IllegalArgumentException("No enum constant for code: " + value);
     }
 }

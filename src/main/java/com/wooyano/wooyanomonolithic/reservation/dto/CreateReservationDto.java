@@ -27,6 +27,6 @@ public class CreateReservationDto {
     private String request; //요청사항
     private String address; //주소
     private Integer status; //예약 상태
-
+    private String clientEmail; //사업자 이메일
 
 }
