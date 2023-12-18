@@ -41,15 +41,13 @@ public class PaymentServiceImpl implements PaymentService  {
     @Transactional
     @Override
     public PaymentResponse approvePayment(String paymentKey, String orderId, Integer amount) {
-        verifyPayment(orderId, amount);
+        Payment payment = verifyPayment(orderId, amount);
         PaymentResponse paymentResponse = requestPaymentAccept(paymentKey, orderId, amount);
         String method = paymentResponse.getMethod(); //간단결제
         String status = paymentResponse.getStatus(); //DONE
         PaymentMethod paymentMethod = PaymentMethod.fromCode(method);
         PaymentStatus paymentStatus = PaymentStatus.fromCode(status);
-
-        Payment payment = paymentRepository.findByOrderId(orderId);
-        payment.approvePaymentStatus(paymentStatus, paymentMethod);
+        payment.approvePayment(paymentKey,paymentStatus, paymentMethod);
         return paymentResponse;
     }
 
@@ -90,12 +88,13 @@ public class PaymentServiceImpl implements PaymentService  {
         return headers;
     }
 
-    private void verifyPayment(String orderId, Integer amount) {
+    private Payment verifyPayment(String orderId, Integer amount) {
         Payment payment = paymentRepository.findByOrderId(orderId);
         log.info("payment : {}", payment.getOrderId());
         if (!Objects.equals(payment.getTotalAmount(), amount)) {
             throw new CustomException(PAYMENT_AMOUNT_MISMATCH);
         }
+        return payment;
     }
 
     @Override

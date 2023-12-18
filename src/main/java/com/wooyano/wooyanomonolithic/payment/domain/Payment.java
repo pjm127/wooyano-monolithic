@@ -69,7 +69,8 @@ public class Payment  {
                 totalAmount, approvedAt,paymentStatus,orderId,paymentKey);
     }
 
-    public void approvePaymentStatus(PaymentStatus paymentStatus, PaymentMethod paymentType) {
+    public void approvePayment(String paymentKey,PaymentStatus paymentStatus, PaymentMethod paymentType) {
+        this.paymentKey = paymentKey;
         this.paymentType = paymentType;
         this.paymentStatus = paymentStatus;
     }
