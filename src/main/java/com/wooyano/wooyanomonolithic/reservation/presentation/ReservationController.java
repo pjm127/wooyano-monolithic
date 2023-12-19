@@ -28,14 +28,6 @@ public class ReservationController {
             description = "유저의 서비스 신청")
     @PostMapping("/create")
     public BaseResponse<?> reservationNewService(@RequestBody CreateReservationDto request) {
- /*       try {
-            String reservation = reservationService.createReservation(request);
-            return new BaseResponse<>(reservation);
-        } catch (CustomException ex) {
-
-            ResponseCode responseCode = ex.getResponseCode();
-            return new BaseResponse<>(responseCode);
-        }*/
         String reservation = reservationService.createReservation(request);
 
         return new BaseResponse<>(reservation);
