@@ -33,17 +33,15 @@ public class ReservationController {
         return new BaseResponse<>(reservation);
     }
 
-
-
-/*    @Operation(summary = "결제 후 예약 상태 변경",
+    @Operation(summary = "결제 후 예약 상태 변경",
             description = "결제 후 예약 상태 변경")
-    @PostMapping("/change")
+    @PostMapping("/complete-payment")
     public BaseResponse<?> reservationChangeService(@RequestBody ChangeReservationRequest request) {
 
-        reservationService.changeReservationStatus(request);
+        reservationService.approveReservation(request);
 
         return new BaseResponse<>();
-    }*/
+    }
 
 
     //clientEmail로 예약 대기인거 조회 리스트

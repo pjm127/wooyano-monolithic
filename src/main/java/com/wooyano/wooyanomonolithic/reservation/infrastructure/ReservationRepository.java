@@ -21,11 +21,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 
 
-   /* @Query("SELECT r FROM Reservation r WHERE r.orderId = :orderId")
-   Reservation findByOrderId(@Param("orderId") String orderId); //findByOrderId
+/*    @Query("SELECT r FROM Reservation r WHERE r.orderId = :orderId")
+   Reservation findByOrderId(@Param("orderId") String orderId); //findByOrderId*/
 
     @Query("SELECT r FROM Reservation r WHERE r.orderId = :orderId")
-    List<Reservation> findByOrderIdList(@Param("orderId") String orderId);*/
+    List<Reservation> findByOrderIdList(@Param("orderId") String orderId);
 
     @Query("SELECT r FROM Reservation r join fetch r.reservationGoods g WHERE r.serviceId = :serviceId and r.reservationState = :reservationState")
     List<Reservation> findByReservationStatusWait(@Param("serviceId") Long serviceId, @Param("reservationState") ReservationState reservationState);

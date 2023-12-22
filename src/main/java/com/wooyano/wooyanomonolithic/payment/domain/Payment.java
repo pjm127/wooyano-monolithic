@@ -53,6 +53,7 @@ public class Payment  {
     @Column(name = "payment_Key")
     private String paymentKey;
 
+    @Builder
     private Payment(String clientEmail, PaymentMethod payType, int totalAmount,
                     LocalDateTime approvedAt, PaymentStatus payStatus, String orderId, String paymentKey) {
         this.clientEmail = clientEmail;
@@ -65,8 +66,15 @@ public class Payment  {
 
     public static Payment createPayment(String clientEmail, PaymentMethod payType, int totalAmount,
                                         LocalDateTime approvedAt, PaymentStatus paymentStatus, String orderId, String paymentKey) {
-        return new Payment(clientEmail, payType,
-                totalAmount, approvedAt,paymentStatus,orderId,paymentKey);
+        return Payment.builder()
+                .clientEmail(clientEmail)
+                .paymentType(payType)
+                .totalAmount(totalAmount)
+                .approvedAt(approvedAt)
+                .paymentStatus(paymentStatus)
+                .orderId(orderId)
+                .paymentKey(paymentKey)
+                .build();
     }
 
     public void approvePayment(String paymentKey,PaymentStatus paymentStatus, PaymentMethod paymentType) {

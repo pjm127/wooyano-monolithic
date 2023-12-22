@@ -56,15 +56,18 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false, length = 30, name = "address")
     private String address;
 
+    @Column(nullable = false, length = 30, name = "order_id")
+    private String orderId;
 
-    public void changeStatus(ReservationState status) {
+
+    public void approveStatus(ReservationState status) {
         this.reservationState = status;
     }
 
     public static Reservation createReservation(ReservationGoods reservationGoods, String userEmail, Long serviceId, Long workerId,
                                                 LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
                                                 ReservationState reservationState, Integer paymentAmount, String cancelDesc,
-                                                String request, String address) {
+                                                String request, String address,String orderId) {
         return Reservation.builder()
                 .reservationGoods(reservationGoods)
                 .userEmail(userEmail)
@@ -78,6 +81,7 @@ public class Reservation extends BaseEntity {
                 .cancelDesc(cancelDesc)
                 .request(request)
                 .address(address)
+                .orderId(orderId)
                 .build();
     }
 
@@ -85,7 +89,7 @@ public class Reservation extends BaseEntity {
     private Reservation(ReservationGoods reservationGoods, String userEmail, Long serviceId, Long workerId,
                        LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
                        ReservationState reservationState, Integer paymentAmount, String cancelDesc, String request,
-                       String address) {
+                       String address,String orderId) {
         this.reservationGoods = reservationGoods;
         this.userEmail = userEmail;
         this.serviceId = serviceId;
@@ -98,5 +102,8 @@ public class Reservation extends BaseEntity {
         this.cancelDesc = cancelDesc;
         this.request = request;
         this.address = address;
+        this.orderId = orderId;
     }
+
+
 }

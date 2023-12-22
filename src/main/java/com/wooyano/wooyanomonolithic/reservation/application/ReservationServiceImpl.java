@@ -14,6 +14,7 @@ import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
+import com.wooyano.wooyanomonolithic.reservation.dto.ChangeReservationRequest;
 import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationDto;
 import com.wooyano.wooyanomonolithic.reservation.dto.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
@@ -58,8 +59,8 @@ public class ReservationServiceImpl implements ReservationService {
             ReservationGoods reservationGoods = reservationGoodsRepository.findById(reservationGoodsId).get();
             return Reservation.createReservation(reservationGoods, request.getUserEmail(),
                     request.getServiceId(), request.getWorkerId(), request.getReservationDate(), request.getServiceStart(),
-                    request.getServiceEnd(), ReservationState.WAIT, request.getPaymentAmount(), null,request.getRequest(),
-                    request.getAddress());
+                    request.getServiceEnd(), ReservationState.PAYMENT_WAITING, request.getPaymentAmount(), null,request.getRequest(),
+                    request.getAddress(),request.getOrderId());
         }).collect(Collectors.toList());
 
         reservationRepository.saveAll(reservations);
@@ -75,18 +76,21 @@ public class ReservationServiceImpl implements ReservationService {
         return request.getOrderId();
     }
 
-
-
+    @Transactional
+    @Override
+    public void approveReservation(ChangeReservationRequest request) {
+        List<Reservation> reservations = reservationRepository.findByOrderIdList(request.getOrderId());
+        for (Reservation reservation : reservations) {
+            reservation.approveStatus(ReservationState.WAIT);
+        }
+    }
 
     @Override
     public List<ReservationListResponse> findWaitReservationsList(Long serviceId) {
         return null;
     }
 
-    @Override
-    public void processReservationDecisionEvent(String consumerRecord) throws JsonProcessingException {
 
-    }
     //예약상품 리스트 안에 상품 있는지부터 확인
     private void validateReservationGoodsExistence(List<Long> reservationGoodsIdList) {
         boolean allReservationGoodsExist = reservationGoodsIdList.stream()
