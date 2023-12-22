@@ -51,15 +51,15 @@ public class ReservationServiceImpl implements ReservationService {
         List<Long> reservationGoodsIdList = request.getReservationGoodsId();
         Long workerId = request.getWorkerId();
 
+        validateReservationGoodsExistence(reservationGoodsIdList);
         validateDuplicateReservationGoodsWithWorker(reservationGoodsIdList, workerId);
 
         List<Reservation> reservations = reservationGoodsIdList.stream().map(reservationGoodsId -> {
-            ReservationGoods reservationGoods = reservationGoodsRepository.findById(reservationGoodsId)
-                    .orElseThrow(() -> new CustomException(CANNOT_FIND_RESERVATION_GOODS));
+            ReservationGoods reservationGoods = reservationGoodsRepository.findById(reservationGoodsId).get();
             return Reservation.createReservation(reservationGoods, request.getUserEmail(),
                     request.getServiceId(), request.getWorkerId(), request.getReservationDate(), request.getServiceStart(),
-                    request.getServiceEnd(), ReservationState.WAIT, request.getPaymentAmount(), request.getRequest(),
-                    request.getAddress(), generateRandomReservationNum());
+                    request.getServiceEnd(), ReservationState.WAIT, request.getPaymentAmount(), null,request.getRequest(),
+                    request.getAddress());
         }).collect(Collectors.toList());
 
         reservationRepository.saveAll(reservations);
@@ -86,6 +86,15 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void processReservationDecisionEvent(String consumerRecord) throws JsonProcessingException {
 
+    }
+    //예약상품 리스트 안에 상품 있는지부터 확인
+    private void validateReservationGoodsExistence(List<Long> reservationGoodsIdList) {
+        boolean allReservationGoodsExist = reservationGoodsIdList.stream()
+                .allMatch(reservationGoodsId -> reservationGoodsRepository.findById(reservationGoodsId).isPresent());
+
+        if (!allReservationGoodsExist) {
+            throw new CustomException(CANNOT_FIND_RESERVATION_GOODS);
+        }
     }
 
     //작업자+예약 상품 중복 검사

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReservationGoodsRepository extends JpaRepository<ReservationGoods, Long> {
 
     Optional<ReservationGoods> findById(Long id);
+
     List<ReservationGoods> findByServiceIdOrderByIdDesc(Long serviceId);
 
 
