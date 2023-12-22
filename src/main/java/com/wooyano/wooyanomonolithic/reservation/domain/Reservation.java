@@ -66,7 +66,7 @@ public class Reservation extends BaseEntity {
 
     public static Reservation createReservation(ReservationGoods reservationGoods, String userEmail, Long serviceId, Long workerId,
                                                 LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
-                                                ReservationState reservationState, Integer paymentAmount, String cancelDesc,
+                                                 Integer paymentAmount, String cancelDesc,
                                                 String request, String address,String orderId) {
         return Reservation.builder()
                 .reservationGoods(reservationGoods)
@@ -76,7 +76,7 @@ public class Reservation extends BaseEntity {
                 .reservationDate(reservationDate)
                 .serviceStart(serviceStart)
                 .serviceEnd(serviceEnd)
-                .reservationState(reservationState)
+                .reservationState(ReservationState.PAYMENT_WAITING)
                 .paymentAmount(paymentAmount)
                 .cancelDesc(cancelDesc)
                 .request(request)

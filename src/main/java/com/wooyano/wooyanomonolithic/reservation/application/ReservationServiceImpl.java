@@ -59,7 +59,7 @@ public class ReservationServiceImpl implements ReservationService {
             ReservationGoods reservationGoods = reservationGoodsRepository.findById(reservationGoodsId).get();
             return Reservation.createReservation(reservationGoods, request.getUserEmail(),
                     request.getServiceId(), request.getWorkerId(), request.getReservationDate(), request.getServiceStart(),
-                    request.getServiceEnd(), ReservationState.PAYMENT_WAITING, request.getPaymentAmount(), null,request.getRequest(),
+                    request.getServiceEnd(),request.getPaymentAmount(), null,request.getRequest(),
                     request.getAddress(),request.getOrderId());
         }).collect(Collectors.toList());
 
