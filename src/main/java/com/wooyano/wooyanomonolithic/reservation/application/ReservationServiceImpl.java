@@ -21,9 +21,11 @@ import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepos
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
@@ -42,6 +44,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final PaymentRepository paymentRepository;
 
+
     @Override
     public String createReservation(CreateReservationDto request) {
         log.info("createReservation");
@@ -50,24 +53,16 @@ public class ReservationServiceImpl implements ReservationService {
 
         validateDuplicateReservationGoodsWithWorker(reservationGoodsIdList, workerId);
 
-        reservationGoodsIdList.stream().map(reservationGoodsId->{
+        List<Reservation> reservations = reservationGoodsIdList.stream().map(reservationGoodsId -> {
             ReservationGoods reservationGoods = reservationGoodsRepository.findById(reservationGoodsId)
                     .orElseThrow(() -> new CustomException(CANNOT_FIND_RESERVATION_GOODS));
-            return Reservation.builder()
-                    .reservationGoods(reservationGoods)
-                    .userEmail(request.getUserEmail())
-                    .serviceId(request.getServiceId())
-                    .workerId(request.getWorkerId())
-                    .reservationDate(request.getReservationDate())
-                    .serviceStart(request.getServiceStart())
-                    .serviceEnd(request.getServiceEnd())
-                    .reservationState(ReservationState.PAYMENT_WAITING)
-                    .paymentAmount(request.getPaymentAmount())
-                    .request(request.getRequest())
-                    .orderId(request.getOrderId())
-                    .address(request.getAddress())
-                    .build();
-        }).forEach(reservationRepository::save);
+            return Reservation.createReservation(reservationGoods, request.getUserEmail(),
+                    request.getServiceId(), request.getWorkerId(), request.getReservationDate(), request.getServiceStart(),
+                    request.getServiceEnd(), ReservationState.WAIT, request.getPaymentAmount(), request.getRequest(),
+                    request.getAddress(), generateRandomReservationNum());
+        }).collect(Collectors.toList());
+
+        reservationRepository.saveAll(reservations);
 
         Payment payment = Payment.builder()
                 .totalAmount(request.getPaymentAmount())

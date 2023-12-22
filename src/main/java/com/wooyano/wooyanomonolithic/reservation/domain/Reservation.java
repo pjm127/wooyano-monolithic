@@ -21,11 +21,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "reservation")
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class Reservation extends BaseEntity {
 
     @Id
@@ -55,8 +52,7 @@ public class Reservation extends BaseEntity {
     private String cancelDesc;
     @Column(length = 100, name = "request")
     private String request;
-    @Column(nullable = false, length = 10, name = "order_id")
-    private String orderId;
+
     @Column(nullable = false, length = 30, name = "address")
     private String address;
 
@@ -65,6 +61,42 @@ public class Reservation extends BaseEntity {
         this.reservationState = status;
     }
 
+    public static Reservation createReservation(ReservationGoods reservationGoods, String userEmail, Long serviceId, Long workerId,
+                                                LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
+                                                ReservationState reservationState, Integer paymentAmount, String cancelDesc,
+                                                String request, String address) {
+        return Reservation.builder()
+                .reservationGoods(reservationGoods)
+                .userEmail(userEmail)
+                .serviceId(serviceId)
+                .workerId(workerId)
+                .reservationDate(reservationDate)
+                .serviceStart(serviceStart)
+                .serviceEnd(serviceEnd)
+                .reservationState(reservationState)
+                .paymentAmount(paymentAmount)
+                .cancelDesc(cancelDesc)
+                .request(request)
+                .address(address)
+                .build();
+    }
 
-
+    @Builder
+    private Reservation(ReservationGoods reservationGoods, String userEmail, Long serviceId, Long workerId,
+                       LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
+                       ReservationState reservationState, Integer paymentAmount, String cancelDesc, String request,
+                       String address) {
+        this.reservationGoods = reservationGoods;
+        this.userEmail = userEmail;
+        this.serviceId = serviceId;
+        this.workerId = workerId;
+        this.reservationDate = reservationDate;
+        this.serviceStart = serviceStart;
+        this.serviceEnd = serviceEnd;
+        this.reservationState = reservationState;
+        this.paymentAmount = paymentAmount;
+        this.cancelDesc = cancelDesc;
+        this.request = request;
+        this.address = address;
+    }
 }

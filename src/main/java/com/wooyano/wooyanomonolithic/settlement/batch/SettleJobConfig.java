@@ -90,7 +90,7 @@ public class SettleJobConfig {
 
 
         String queryString = String.format("select new %s(p.clientEmail, sum(p.totalAmount)) From Payment p "
-                + "where p.approvedAt between :startDateTime and :endDateTime group by p.clientEmail", PaymentResult.class.getName());
+                + "where p.approvedAt between :startDate\nTime and :endDateTime group by p.clientEmail", PaymentResult.class.getName());
         //String queryString = "SELECT p FROM Payment p";
         JpaPagingItemReaderBuilder<PaymentResult> jpaPagingItemReaderBuilder  = new JpaPagingItemReaderBuilder<>();
         JpaPagingItemReader<PaymentResult> paymentItemReader = jpaPagingItemReaderBuilder
