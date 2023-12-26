@@ -8,5 +8,6 @@ import lombok.Data;
 public class PaymentRequest {
     private int totalAmount;
     private String orderId; //주문번호
+    private String clientEmail; //주문자 이메일
 
 }

@@ -14,6 +14,7 @@ import com.wooyano.wooyanomonolithic.payment.dto.PaymentResultResponse;
 import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -106,6 +107,8 @@ public class PaymentServiceImpl implements PaymentService  {
                 .totalAmount(paymentRequest.getTotalAmount())
                 .paymentStatus(PaymentStatus.WAIT)
                 .paymentType(PaymentMethod.WAIT)
+                .approvedAt(LocalDateTime.now())
+                .clientEmail(paymentRequest.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
                 .orderId(paymentRequest.getOrderId()).build();
         paymentRepository.save(payment);
     }

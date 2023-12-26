@@ -60,19 +60,16 @@
         // 사용자 입력값 가져오기
         let totalAmount = document.getElementById('amount').value;
         let orderId = document.getElementById('orderId').value;
-        let serviceId = document.getElementById('serviceId').value;
-        let workerId = document.getElementById('workerId').value;
-
         amount = parseFloat(amount);
         localStorage.setItem("reservationAmount", totalAmount);
         localStorage.setItem("reservationOrderId", orderId);
 
         // 예약 정보 생성
         let reservationDto = {
-            reservationGoodsId: [2,3], // Provided goods IDs
+            reservationGoodsId: [2, 3],
             orderId: orderId,
-            serviceId: serviceId,
-            workerId: workerId,
+            serviceId: document.getElementById('serviceId').value,
+            workerId: document.getElementById('workerId').value,
             userEmail: "qwe@naber.com",
             reservationDate: "2023-11-15",
             serviceStart: "12:00",
@@ -80,10 +77,10 @@
             paymentAmount: totalAmount,
             request: "!!!!!!",
             address: "부산시 해운대구 우동 센텀 리더스마크 4층",
-            clientEmail:"client1"
+            clientEmail: "client1"
         };
 
-        // 서버에 HTTP 요청 보내기
+        // 서버에 주문 요청 보내기
         fetch('http://localhost:9000/api/v1/reservation/create', {
             method: 'POST',
             headers: {
@@ -95,7 +92,32 @@
             .then(data => {
                 // 서버 응답을 처리하고 페이지 이동
                 console.log('Reservation Request:', data);
-                window.location.href = 'payment.html';
+
+                // 결제 정보 생성
+                let paymentDto = {
+                    orderId: orderId,
+                    totalAmount: totalAmount,
+                    clientEmail: "client1"
+                };
+
+                // 서버에 결제 요청 보내기
+                fetch('http://localhost:9000/api/v1/payment/request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(paymentDto),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // 서버 응답을 처리하고 페이지 이동
+                        console.log('Payment Request:', data);
+                        window.location.href = 'payment.html';
+                    })
+                    .catch(error => {
+                        // 에러 처리
+                        console.error('Error:', error);
+                    });
             })
             .catch(error => {
                 // 에러 처리
@@ -103,6 +125,7 @@
             });
     }
 </script>
+
 </body>
 
 </html>

@@ -63,17 +63,17 @@ public class ReservationServiceImpl implements ReservationService {
                     request.getAddress(),request.getOrderId());
         }).collect(Collectors.toList());
 
-        List<Reservation> reservations1 = reservationRepository.saveAll(reservations);
+        List<Reservation> reservationsList = reservationRepository.saveAll(reservations);
 
-        Payment payment = Payment.builder()
+        /*Payment payment = Payment.builder()
                 .totalAmount(request.getPaymentAmount())
                 .paymentStatus(PaymentStatus.WAIT)
                 .paymentType(PaymentMethod.WAIT)
                 .approvedAt(LocalDateTime.now())
                 .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
                 .orderId(request.getOrderId()).build();
-        paymentRepository.save(payment);
-        return CreateReservationResponse.of(reservations1);
+        paymentRepository.save(payment);*/
+        return CreateReservationResponse.of(reservationsList);
     }
 
     @Transactional
