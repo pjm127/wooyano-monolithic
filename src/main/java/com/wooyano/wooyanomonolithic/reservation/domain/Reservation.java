@@ -3,6 +3,7 @@ package com.wooyano.wooyanomonolithic.reservation.domain;
 import com.wooyano.wooyanomonolithic.global.common.domain.BaseEntity;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationStateConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -28,7 +29,7 @@ public class Reservation extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(nullable = false)
     private ReservationGoods reservationGoods;
     @Column(nullable = false, length = 50, name = "user_email")
@@ -64,9 +65,9 @@ public class Reservation extends BaseEntity {
         this.reservationState = status;
     }
 
-    public static Reservation createReservation(ReservationGoods reservationGoods, String userEmail, Long serviceId, Long workerId,
-                                                LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
-                                                 Integer paymentAmount, String cancelDesc,
+    public static Reservation createReservation(ReservationGoods reservationGoods, String userEmail, Long serviceId,
+                                                Long workerId, LocalDate reservationDate, LocalTime serviceStart,
+                                                LocalTime serviceEnd, Integer paymentAmount, String cancelDesc,
                                                 String request, String address,String orderId) {
         return Reservation.builder()
                 .reservationGoods(reservationGoods)
