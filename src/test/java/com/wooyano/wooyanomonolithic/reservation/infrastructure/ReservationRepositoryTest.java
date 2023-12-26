@@ -27,12 +27,12 @@ class ReservationRepositoryTest {
     @Test
     public void findByReservationGoodsId(){
         // given
-        ReservationGoods reservationGoods = ReservationGoods.createReservationGoods(1l, "test", 30000,
+        ReservationGoods reservationGood = ReservationGoods.createReservationGoods(1l, "test", 30000,
                 5, "시스템", "가전제품", "에어컨");
         LocalDate reservationDate = LocalDate.of(2023, 12, 31);
         LocalTime serviceStart = LocalTime.of(10, 0);
         LocalTime serviceEnd = LocalTime.of(12, 0);
-
+        ReservationGoods reservationGoods = reservationGoodsRepository.save(reservationGood);
         Reservation reservation = Reservation.createReservation(reservationGoods, "test@example.com",
                 1L, 1L, reservationDate, serviceStart, serviceEnd, 50000, null, "요청사항",
                 "서울시 강남구", "wer123t456");
@@ -51,12 +51,12 @@ class ReservationRepositoryTest {
     @Test
     public void 테스트이름(){
         // given
-        ReservationGoods reservationGoods = ReservationGoods.createReservationGoods(1l, "test", 30000,
+        ReservationGoods reservationGood = ReservationGoods.createReservationGoods(1l, "test", 30000,
                 5, "시스템", "가전제품", "에어컨");
         LocalDate reservationDate = LocalDate.of(2023, 12, 31);
         LocalTime serviceStart = LocalTime.of(10, 0);
         LocalTime serviceEnd = LocalTime.of(12, 0);
-
+        ReservationGoods reservationGoods = reservationGoodsRepository.save(reservationGood);
         Reservation reservation1 = Reservation.createReservation(reservationGoods, "test@example.com",
                 1L, 1L, reservationDate, serviceStart, serviceEnd, 50000, null, "요청사항",
                 "서울시 강남구", "wer123t456");
