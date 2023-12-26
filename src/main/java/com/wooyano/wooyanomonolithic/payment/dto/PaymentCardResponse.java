@@ -3,7 +3,7 @@ package com.wooyano.wooyanomonolithic.payment.dto;
 import lombok.Data;
 
 @Data
-public class PaymentCardDto {
+public class PaymentCardResponse {
 
     private String company; // 회사명
     private String number; // 카드번호

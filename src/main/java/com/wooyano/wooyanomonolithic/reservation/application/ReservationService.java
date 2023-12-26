@@ -1,8 +1,8 @@
 package com.wooyano.wooyanomonolithic.reservation.application;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wooyano.wooyanomonolithic.reservation.dto.ChangeReservationRequest;
-import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationDto;
+import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationRequest;
+import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.ReservationListResponse;
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface ReservationService {
 
 
     // 서비스 신청(결제 요청 - 인증)
-    String createReservation(CreateReservationDto reservationNewServiceRequest);
+    List<CreateReservationResponse> createReservation(CreateReservationRequest reservationNewServiceRequest);
 
     //결제 승인 후 예약 상태 변경
     void approveReservation(ChangeReservationRequest request);

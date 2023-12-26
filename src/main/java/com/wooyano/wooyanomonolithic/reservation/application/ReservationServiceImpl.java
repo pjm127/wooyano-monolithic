@@ -4,7 +4,6 @@ package com.wooyano.wooyanomonolithic.reservation.application;
 
 import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.CANNOT_FIND_RESERVATION_GOODS;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
@@ -15,7 +14,8 @@ import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
 import com.wooyano.wooyanomonolithic.reservation.dto.ChangeReservationRequest;
-import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationDto;
+import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationRequest;
+import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
@@ -47,7 +47,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 
     @Override
-    public String createReservation(CreateReservationDto request) {
+    public List<CreateReservationResponse> createReservation(CreateReservationRequest request) {
         log.info("createReservation");
         List<Long> reservationGoodsIdList = request.getReservationGoodsId();
         Long workerId = request.getWorkerId();
@@ -63,7 +63,7 @@ public class ReservationServiceImpl implements ReservationService {
                     request.getAddress(),request.getOrderId());
         }).collect(Collectors.toList());
 
-        reservationRepository.saveAll(reservations);
+        List<Reservation> reservations1 = reservationRepository.saveAll(reservations);
 
         Payment payment = Payment.builder()
                 .totalAmount(request.getPaymentAmount())
@@ -73,7 +73,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
                 .orderId(request.getOrderId()).build();
         paymentRepository.save(payment);
-        return request.getOrderId();
+        return CreateReservationResponse.of(reservations1);
     }
 
     @Transactional

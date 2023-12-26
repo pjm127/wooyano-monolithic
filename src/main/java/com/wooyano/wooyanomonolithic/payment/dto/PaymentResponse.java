@@ -21,6 +21,6 @@ public class PaymentResponse {
     private String approvedAt; //있
     private String useEscrow;
     private String cultureExpense;
-    private PaymentCardDto card;
+    private PaymentCardResponse card;
     private String type; //있
 }

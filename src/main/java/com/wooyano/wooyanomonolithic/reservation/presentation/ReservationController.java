@@ -3,7 +3,8 @@ package com.wooyano.wooyanomonolithic.reservation.presentation;
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import com.wooyano.wooyanomonolithic.reservation.application.ReservationService;
 import com.wooyano.wooyanomonolithic.reservation.dto.ChangeReservationRequest;
-import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationDto;
+import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationRequest;
+import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.ReservationListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
@@ -27,8 +28,8 @@ public class ReservationController {
     @Operation(summary = "서비스 신청",
             description = "유저의 서비스 신청")
     @PostMapping("/create")
-    public BaseResponse<?> reservationNewService(@RequestBody CreateReservationDto request) {
-        String reservation = reservationService.createReservation(request);
+    public BaseResponse<?> reservationNewService(@RequestBody CreateReservationRequest request) {
+        List<CreateReservationResponse> reservation = reservationService.createReservation(request);
 
         return new BaseResponse<>(reservation);
     }

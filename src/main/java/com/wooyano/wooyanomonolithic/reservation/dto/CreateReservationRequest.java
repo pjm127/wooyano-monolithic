@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class CreateReservationDto {
+public class CreateReservationRequest {
 
     private List<Long> reservationGoodsId; //예약 상품id
     private String orderId; //주문번호
@@ -28,5 +28,6 @@ public class CreateReservationDto {
     private String address; //주소
     private Integer status; //예약 상태
     private String clientEmail; //사업자 이메일
+
 
 }
