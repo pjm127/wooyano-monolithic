@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkReservedProductRepository extends JpaRepository<WorkReservedProduct, Long> {
 
+    WorkReservedProduct findByReservationGoodsAndWorker(Long reservationGoodsId, Long workerId);
+
 }

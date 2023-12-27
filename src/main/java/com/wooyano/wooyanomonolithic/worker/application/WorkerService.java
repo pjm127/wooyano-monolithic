@@ -4,7 +4,10 @@ import com.wooyano.wooyanomonolithic.service.domain.Services;
 import com.wooyano.wooyanomonolithic.service.infrastructure.ServicesRepository;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerCreateRequest;
+import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +27,13 @@ public class WorkerService {
 
         Worker worker = request.toEntity(services);
         workerRepository.save(worker);
+    }
+
+
+    public List<WorkerResponse> getWorkerList(Long serviceId) {
+        List<Worker> workers = workerRepository.findByServiceId(serviceId);
+        return workers.stream()
+                .map(worker -> WorkerResponse.of(worker))
+                .collect(Collectors.toList());
     }
 }
