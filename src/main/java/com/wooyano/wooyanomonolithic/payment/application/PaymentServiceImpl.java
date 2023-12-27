@@ -39,6 +39,7 @@ public class PaymentServiceImpl implements PaymentService  {
     private final ReservationRepository reservationRepository;
     private final TossPaymentConfig tossPaymentConfig;
 
+    //결제성공 후 결제 상태변경
     @Transactional
     @Override
     public PaymentResponse approvePayment(String paymentKey, String orderId, Integer amount) {

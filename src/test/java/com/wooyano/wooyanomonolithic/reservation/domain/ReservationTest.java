@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +16,10 @@ class ReservationTest {
     @Test
     public void initCreateReservation(){
         // given
-        ReservationGoods reservationGoods = ReservationGoods.createReservationGoods(1l, "test", 30000,
+        ReservationGoods reservationGood = ReservationGoods.createReservationGoods(1l, "test", 30000,
                 5, "시스템", "가전제품", "에어컨");
+        List<ReservationGoods> reservationGoods = List.of(reservationGood);
+
         LocalDate reservationDate = LocalDate.of(2023, 12, 31);
         LocalTime serviceStart = LocalTime.of(10, 0);
         LocalTime serviceEnd = LocalTime.of(12, 0);

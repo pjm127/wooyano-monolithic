@@ -69,10 +69,8 @@ public class SettleJobConfig {
         return new StepBuilder("settleStep", jobRepository)
                 .<PaymentResult, DailySettle>chunk(CHUNK_SIZE,transactionManager) // Chunk 크기를 지정
                 .reader(reader())
-               // .processor(paymentItemProcessor)
+                .processor(paymentItemProcessor)
                 .writer(jdbcBatchItemWriter())
-                .allowStartIfComplete(true) // 스텝을 완료 상태에서 다시 시작할 수 있도록 설정
-
                 .build();
 
     }
@@ -83,14 +81,14 @@ public class SettleJobConfig {
     @StepScope
     public JpaPagingItemReader<PaymentResult> reader() {
 
-        String requestDate = "2023-11-09";
+        String requestDate = "2023-12-26";
         Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("startDateTime", LocalDateTime.parse(requestDate + "T00:00:00"));
         parameters.put("endDateTime", LocalDateTime.parse(requestDate + "T23:59:59"));
 
 
         String queryString = String.format("select new %s(p.clientEmail, sum(p.totalAmount)) From Payment p "
-                + "where p.approvedAt between :startDate\nTime and :endDateTime group by p.clientEmail", PaymentResult.class.getName());
+                + "where p.approvedAt between :startDateTime and :endDateTime group by p.clientEmail", PaymentResult.class.getName());
         //String queryString = "SELECT p FROM Payment p";
         JpaPagingItemReaderBuilder<PaymentResult> jpaPagingItemReaderBuilder  = new JpaPagingItemReaderBuilder<>();
         JpaPagingItemReader<PaymentResult> paymentItemReader = jpaPagingItemReaderBuilder

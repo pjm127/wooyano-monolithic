@@ -2,7 +2,7 @@ package com.wooyano.wooyanomonolithic.reservation.presentation;
 
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import com.wooyano.wooyanomonolithic.reservation.application.ReservationService;
-import com.wooyano.wooyanomonolithic.reservation.dto.ChangeReservationRequest;
+import com.wooyano.wooyanomonolithic.reservation.dto.PaymentCompletionRequest;
 import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationRequest;
 import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.ReservationListResponse;
@@ -10,7 +10,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +31,7 @@ public class ReservationController {
             description = "유저의 서비스 신청")
     @PostMapping("/create")
     public BaseResponse<?> reservationNewService(@RequestBody CreateReservationRequest request) {
-        List<CreateReservationResponse> reservation = reservationService.createReservation(request);
+        CreateReservationResponse reservation = reservationService.createReservation(request);
 
         return new BaseResponse<>(reservation);
     }
@@ -37,12 +39,22 @@ public class ReservationController {
     @Operation(summary = "결제 후 예약 상태 변경",
             description = "결제 후 예약 상태 변경")
     @PostMapping("/complete-payment")
-    public BaseResponse<?> reservationChangeService(@RequestBody ChangeReservationRequest request) {
+    public BaseResponse<?> reservationChangeService(@RequestBody PaymentCompletionRequest request) {
 
         reservationService.approveReservation(request);
 
         return new BaseResponse<>();
     }
+
+
+    @DeleteMapping("/cancel/{orderId}")
+    public BaseResponse<?> reservationCancelService(@PathVariable String orderId) {
+
+        reservationService.cancelReservation(orderId);
+
+        return new BaseResponse<>();
+    }
+
 
 
     //clientEmail로 예약 대기인거 조회 리스트
@@ -52,27 +64,5 @@ public class ReservationController {
 
     }
 
-/*
-    @GetMapping("/sse")
-    public SseEmitter handleSSE() {
-        SseEmitter emitter = new SseEmitter();
-        emitters.add(emitter);
 
-        emitter.onCompletion(() -> emitters.remove(emitter));
-
-        return emitter;
-    }
-
-    public void sendPaymentKey(String paymentKey) {
-        for (SseEmitter emitter : emitters) {
-            try {
-                emitter.send(SseEmitter.event()
-                        .name("cancel")
-                        .data("{\"paymentKey\": \"" + paymentKey + "\"}"));
-            } catch (IOException e) {
-                emitter.complete();
-                emitters.remove(emitter);
-            }
-        }
-    }*/
 }

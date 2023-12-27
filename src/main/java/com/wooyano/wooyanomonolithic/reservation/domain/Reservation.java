@@ -13,9 +13,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,9 +33,10 @@ public class Reservation extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private ReservationGoods reservationGoods;
+
+    @OneToMany
+    @JoinColumn(name = "reservation_id")
+    private List<ReservationGoods> reservationGoods = new ArrayList<>();
     @Column(nullable = false, length = 50, name = "user_email")
     private String userEmail;
     @Column(nullable = false, name = "service_id")
@@ -65,7 +70,7 @@ public class Reservation extends BaseEntity {
         this.reservationState = status;
     }
 
-    public static Reservation createReservation(ReservationGoods reservationGoods, String userEmail, Long serviceId,
+    public static Reservation createReservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId,
                                                 Long workerId, LocalDate reservationDate, LocalTime serviceStart,
                                                 LocalTime serviceEnd, Integer paymentAmount, String cancelDesc,
                                                 String request, String address,String orderId) {
@@ -87,7 +92,7 @@ public class Reservation extends BaseEntity {
     }
 
     @Builder
-    private Reservation(ReservationGoods reservationGoods, String userEmail, Long serviceId, Long workerId,
+    private Reservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId, Long workerId,
                        LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
                        ReservationState reservationState, Integer paymentAmount, String cancelDesc, String request,
                        String address,String orderId) {

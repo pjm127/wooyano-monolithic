@@ -1,5 +1,6 @@
 package com.wooyano.wooyanomonolithic.reservation.dto;
 
+import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -26,7 +27,6 @@ public class CreateReservationRequest {
     private Integer paymentAmount; //결제 금액
     private String request; //요청사항
     private String address; //주소
-    private Integer status; //예약 상태
     private String clientEmail; //사업자 이메일
 
 

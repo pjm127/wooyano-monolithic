@@ -16,7 +16,7 @@ public class BatchScheduler {
     @Autowired
     private SettleJobConfig settleJob;
 
-    @Scheduled(cron = "0 0 3 * * ?")
+   //@Scheduled(cron = "0 0 3 * * ?")
     public void runJob() {
         try {
             JobParameters jobParameters = new JobParametersBuilder()

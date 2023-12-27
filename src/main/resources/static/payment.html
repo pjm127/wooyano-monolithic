@@ -77,11 +77,12 @@
                 handlePaymentSuccess();
             })
             .catch(function (error) {
-                if (error.code === "USER_CANCEL") {
+                handlePaymentFailure(); // 실패 시 실패 처리 함수 호출
+                /*if (error.code === "USER_CANCEL") {
                     alert('유저가 취소했습니다.');
                 } else {
                     alert(error.message);
-                }
+                }*/
             });
     }
 
@@ -109,6 +110,43 @@
                 console.error('Error sending request to the server:', error);
             });
     }
+
+    function handlePaymentFailure() {
+        const cancelRequestData = {
+            orderId: orderId
+        };
+
+        // /api/v1/reservation/cancel에 요청
+        fetch(`http://localhost:9000/api/v1/reservation/cancel/${orderId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error sending cancel request to the server:', error);
+            });
+
+        // /api/v1/payment/cancel에 요청
+        fetch(`http://localhost:9000/api/v1/payment/cancel/${orderId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error sending cancel request to the server:', error);
+            });
+    }
+
 </script>
 
 </body>

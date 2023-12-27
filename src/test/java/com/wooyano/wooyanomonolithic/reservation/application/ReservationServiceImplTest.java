@@ -9,11 +9,13 @@ import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationRequest;
 import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationResponse;
+import com.wooyano.wooyanomonolithic.reservation.dto.PaymentCompletionRequest;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,11 @@ class ReservationServiceImplTest {
     @Autowired
     private ReservationGoodsRepository reservationGoodsRepository;
 
+  /*  @AfterEach
+    void tearDown() {
+        reservationRepository.deleteAllInBatch();
+        reservationGoodsRepository.deleteAllInBatch();
+    }*/
 
     @DisplayName("예약을 생성한다")
     @Test
@@ -54,18 +61,35 @@ class ReservationServiceImplTest {
                 .paymentAmount(50000)
                 .request("Special request")
                 .address("Seoul, Korea")
-                .status(1)
                 .clientEmail("client@example.com")
                 .build();
         // when
-        List<CreateReservationResponse> reservations = reservationService.createReservation(request);
+        CreateReservationResponse reservations = reservationService.createReservation(request);
         // then
-        assertThat(reservations).hasSize(2)
-                .extracting("id", "orderId")
-                .containsExactlyInAnyOrder(
-                        tuple(1L, "ewas123456"),
-                        tuple(2L, "ewas123456")
-                );
+        assertThat(reservations.getOrderId()).isEqualTo(request.getOrderId());
+    }
+
+    @DisplayName("결제가 성공하면 예약데이터의 상태를 WAIT로 변경한다")
+    @Test
+    public void approveReservation(){
+        // given
+        ReservationGoods reservationGood = ReservationGoods.createReservationGoods(1l, "test", 30000,
+                5, "시스템", "가전제품", "에어컨");
+        List<ReservationGoods> reservationGoods = List.of(reservationGood);
+        LocalDate reservationDate = LocalDate.of(2023, 12, 31);
+        LocalTime serviceStart = LocalTime.of(10, 0);
+        LocalTime serviceEnd = LocalTime.of(12, 0);
+
+        // when
+        Reservation reservation = Reservation.createReservation(reservationGoods, "test@example.com",
+                1L, 1L, reservationDate, serviceStart, serviceEnd, 50000, null, "요청사항",
+                "서울시 강남구", "123456");
+
+        PaymentCompletionRequest request = PaymentCompletionRequest.of(reservation);
+
+        // when
+        reservationService.approveReservation(request);
+        // then
 
     }
 

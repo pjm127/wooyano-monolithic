@@ -5,7 +5,7 @@ import com.wooyano.wooyanomonolithic.global.common.CodeValue;
 
 public enum PaymentMethod implements CodeValue {
 
-    WAIT("0","대기"),
+    WAIT("0","결제대기"),
     CARD("1","카드"),
     EASY_PAYMENT("2","간편결제");
 

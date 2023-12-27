@@ -66,7 +66,7 @@
 
         // 예약 정보 생성
         let reservationDto = {
-            reservationGoodsId: [2, 3],
+            reservationGoodsId: [5, 6],
             orderId: orderId,
             serviceId: document.getElementById('serviceId').value,
             workerId: document.getElementById('workerId').value,
@@ -94,30 +94,9 @@
                 console.log('Reservation Request:', data);
 
                 // 결제 정보 생성
-                let paymentDto = {
-                    orderId: orderId,
-                    totalAmount: totalAmount,
-                    clientEmail: "client1"
-                };
 
                 // 서버에 결제 요청 보내기
-                fetch('http://localhost:9000/api/v1/payment/request', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(paymentDto),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        // 서버 응답을 처리하고 페이지 이동
-                        console.log('Payment Request:', data);
-                        window.location.href = 'payment.html';
-                    })
-                    .catch(error => {
-                        // 에러 처리
-                        console.error('Error:', error);
-                    });
+
             })
             .catch(error => {
                 // 에러 처리

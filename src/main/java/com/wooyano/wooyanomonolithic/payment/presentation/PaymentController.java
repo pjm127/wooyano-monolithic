@@ -1,30 +1,16 @@
 package com.wooyano.wooyanomonolithic.payment.presentation;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import com.wooyano.wooyanomonolithic.payment.application.PaymentService;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentRequest;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentResponse;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentResultResponse;
-import com.wooyano.wooyanomonolithic.reservation.dto.ChangeReservationRequest;
 import io.swagger.v3.oas.annotations.Operation;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,6 +1,8 @@
 package com.wooyano.wooyanomonolithic.reservation.dto;
 
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
+import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,23 +14,24 @@ public class CreateReservationResponse {
 
     private Long id;
     private String orderId;
-    private LocalDateTime registeredDateTime;
+    private LocalDate reservationDate;
+    private List<ReservationGoods> reservationGoods;
 
     @Builder
-    private CreateReservationResponse(Long id, String orderId, LocalDateTime registeredDateTime) {
+    private CreateReservationResponse(Long id, String orderId, LocalDate reservationDate, List<ReservationGoods> reservationGoods) {
         this.id = id;
         this.orderId = orderId;
-        this.registeredDateTime = registeredDateTime;
+        this.reservationDate = reservationDate;
+        this.reservationGoods = reservationGoods;
     }
 
-    public static List<CreateReservationResponse> of(List<Reservation> reservations) {
-        return reservations.stream()
-                .map(reservationEntity -> CreateReservationResponse.builder()
-                        .id(reservationEntity.getId())
-                        .orderId(reservationEntity.getOrderId())
-                        .registeredDateTime(reservationEntity.getCreatedAt())
-                        .build())
-                .collect(Collectors.toList());
+    public static CreateReservationResponse of(Reservation reservation) {
+        return CreateReservationResponse.builder()
+                .id(reservation.getId())
+                .orderId(reservation.getOrderId())
+                .reservationDate(reservation.getReservationDate())
+                .build();
+
     }
 
 

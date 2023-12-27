@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "daily_settle")
 @AllArgsConstructor
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED) //NoArgsConstru
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class DailySettle {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)

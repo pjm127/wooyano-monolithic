@@ -4,9 +4,9 @@ package com.wooyano.wooyanomonolithic.payment.domain.enumPackage;
 import com.wooyano.wooyanomonolithic.global.common.CodeValue;
 
 public enum PaymentStatus implements CodeValue {
-    WAIT("0","READY"),
-    DONE("1","DONE"),
-    CANCEL("2","CANCELED");
+    WAIT("0","결제대기"),
+    DONE("1","결제완료"),
+    CANCEL("2","결제취소");
 
 
 

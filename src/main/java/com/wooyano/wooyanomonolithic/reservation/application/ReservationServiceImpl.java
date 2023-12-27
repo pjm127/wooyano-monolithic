@@ -7,13 +7,13 @@ import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.
 import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
-import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentMethod;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
 import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
-import com.wooyano.wooyanomonolithic.reservation.dto.ChangeReservationRequest;
+import com.wooyano.wooyanomonolithic.reservation.dto.PaymentCompletionRequest;
 import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationRequest;
 import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.ReservationListResponse;
@@ -30,14 +30,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
 
-    private static final int RANDOM_STRING_LENGTH = 10;
+    /*private static final int RANDOM_STRING_LENGTH = 10;
     private static final int ALPHABET_COUNT = 26;
-    private static final int ASCII_LOWER_A = 97;
+    private static final int ASCII_LOWER_A = 97;*/
 
 
     private final ReservationRepository reservationRepository;
@@ -46,48 +47,54 @@ public class ReservationServiceImpl implements ReservationService {
     private final PaymentRepository paymentRepository;
 
 
+    @Transactional
     @Override
-    public List<CreateReservationResponse> createReservation(CreateReservationRequest request) {
+    public CreateReservationResponse createReservation(CreateReservationRequest request) {
         log.info("createReservation");
         List<Long> reservationGoodsIdList = request.getReservationGoodsId();
         Long workerId = request.getWorkerId();
 
         validateReservationGoodsExistence(reservationGoodsIdList);
         validateDuplicateReservationGoodsWithWorker(reservationGoodsIdList, workerId);
+        List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
 
-        List<Reservation> reservations = reservationGoodsIdList.stream().map(reservationGoodsId -> {
-            ReservationGoods reservationGoods = reservationGoodsRepository.findById(reservationGoodsId).get();
-            return Reservation.createReservation(reservationGoods, request.getUserEmail(),
-                    request.getServiceId(), request.getWorkerId(), request.getReservationDate(), request.getServiceStart(),
-                    request.getServiceEnd(), request.getPaymentAmount(),null,request.getRequest(),
-                    request.getAddress(),request.getOrderId());
-        }).collect(Collectors.toList());
+        Reservation reservations = Reservation.createReservation(reservationGoods, request.getUserEmail(),
+                request.getServiceId(), request.getWorkerId(), request.getReservationDate(), request.getServiceStart(),
+                request.getServiceEnd(), request.getPaymentAmount(),null,request.getRequest(),
+                request.getAddress(),request.getOrderId());
+        Reservation save = reservationRepository.save(reservations);
 
-        List<Reservation> reservationsList = reservationRepository.saveAll(reservations);
-
-        /*Payment payment = Payment.builder()
+        //결제 정보 저장
+        Payment payment = Payment.builder()
                 .totalAmount(request.getPaymentAmount())
                 .paymentStatus(PaymentStatus.WAIT)
                 .paymentType(PaymentMethod.WAIT)
                 .approvedAt(LocalDateTime.now())
                 .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
                 .orderId(request.getOrderId()).build();
-        paymentRepository.save(payment);*/
-        return CreateReservationResponse.of(reservationsList);
+        paymentRepository.save(payment);
+        return CreateReservationResponse.of(save);
     }
 
     @Transactional
     @Override
-    public void approveReservation(ChangeReservationRequest request) {
-        List<Reservation> reservations = reservationRepository.findByOrderIdList(request.getOrderId());
-        for (Reservation reservation : reservations) {
-            reservation.approveStatus(ReservationState.WAIT);
-        }
+    public void approveReservation(PaymentCompletionRequest request) {
+        Reservation reservation = reservationRepository.findByOrderIdList(request.getOrderId());
+        reservation.approveStatus(ReservationState.WAIT);
+
     }
 
     @Override
     public List<ReservationListResponse> findWaitReservationsList(Long serviceId) {
         return null;
+    }
+
+    @Transactional
+    @Override
+    public void cancelReservation(String orderId) {
+        Reservation reservation = reservationRepository.findByOrderIdList(orderId);
+        reservation.approveStatus(ReservationState.PAYMENT_CANCEL);
+
     }
 
 
@@ -110,7 +117,7 @@ public class ReservationServiceImpl implements ReservationService {
             throw new CustomException(ResponseCode.DUPLICATED_RESERVATION);
         }
     }
-    // 랜덤 예약번호 생성
+  /*  // 랜덤 예약번호 생성
     private String generateRandomReservationNum() {
         Random random = new Random();
         StringBuilder randomBuf = new StringBuilder();
@@ -122,5 +129,5 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
         return randomBuf.toString();
-    }
+    }*/
 }
