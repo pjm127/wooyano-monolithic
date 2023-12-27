@@ -1,21 +1,18 @@
 package com.wooyano.wooyanomonolithic.reservation.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Attr;
+import com.wooyano.wooyanomonolithic.reservation.application.reseravation.ReservationService;
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
-import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationRequest;
-import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationResponse;
-import com.wooyano.wooyanomonolithic.reservation.dto.PaymentCompletionRequest;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCreateRequest;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCreateResponse;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservation.PaymentCompletionRequest;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +46,7 @@ class ReservationServiceImplTest {
                 5, "시스템", "가전제품", "에어컨");
         reservationGoodsRepository.saveAll(List.of(reservationGoods1, reservationGoods2));
 
-        CreateReservationRequest request = CreateReservationRequest.builder()
+        ReservationCreateRequest request = ReservationCreateRequest.builder()
                 .reservationGoodsId(List.of(1L, 2L))
                 .orderId("ewas123456")
                 .serviceId(1L)
@@ -64,7 +61,7 @@ class ReservationServiceImplTest {
                 .clientEmail("client@example.com")
                 .build();
         // when
-        CreateReservationResponse reservations = reservationService.createReservation(request);
+        ReservationCreateResponse reservations = reservationService.createReservation(request);
         // then
         assertThat(reservations.getOrderId()).isEqualTo(request.getOrderId());
     }

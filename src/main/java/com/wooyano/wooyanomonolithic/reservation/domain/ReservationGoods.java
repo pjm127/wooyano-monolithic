@@ -42,6 +42,7 @@ public class ReservationGoods extends BaseEntity {
     @Column(length = 20, name = "sub_category")
     private String subCategory;
 
+    @Builder
     private ReservationGoods(Long serviceId,String serviceItemName, Integer price, Integer serviceTime,
                              String superCategory, String baseCategory, String subCategory) {
         this.serviceId = serviceId;
@@ -53,13 +54,20 @@ public class ReservationGoods extends BaseEntity {
         this.subCategory = subCategory;
     }
 
-    // 상품 등록
-    public static ReservationGoods createReservationGoods(Long serviceId, String serviceItemName, Integer price,
-                                                          Integer serviceTime, String superCategory,
-                                                          String baseCategory, String subCategory){
-        return new ReservationGoods(serviceId, serviceItemName, price, serviceTime, superCategory,
-                baseCategory, subCategory);
+    public static ReservationGoods createReservationGoods(Long serviceId,String serviceItemName, Integer price, Integer serviceTime,
+                                          String superCategory, String baseCategory, String subCategory) {
+        return ReservationGoods.builder()
+                .serviceId(serviceId)
+                .serviceItemName(serviceItemName)
+                .price(price)
+                .serviceTime(serviceTime)
+                .superCategory(superCategory)
+                .baseCategory(baseCategory)
+                .subCategory(subCategory)
+                .build();
     }
+
+
 
 
 

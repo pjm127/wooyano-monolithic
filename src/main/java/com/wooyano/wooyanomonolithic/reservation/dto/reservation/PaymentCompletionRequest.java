@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.reservation.dto;
+package com.wooyano.wooyanomonolithic.reservation.dto.reservation;
 
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import lombok.Builder;

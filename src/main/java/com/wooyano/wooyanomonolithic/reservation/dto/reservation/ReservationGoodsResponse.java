@@ -1,10 +1,6 @@
-package com.wooyano.wooyanomonolithic.reservation.dto;
+package com.wooyano.wooyanomonolithic.reservation.dto.reservation;
 
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 

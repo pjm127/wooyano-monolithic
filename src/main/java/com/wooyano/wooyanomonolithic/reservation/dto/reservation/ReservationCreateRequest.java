@@ -1,6 +1,5 @@
-package com.wooyano.wooyanomonolithic.reservation.dto;
+package com.wooyano.wooyanomonolithic.reservation.dto.reservation;
 
-import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class CreateReservationRequest {
+public class ReservationCreateRequest {
 
     private List<Long> reservationGoodsId; //예약 상품id
     private String orderId; //주문번호

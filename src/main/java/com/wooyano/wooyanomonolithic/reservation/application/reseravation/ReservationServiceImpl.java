@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.reservation.application;
+package com.wooyano.wooyanomonolithic.reservation.application.reseravation;
 
 
 
@@ -13,16 +13,14 @@ import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
-import com.wooyano.wooyanomonolithic.reservation.dto.PaymentCompletionRequest;
-import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationRequest;
-import com.wooyano.wooyanomonolithic.reservation.dto.CreateReservationResponse;
-import com.wooyano.wooyanomonolithic.reservation.dto.ReservationListResponse;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservation.PaymentCompletionRequest;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCreateRequest;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCreateResponse;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,13 +47,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public CreateReservationResponse createReservation(CreateReservationRequest request) {
+    public ReservationCreateResponse createReservation(ReservationCreateRequest request) {
         log.info("createReservation");
         List<Long> reservationGoodsIdList = request.getReservationGoodsId();
         Long workerId = request.getWorkerId();
 
-        validateReservationGoodsExistence(reservationGoodsIdList);
-        validateDuplicateReservationGoodsWithWorker(reservationGoodsIdList, workerId);
+       // validateReservationGoodsExistence(reservationGoodsIdList);
+        //validateDuplicateReservationGoodsWithWorker(reservationGoodsIdList, workerId);
         List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
 
         Reservation reservations = Reservation.createReservation(reservationGoods, request.getUserEmail(),
@@ -73,7 +71,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
                 .orderId(request.getOrderId()).build();
         paymentRepository.save(payment);
-        return CreateReservationResponse.of(save);
+        return ReservationCreateResponse.of(save);
     }
 
     @Transactional
