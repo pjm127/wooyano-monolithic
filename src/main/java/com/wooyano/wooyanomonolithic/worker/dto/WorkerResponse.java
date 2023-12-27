@@ -6,12 +6,14 @@ import lombok.Builder;
 
 public class WorkerResponse {
 
+    private Long id;
     private String name;
     private String phone;
     private String description;
 
     @Builder
-    private WorkerResponse(String name, String phone, String description) {
+    private WorkerResponse(Long id,String name, String phone, String description) {
+        this.id = id;
         this.name = name;
         this.phone = phone;
         this.description = description;
@@ -19,6 +21,7 @@ public class WorkerResponse {
 
     public static WorkerResponse of(Worker worker) {
         return WorkerResponse.builder()
+                .id(worker.getId())
                 .name(worker.getName())
                 .phone(worker.getPhone())
                 .description(worker.getDescription())
