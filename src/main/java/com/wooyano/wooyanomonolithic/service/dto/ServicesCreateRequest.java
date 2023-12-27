@@ -35,7 +35,6 @@ public class ServicesCreateRequest {
                 .serviceTime(ServiceTime.builder()
                         .openTime(openTime)
                         .closeTime(closeTime)
-
                         .build())
                 .build();
     }

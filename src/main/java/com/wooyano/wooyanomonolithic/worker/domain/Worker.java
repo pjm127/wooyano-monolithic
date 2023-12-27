@@ -3,6 +3,7 @@ package com.wooyano.wooyanomonolithic.worker.domain;
 import com.wooyano.wooyanomonolithic.service.domain.Services;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,27 +31,15 @@ public class Worker {
     private Boolean status;*/
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id")
     private Services service;
 
-    public Worker(
-            String name,
-            String phone,
-            String description,
-            Services service
-            ) {
+
+    @Builder
+    private Worker(String name, String phone, String description, Services service) {
         this.name = name;
         this.phone = phone;
         this.description = description;
-
         this.service = service;
-    }
-
-    public static Worker createWorker(
-            String name,
-            String phone,
-            String description,
-            Services service
-            ) {
-        return new Worker(name, phone, description,service);
     }
 }
