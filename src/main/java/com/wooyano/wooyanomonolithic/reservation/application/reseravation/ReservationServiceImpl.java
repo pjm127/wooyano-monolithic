@@ -19,6 +19,7 @@ import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCrea
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
+import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkReservedProductRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final ReservationGoodsRepository reservationGoodsRepository;
-
     private final PaymentRepository paymentRepository;
+    private final WorkReservedProductRepository workReservedProductRepository;
 
 
     @Transactional
@@ -54,8 +55,13 @@ public class ReservationServiceImpl implements ReservationService {
 
        // validateReservationGoodsExistence(reservationGoodsIdList);
         //validateDuplicateReservationGoodsWithWorker(reservationGoodsIdList, workerId);
-        List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
 
+        //작업가능 시간 확인용 저장
+
+
+
+        //예약정보 저장
+        List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
         Reservation reservations = Reservation.createReservation(reservationGoods, request.getUserEmail(),
                 request.getServiceId(), request.getWorkerId(), request.getReservationDate(), request.getServiceStart(),
                 request.getServiceEnd(), request.getPaymentAmount(),null,request.getRequest(),

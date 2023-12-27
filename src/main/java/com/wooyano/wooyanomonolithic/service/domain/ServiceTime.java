@@ -1,5 +1,6 @@
 package com.wooyano.wooyanomonolithic.service.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +16,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Getter
@@ -41,4 +41,5 @@ public class ServiceTime {
         this.service = service;
 
     }
+
 }

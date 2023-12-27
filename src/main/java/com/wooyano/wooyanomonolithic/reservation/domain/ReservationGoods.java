@@ -1,6 +1,7 @@
 package com.wooyano.wooyanomonolithic.reservation.domain;
 
 import com.wooyano.wooyanomonolithic.global.common.domain.BaseEntity;
+import com.wooyano.wooyanomonolithic.service.domain.Services;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,8 +28,8 @@ public class ReservationGoods extends BaseEntity {
 /*    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;*/
-    @Column(nullable = false, name = "service_id")
-    private Long serviceId;
+/*    @Column(nullable = false, name = "service_id")
+    private Long serviceId;*/
     @Column(nullable = false, length = 30, name = "service_item_name")
     private String serviceItemName;
     @Column(nullable = false, name = "price")
@@ -42,28 +43,32 @@ public class ReservationGoods extends BaseEntity {
     @Column(length = 20, name = "sub_category")
     private String subCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id")
+    private Services service;
+
     @Builder
-    private ReservationGoods(Long serviceId,String serviceItemName, Integer price, Integer serviceTime,
-                             String superCategory, String baseCategory, String subCategory) {
-        this.serviceId = serviceId;
+    public ReservationGoods(String serviceItemName, Integer price, Integer serviceTime, String superCategory,
+                            String baseCategory, String subCategory, Services service) {
         this.serviceItemName = serviceItemName;
         this.price = price;
         this.serviceTime = serviceTime;
         this.superCategory = superCategory;
         this.baseCategory = baseCategory;
         this.subCategory = subCategory;
+        this.service = service;
     }
 
-    public static ReservationGoods createReservationGoods(Long serviceId,String serviceItemName, Integer price, Integer serviceTime,
-                                          String superCategory, String baseCategory, String subCategory) {
+    public static ReservationGoods createReservationGoods(String serviceItemName, Integer price, Integer serviceTime,
+                                          String superCategory, String baseCategory, String subCategory,Services service) {
         return ReservationGoods.builder()
-                .serviceId(serviceId)
                 .serviceItemName(serviceItemName)
                 .price(price)
                 .serviceTime(serviceTime)
                 .superCategory(superCategory)
                 .baseCategory(baseCategory)
                 .subCategory(subCategory)
+                .service(service)
                 .build();
     }
 

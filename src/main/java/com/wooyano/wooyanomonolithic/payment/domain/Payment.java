@@ -53,6 +53,8 @@ public class Payment extends BaseEntity{
     @Column(name = "payment_Key")
     private String paymentKey;
 
+
+
     @Builder
     private Payment(String clientEmail, PaymentMethod payType, int totalAmount,
                     LocalDateTime approvedAt, PaymentStatus payStatus, String orderId, String paymentKey) {

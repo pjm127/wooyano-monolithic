@@ -1,6 +1,7 @@
 package com.wooyano.wooyanomonolithic.reservation.dto.reservationGoods;
 
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
+import com.wooyano.wooyanomonolithic.service.domain.Services;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,25 +19,24 @@ public class ReservationGoodsCreateRequest {
 
     @Builder
     private ReservationGoodsCreateRequest(String baseCategory, int price, Long serviceId, String serviceItemName,
-                                         int serviceTime, String subCategory, String superCategory) {
+                                          int serviceTime, String subCategory, String superCategory, Services service) {
         this.baseCategory = baseCategory;
         this.price = price;
-        this.serviceId = serviceId;
         this.serviceItemName = serviceItemName;
         this.serviceTime = serviceTime;
         this.subCategory = subCategory;
         this.superCategory = superCategory;
     }
 
-    public ReservationGoods toEntity() {
+    public ReservationGoods toEntity(Services services) {
         return ReservationGoods.builder()
                 .baseCategory(baseCategory)
                 .price(price)
-                .serviceId(serviceId)
                 .serviceItemName(serviceItemName)
                 .serviceTime(serviceTime)
                 .subCategory(subCategory)
                 .superCategory(superCategory)
+                .service(services)
                 .build();
     }
 }
