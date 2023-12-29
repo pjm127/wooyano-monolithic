@@ -28,7 +28,6 @@ public class ServiceTime {
 
     private LocalTime openTime;
     private LocalTime closeTime;
-
     @OneToOne(fetch = FetchType.LAZY,mappedBy = "serviceTime")
     private Services service;
 

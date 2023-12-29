@@ -3,7 +3,11 @@ package com.wooyano.wooyanomonolithic.worker.dto;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import jakarta.persistence.Column;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 public class WorkerResponse {
 
     private Long id;

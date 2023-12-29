@@ -1,6 +1,9 @@
 package com.wooyano.wooyanomonolithic.service.domain;
 
+import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +29,10 @@ public class Services {
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "service_time_id")
     private ServiceTime serviceTime;
+
+    @OneToMany(mappedBy = "service",cascade = CascadeType.ALL)
+    private List<Worker> workers = new ArrayList<>();
+
 
     @Builder
     private Services(String description, String name, ServiceTime serviceTime) {

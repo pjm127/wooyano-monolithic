@@ -3,7 +3,10 @@ package com.wooyano.wooyanomonolithic.service.presentation;
 import com.wooyano.wooyanomonolithic.service.application.ServicesService;
 import com.wooyano.wooyanomonolithic.service.dto.ServicesCreateRequest;
 import com.wooyano.wooyanomonolithic.service.dto.ServicesCreateResponse;
+import com.wooyano.wooyanomonolithic.service.dto.ServicesResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,12 @@ public class ServicesController {
     @PostMapping("/new")
     public ServicesCreateResponse createService(@RequestBody ServicesCreateRequest request){
         ServicesCreateResponse service = servicesService.createService(request);
+        return service;
+    }
+
+    @GetMapping("/{serviceId}")
+    public ServicesResponse getService(@PathVariable(name = "serviceId") Long serviceId){
+        ServicesResponse service = servicesService.getService(serviceId);
         return service;
     }
 

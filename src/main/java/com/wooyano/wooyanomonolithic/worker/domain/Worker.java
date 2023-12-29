@@ -43,4 +43,13 @@ public class Worker {
         this.description = description;
         this.service = service;
     }
+
+    public static Worker create(String name, String phone, String description, Services service) {
+        return Worker.builder()
+                .name(name)
+                .phone(phone)
+                .description(description)
+                .service(service)
+                .build();
+    }
 }
