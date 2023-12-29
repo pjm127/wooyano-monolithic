@@ -10,7 +10,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,17 +28,12 @@ public class ReservationGoods extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-/*    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;*/
-/*    @Column(nullable = false, name = "service_id")
-    private Long serviceId;*/
     @Column(nullable = false, length = 30, name = "service_item_name")
     private String serviceItemName;
     @Column(nullable = false, name = "price")
-    private Integer price;
+    private int price;
     @Column(nullable = false, name = "service_time")
-    private Integer serviceTime;
+    private int serviceTime;
     @Column(nullable = false, length = 20, name = "super_category")
     private String superCategory;
     @Column(nullable = false, length = 20, name = "base_category")
@@ -48,7 +46,7 @@ public class ReservationGoods extends BaseEntity {
     private Services service;
 
     @Builder
-    public ReservationGoods(String serviceItemName, Integer price, Integer serviceTime, String superCategory,
+    public ReservationGoods(String serviceItemName, int price, int serviceTime, String superCategory,
                             String baseCategory, String subCategory, Services service) {
         this.serviceItemName = serviceItemName;
         this.price = price;
@@ -59,7 +57,7 @@ public class ReservationGoods extends BaseEntity {
         this.service = service;
     }
 
-    public static ReservationGoods createReservationGoods(String serviceItemName, Integer price, Integer serviceTime,
+    public static ReservationGoods createReservationGoods(String serviceItemName, int price, int serviceTime,
                                           String superCategory, String baseCategory, String subCategory,Services service) {
         return ReservationGoods.builder()
                 .serviceItemName(serviceItemName)

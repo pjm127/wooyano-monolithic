@@ -6,9 +6,11 @@ import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoods
 import com.wooyano.wooyanomonolithic.service.domain.Services;
 import com.wooyano.wooyanomonolithic.service.infrastructure.ServicesRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ReservationGoodsService {
 
@@ -18,6 +20,7 @@ public class ReservationGoodsService {
 
     public void createReservationGoods(ReservationGoodsCreateRequest request) {
         Long serviceId = request.getServiceId();
+        log.info("serviceId: {}", serviceId);
         Services services = servicesRepository.findById(serviceId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 서비스입니다."));
         ReservationGoods reservationGoods = request.toEntity(services);

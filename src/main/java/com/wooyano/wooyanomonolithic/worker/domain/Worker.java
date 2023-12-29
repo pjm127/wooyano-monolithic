@@ -27,8 +27,9 @@ public class Worker {
     @Column(nullable = false, length = 255, name = "description")
     private String description;
 
-/*    @Column(nullable = false, name = "status")
-    private Boolean status;*/
+
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id")

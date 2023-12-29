@@ -36,10 +36,12 @@ public class ReservationController {
 
     @Operation(summary = "결제 후 예약 상태 변경",
             description = "결제 후 예약 상태 변경")
-    @PostMapping("/complete-payment")
-    public BaseResponse<?> reservationChangeService(@RequestBody PaymentCompletionRequest request) {
+    @GetMapping("/success")
+    public BaseResponse<?> reservationChangeService(@RequestParam(value = "orderId") String orderId,
+                                                    @RequestParam(value = "amount") Integer amount,
+                                                    @RequestParam(value = "paymentKey") String paymentKey) {
 
-        reservationService.approveReservation(request);
+        reservationService.approveReservation(orderId, amount, paymentKey);
 
         return new BaseResponse<>();
     }

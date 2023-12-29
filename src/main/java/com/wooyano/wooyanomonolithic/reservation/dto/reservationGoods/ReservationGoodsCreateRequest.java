@@ -22,6 +22,7 @@ public class ReservationGoodsCreateRequest {
                                           int serviceTime, String subCategory, String superCategory, Services service) {
         this.baseCategory = baseCategory;
         this.price = price;
+        this.serviceId = serviceId;
         this.serviceItemName = serviceItemName;
         this.serviceTime = serviceTime;
         this.subCategory = subCategory;

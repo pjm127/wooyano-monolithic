@@ -19,9 +19,14 @@ import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCrea
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
-import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkReservedProductRepository;
+import com.wooyano.wooyanomonolithic.worker.domain.Worker;
+import com.wooyano.wooyanomonolithic.worker.domain.WorkerTime;
+import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
+import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerTimeRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,8 +48,8 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final ReservationGoodsRepository reservationGoodsRepository;
     private final PaymentRepository paymentRepository;
-    private final WorkReservedProductRepository workReservedProductRepository;
-
+    private final WorkerRepository workerRepository;
+    private final WorkerTimeRepository workerTimeRepository;
 
     @Transactional
     @Override
@@ -52,16 +57,27 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("createReservation");
         List<Long> reservationGoodsIdList = request.getReservationGoodsId();
         Long workerId = request.getWorkerId();
-
+        Worker worker = workerRepository.findById(workerId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작업자입니다."));
        // validateReservationGoodsExistence(reservationGoodsIdList);
         //validateDuplicateReservationGoodsWithWorker(reservationGoodsIdList, workerId);
 
-        //작업가능 시간 확인용 저장
+        //해당 작업자 시간 테이블 조회해서 없으면 저장 있으면 예외
+        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerId(workerId);
+        if(workerTime.isPresent()){
+            throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
+        }
+        else{
+            WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(request.getServiceStart(),worker);
+            workerTimeRepository.save(saveWorkerTime);
+        }
 
+
+        //작업가능 시간 확인용 중간테이블 저장
+        List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
 
 
         //예약정보 저장
-        List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
         Reservation reservations = Reservation.createReservation(reservationGoods, request.getUserEmail(),
                 request.getServiceId(), request.getWorkerId(), request.getReservationDate(), request.getServiceStart(),
                 request.getServiceEnd(), request.getPaymentAmount(),null,request.getRequest(),
@@ -82,8 +98,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public void approveReservation(PaymentCompletionRequest request) {
-        Reservation reservation = reservationRepository.findByOrderIdList(request.getOrderId());
+    public void approveReservation(String orderId, Integer amount, String paymentKey) {
+        Reservation reservation = reservationRepository.findByOrderIdList(orderId);
+        Payment payment = paymentRepository.findByOrderId(orderId);
         reservation.approveStatus(ReservationState.WAIT);
 
     }
@@ -113,14 +130,14 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     //작업자+예약 상품 중복 검사
-    private void validateDuplicateReservationGoodsWithWorker(List<Long> reservationGoodsIdList, Long workerId) {
+  /*  private void validateDuplicateReservationGoodsWithWorker(List<Long> reservationGoodsIdList, Long workerId) {
         boolean isDuplicateReservationGoods = reservationGoodsIdList.stream()
                 .anyMatch(reservationGoodsId ->  reservationRepository.findByReservationGoodsId(reservationGoodsId, workerId).isPresent());
 
         if (isDuplicateReservationGoods) {
             throw new CustomException(ResponseCode.DUPLICATED_RESERVATION);
         }
-    }
+    }*/
   /*  // 랜덤 예약번호 생성
     private String generateRandomReservationNum() {
         Random random = new Random();

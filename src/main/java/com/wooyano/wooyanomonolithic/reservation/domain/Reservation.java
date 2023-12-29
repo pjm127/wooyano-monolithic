@@ -34,9 +34,8 @@ public class Reservation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "reservation_id")
-    private List<ReservationGoods> reservationGoods = new ArrayList<>();
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private List<ReservationItem> reservationItems = new ArrayList<>();
     @Column(nullable = false, length = 50, name = "user_email")
     private String userEmail;
     @Column(nullable = false, name = "service_id")
@@ -53,7 +52,7 @@ public class Reservation extends BaseEntity {
     @Convert(converter = ReservationStateConverter.class)
     private ReservationState reservationState;
     @Column(nullable = false, name = "payment_amount")
-    private Integer paymentAmount;
+    private int totalPrice;
     @Column(length = 50, name = "cancel_desc")
     private String cancelDesc;
     @Column(length = 100, name = "request")
@@ -72,7 +71,7 @@ public class Reservation extends BaseEntity {
 
     public static Reservation createReservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId,
                                                 Long workerId, LocalDate reservationDate, LocalTime serviceStart,
-                                                LocalTime serviceEnd, Integer paymentAmount, String cancelDesc,
+                                                LocalTime serviceEnd, int totalPrice, String cancelDesc,
                                                 String request, String address,String orderId) {
         return Reservation.builder()
                 .reservationGoods(reservationGoods)
@@ -83,7 +82,7 @@ public class Reservation extends BaseEntity {
                 .serviceStart(serviceStart)
                 .serviceEnd(serviceEnd)
                 .reservationState(ReservationState.PAYMENT_WAITING)
-                .paymentAmount(paymentAmount)
+                .totalPrice(totalPrice)
                 .cancelDesc(cancelDesc)
                 .request(request)
                 .address(address)
@@ -94,9 +93,9 @@ public class Reservation extends BaseEntity {
     @Builder
     private Reservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId, Long workerId,
                        LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
-                       ReservationState reservationState, Integer paymentAmount, String cancelDesc, String request,
+                       ReservationState reservationState, int totalPrice, String cancelDesc, String request,
                        String address,String orderId) {
-        this.reservationGoods = reservationGoods;
+        this.reservationItems = reservationGoods.stream().map(item-> new ReservationItem(this,item)).collect(Collectors.toList());
         this.userEmail = userEmail;
         this.serviceId = serviceId;
         this.workerId = workerId;
@@ -104,7 +103,7 @@ public class Reservation extends BaseEntity {
         this.serviceStart = serviceStart;
         this.serviceEnd = serviceEnd;
         this.reservationState = reservationState;
-        this.paymentAmount = paymentAmount;
+        this.totalPrice = totalPrice;
         this.cancelDesc = cancelDesc;
         this.request = request;
         this.address = address;

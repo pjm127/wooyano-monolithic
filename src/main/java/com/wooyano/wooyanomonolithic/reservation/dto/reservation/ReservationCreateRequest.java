@@ -23,10 +23,9 @@ public class ReservationCreateRequest {
     private LocalDate reservationDate; //예약 날짜
     private LocalTime serviceStart; // 서비스 시작 시간
     private LocalTime serviceEnd;  // 서비스 종료 시간
-    private Integer paymentAmount; //결제 금액
+    private int paymentAmount; //결제 금액
     private String request; //요청사항
     private String address; //주소
     private String clientEmail; //사업자 이메일
-
 
 }

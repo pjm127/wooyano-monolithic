@@ -37,11 +37,23 @@
     }
 
     let tossPayments = TossPayments("test_ck_Z61JOxRQVE17jJlvJlyVW0X9bAqw");
+    function pay(method, requestJson) {
+        console.log(requestJson);
+        tossPayments.requestPayment(method, requestJson)
+            .catch(function (error) {
+
+                if (error.code === "USER_CANCEL") {
+                    alert('유저가 취소했습니다.');
+                } else {
+                    alert(error.message);
+                }
+
+            });
+    }
 
     let path = "/";
-    let successUrl = window.location.origin + path + "success";
-    let additionalSuccessUrl = window.location.origin + path + "api/v1/reservation/complete-payment";
-    let failUrl = window.location.origin + path + "fail";
+    let successUrl = window.location.origin + "/api/v1/reservation/success";
+    let failUrl = window.location.origin + "/api/v1/reservation/fail";
     let callbackUrl = window.location.origin + path + "va_callback";
 
     let jsons = {
@@ -49,7 +61,7 @@
             "amount": amount,
             "orderId":  orderId,
             "orderName": "토스 티셔츠 외 2건",
-            "successUrl": `${successUrl}?additionalSuccessUrl=${additionalSuccessUrl}`,
+            "successUrl": successUrl,  // Remove additionalSuccessUrl parameter
             "failUrl": failUrl,
             "cardCompany": null,
             "cardInstallmentPlan": null,
@@ -65,87 +77,6 @@
             "appScheme": null
         }
     };
-
-    function pay(method, requestJson) {
-        requestJson.amount = amount;
-        requestJson.orderId = orderId;
-
-        console.log(requestJson);
-
-        tossPayments.requestPayment(method, requestJson)
-            .then(() => {
-                handlePaymentSuccess();
-            })
-            .catch(function (error) {
-                handlePaymentFailure(); // 실패 시 실패 처리 함수 호출
-                /*if (error.code === "USER_CANCEL") {
-                    alert('유저가 취소했습니다.');
-                } else {
-                    alert(error.message);
-                }*/
-            });
-    }
-
-    function handlePaymentSuccess() {
-        const requestData = {
-            amount: amount,
-            orderId: orderId,
-            additionalSuccessUrl: additionalSuccessUrl
-        };
-
-        const serverEndpoint = 'http://localhost:9000/api/v1/reservation/complete-payment';
-
-        fetch(serverEndpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error sending request to the server:', error);
-            });
-    }
-
-    function handlePaymentFailure() {
-        const cancelRequestData = {
-            orderId: orderId
-        };
-
-        // /api/v1/reservation/cancel에 요청
-        fetch(`http://localhost:9000/api/v1/reservation/cancel/${orderId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error sending cancel request to the server:', error);
-            });
-
-        // /api/v1/payment/cancel에 요청
-        fetch(`http://localhost:9000/api/v1/payment/cancel/${orderId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error sending cancel request to the server:', error);
-            });
-    }
 
 </script>
 

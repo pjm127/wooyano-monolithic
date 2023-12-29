@@ -16,8 +16,8 @@ import org.springframework.data.repository.query.Param;
 public interface ReservationRepository extends JpaRepository<Reservation, Long>  {
 
     //@Lock(PESSIMISTIC_WRITE)
-    @Query(value = "SELECT r FROM Reservation r join r.reservationGoods g where g.id = :reservationGoodsId  and r.workerId = :workerId")
-    Optional<Reservation> findByReservationGoodsId(@Param("reservationGoodsId") Long reservationGoodsId, @Param("workerId") Long workerId);
+/*    @Query(value = "SELECT r FROM Reservation r join r.reservationGoods g where g.id = :reservationGoodsId  and r.workerId = :workerId")
+    Optional<Reservation> findByReservationGoodsId(@Param("reservationGoodsId") Long reservationGoodsId, @Param("workerId") Long workerId);*/
 
 
 /*    @Query("SELECT r FROM Reservation r WHERE r.orderId = :orderId")
@@ -26,7 +26,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT r FROM Reservation r WHERE r.orderId = :orderId")
     Reservation findByOrderIdList(@Param("orderId") String orderId);
 
-    @Query("SELECT r FROM Reservation r join fetch r.reservationGoods g WHERE r.serviceId = :serviceId and r.reservationState = :reservationState")
-    List<Reservation> findByReservationStatusWait(@Param("serviceId") Long serviceId, @Param("reservationState") ReservationState reservationState);
+    //@Query("SELECT r FROM Reservation r join fetch r.reservationGoods g WHERE r.serviceId = :serviceId and r.reservationState = :reservationState")
+   // List<Reservation> findByReservationStatusWait(@Param("serviceId") Long serviceId, @Param("reservationState") ReservationState reservationState);
 
 }
