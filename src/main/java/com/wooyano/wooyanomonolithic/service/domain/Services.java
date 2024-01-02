@@ -1,5 +1,6 @@
 package com.wooyano.wooyanomonolithic.service.domain;
 
+import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
@@ -32,6 +34,9 @@ public class Services {
 
     @OneToMany(mappedBy = "service",cascade = CascadeType.ALL)
     private List<Worker> workers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "service",cascade = CascadeType.ALL)
+    private List<ReservationGoods> reservationGoods = new ArrayList<>();
 
 
     @Builder

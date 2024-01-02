@@ -1,5 +1,7 @@
 package com.wooyano.wooyanomonolithic.service.dto;
 
+import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservationGoods.ReservationGoodsResponse;
 import com.wooyano.wooyanomonolithic.service.domain.Services;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
@@ -17,14 +19,17 @@ public class ServicesResponse {
     private String name;
     private ServiceTimeResponse serviceTime;
     private List<WorkerResponse> workers;
+    private List<ReservationGoodsResponse> reservationGoods;
 
 
     @Builder
-    private ServicesResponse(String description, String name, ServiceTimeResponse serviceTime, List<WorkerResponse> workers) {
+    private ServicesResponse(String description, String name, ServiceTimeResponse serviceTime, List<WorkerResponse> workers
+    , List<ReservationGoodsResponse> reservationGoods) {
         this.description = description;
         this.name = name;
         this.serviceTime = serviceTime;
         this.workers = workers;
+        this.reservationGoods = reservationGoods;
     }
 
     public static ServicesResponse of(Services services) {
@@ -32,6 +37,9 @@ public class ServicesResponse {
                 .description(services.getDescription())
                 .name(services.getName())
                 .serviceTime(ServiceTimeResponse.of(services))
+                .reservationGoods(services.getReservationGoods().stream()
+                        .map(reservationGoods -> ReservationGoodsResponse.of(reservationGoods))
+                        .collect(Collectors.toList()))
                 .workers(services.getWorkers().stream()
                         .map(worker -> WorkerResponse.of(worker))
                         .collect(Collectors.toList()))

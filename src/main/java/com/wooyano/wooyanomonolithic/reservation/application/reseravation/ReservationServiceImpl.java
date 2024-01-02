@@ -24,6 +24,7 @@ import com.wooyano.wooyanomonolithic.worker.domain.WorkerTime;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerTimeRepository;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,13 +58,15 @@ public class ReservationServiceImpl implements ReservationService {
         log.info("createReservation");
         List<Long> reservationGoodsIdList = request.getReservationGoodsId();
         Long workerId = request.getWorkerId();
+        LocalTime serviceStart = request.getServiceStart();
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작업자입니다."));
        // validateReservationGoodsExistence(reservationGoodsIdList);
         //validateDuplicateReservationGoodsWithWorker(reservationGoodsIdList, workerId);
 
         //해당 작업자 시간 테이블 조회해서 없으면 저장 있으면 예외
-        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerId(workerId);
+        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker,serviceStart);
+        log.info("workerTime: {}",workerTime);
         if(workerTime.isPresent()){
             throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
         }
@@ -72,18 +75,16 @@ public class ReservationServiceImpl implements ReservationService {
             workerTimeRepository.save(saveWorkerTime);
         }
 
-
-        //작업가능 시간 확인용 중간테이블 저장
         List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
-
+        log.info("reservationGoods: {}",reservationGoods);
 
         //예약정보 저장
         Reservation reservations = Reservation.createReservation(reservationGoods, request.getUserEmail(),
-                request.getServiceId(), request.getWorkerId(), request.getReservationDate(), request.getServiceStart(),
+                request.getServiceId(), worker, request.getReservationDate(), request.getServiceStart(),
                 request.getServiceEnd(), request.getPaymentAmount(),null,request.getRequest(),
                 request.getAddress(),request.getOrderId());
-        Reservation save = reservationRepository.save(reservations);
-
+        Reservation saveReservation = reservationRepository.save(reservations);
+        log.info("save: {}",saveReservation);
         //결제 정보 저장
         Payment payment = Payment.builder()
                 .totalAmount(request.getPaymentAmount())
@@ -93,7 +94,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
                 .orderId(request.getOrderId()).build();
         paymentRepository.save(payment);
-        return ReservationCreateResponse.of(save);
+        return ReservationCreateResponse.of(saveReservation);
     }
 
     @Transactional

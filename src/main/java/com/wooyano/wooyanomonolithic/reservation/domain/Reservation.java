@@ -3,6 +3,7 @@ package com.wooyano.wooyanomonolithic.reservation.domain;
 import com.wooyano.wooyanomonolithic.global.common.domain.BaseEntity;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationStateConverter;
+import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -40,8 +41,10 @@ public class Reservation extends BaseEntity {
     private String userEmail;
     @Column(nullable = false, name = "service_id")
     private Long serviceId;
-    @Column(name = "worker_id")
-    private Long workerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "worker_id")
+    private Worker worker;
     @Column(nullable = false, name = "reservation_date")
     private LocalDate reservationDate;
     @Column(nullable = false, name = "service_start")
@@ -70,14 +73,14 @@ public class Reservation extends BaseEntity {
     }
 
     public static Reservation createReservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId,
-                                                Long workerId, LocalDate reservationDate, LocalTime serviceStart,
+                                                Worker worker, LocalDate reservationDate, LocalTime serviceStart,
                                                 LocalTime serviceEnd, int totalPrice, String cancelDesc,
                                                 String request, String address,String orderId) {
         return Reservation.builder()
                 .reservationGoods(reservationGoods)
                 .userEmail(userEmail)
                 .serviceId(serviceId)
-                .workerId(workerId)
+                .worker(worker)
                 .reservationDate(reservationDate)
                 .serviceStart(serviceStart)
                 .serviceEnd(serviceEnd)
@@ -91,14 +94,14 @@ public class Reservation extends BaseEntity {
     }
 
     @Builder
-    private Reservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId, Long workerId,
+    private Reservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId, Worker worker,
                        LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
                        ReservationState reservationState, int totalPrice, String cancelDesc, String request,
                        String address,String orderId) {
         this.reservationItems = reservationGoods.stream().map(item-> new ReservationItem(this,item)).collect(Collectors.toList());
         this.userEmail = userEmail;
         this.serviceId = serviceId;
-        this.workerId = workerId;
+        this.worker = worker;
         this.reservationDate = reservationDate;
         this.serviceStart = serviceStart;
         this.serviceEnd = serviceEnd;
