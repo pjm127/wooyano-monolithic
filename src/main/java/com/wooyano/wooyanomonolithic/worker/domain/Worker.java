@@ -1,6 +1,6 @@
 package com.wooyano.wooyanomonolithic.worker.domain;
 
-import com.wooyano.wooyanomonolithic.service.domain.Services;
+import com.wooyano.wooyanomonolithic.services.domain.Services;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

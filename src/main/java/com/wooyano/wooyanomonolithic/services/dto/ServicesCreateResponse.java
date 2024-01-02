@@ -1,7 +1,7 @@
-package com.wooyano.wooyanomonolithic.service.dto;
+package com.wooyano.wooyanomonolithic.services.dto;
 
-import com.wooyano.wooyanomonolithic.service.domain.ServiceTime;
-import com.wooyano.wooyanomonolithic.service.domain.Services;
+import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
+import com.wooyano.wooyanomonolithic.services.domain.Services;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,9 +1,7 @@
-package com.wooyano.wooyanomonolithic.service.dto;
+package com.wooyano.wooyanomonolithic.services.dto;
 
-import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservationGoods.ReservationGoodsResponse;
-import com.wooyano.wooyanomonolithic.service.domain.Services;
-import com.wooyano.wooyanomonolithic.worker.domain.Worker;
+import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
 import java.util.List;
 import java.util.stream.Collectors;

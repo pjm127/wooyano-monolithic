@@ -1,11 +1,11 @@
-package com.wooyano.wooyanomonolithic.service.application;
+package com.wooyano.wooyanomonolithic.services.application;
 
-import com.wooyano.wooyanomonolithic.service.domain.Services;
-import com.wooyano.wooyanomonolithic.service.dto.ServicesCreateRequest;
-import com.wooyano.wooyanomonolithic.service.dto.ServicesCreateResponse;
-import com.wooyano.wooyanomonolithic.service.dto.ServicesResponse;
-import com.wooyano.wooyanomonolithic.service.infrastructure.ServiceTimeRepository;
-import com.wooyano.wooyanomonolithic.service.infrastructure.ServicesRepository;
+import com.wooyano.wooyanomonolithic.services.domain.Services;
+import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateRequest;
+import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateResponse;
+import com.wooyano.wooyanomonolithic.services.dto.ServicesResponse;
+import com.wooyano.wooyanomonolithic.services.infrastructure.ServiceTimeRepository;
+import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class ServicesService {
 
     //서비스 조회시 서비스 정보 작업자 정보 리스트
     public ServicesResponse getService(Long serviceId) {
-        Services services = servicesRepository.findByIdWithWorkers(serviceId);
+        Services services = servicesRepository.findByIdWithWorkersAndServiceTime(serviceId);
         return ServicesResponse.of(services);
     }
 }

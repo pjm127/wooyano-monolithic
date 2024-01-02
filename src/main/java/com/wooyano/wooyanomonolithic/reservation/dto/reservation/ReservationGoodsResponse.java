@@ -1,7 +1,7 @@
 package com.wooyano.wooyanomonolithic.reservation.dto.reservation;
 
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
-import com.wooyano.wooyanomonolithic.service.domain.Services;
+import com.wooyano.wooyanomonolithic.services.domain.Services;
 import lombok.Builder;
 import lombok.Getter;
 

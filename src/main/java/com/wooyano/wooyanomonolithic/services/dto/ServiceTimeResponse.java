@@ -1,6 +1,6 @@
-package com.wooyano.wooyanomonolithic.service.dto;
+package com.wooyano.wooyanomonolithic.services.dto;
 
-import com.wooyano.wooyanomonolithic.service.domain.Services;
+import com.wooyano.wooyanomonolithic.services.domain.Services;
 import java.time.LocalTime;
 import lombok.Builder;
 import lombok.Getter;

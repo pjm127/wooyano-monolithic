@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.service.domain;
+package com.wooyano.wooyanomonolithic.services.domain;
 
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter

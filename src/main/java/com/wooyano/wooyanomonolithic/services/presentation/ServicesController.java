@@ -1,9 +1,9 @@
-package com.wooyano.wooyanomonolithic.service.presentation;
+package com.wooyano.wooyanomonolithic.services.presentation;
 
-import com.wooyano.wooyanomonolithic.service.application.ServicesService;
-import com.wooyano.wooyanomonolithic.service.dto.ServicesCreateRequest;
-import com.wooyano.wooyanomonolithic.service.dto.ServicesCreateResponse;
-import com.wooyano.wooyanomonolithic.service.dto.ServicesResponse;
+import com.wooyano.wooyanomonolithic.services.application.ServicesService;
+import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateRequest;
+import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateResponse;
+import com.wooyano.wooyanomonolithic.services.dto.ServicesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

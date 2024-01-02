@@ -1,6 +1,6 @@
-package com.wooyano.wooyanomonolithic.service.infrastructure;
+package com.wooyano.wooyanomonolithic.services.infrastructure;
 
-import com.wooyano.wooyanomonolithic.service.domain.ServiceTime;
+import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ServiceTimeRepository extends JpaRepository<ServiceTime, Long> {

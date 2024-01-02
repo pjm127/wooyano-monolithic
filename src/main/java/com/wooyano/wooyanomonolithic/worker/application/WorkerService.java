@@ -1,7 +1,7 @@
 package com.wooyano.wooyanomonolithic.worker.application;
 
-import com.wooyano.wooyanomonolithic.service.domain.Services;
-import com.wooyano.wooyanomonolithic.service.infrastructure.ServicesRepository;
+import com.wooyano.wooyanomonolithic.services.domain.Services;
+import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerCreateRequest;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;

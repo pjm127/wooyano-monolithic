@@ -1,11 +1,7 @@
 package com.wooyano.wooyanomonolithic.worker.dto;
 
-import com.wooyano.wooyanomonolithic.service.domain.Services;
+import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
