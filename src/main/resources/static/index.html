@@ -47,6 +47,44 @@
                 <input class="input" type="text" id="workerId" placeholder="작업자 ID를 입력하세요">
             </div>
         </div>
+        <!-- 추가된 부분: 사용자 입력값을 localStorage에 저장 -->
+        <div class="field">
+            <label class="label">이메일</label>
+            <div class="control">
+                <input class="input" type="text" id="userEmail" placeholder="이메일을 입력하세요">
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">예약 날짜</label>
+            <div class="control">
+                <input class="input" type="date" id="reservationDate" placeholder="예약 날짜를 입력하세요">
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">요청사항</label>
+            <div class="control">
+                <input class="input" type="text" id="request" placeholder="요청사항을 입력하세요">
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">주소</label>
+            <div class="control">
+                <input class="input" type="text" id="address" placeholder="주소를 입력하세요">
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">클라이언트 이메일</label>
+            <div class="control">
+                <input class="input" type="text" id="clientEmail" placeholder="클라이언트 이메일을 입력하세요">
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">서비스 시작 시간</label>
+            <div class="control">
+                <input class="input" type="time" id="serviceStart" placeholder="서비스 시작 시간을 입력하세요">
+            </div>
+        </div>
+        <!-- 추가된 부분 끝 -->
         <div class="field">
             <div class="control">
                 <button class="button is-link" onclick="reserve()">예약하기</button>
@@ -60,24 +98,52 @@
         // 사용자 입력값 가져오기
         let totalAmount = document.getElementById('amount').value;
         let orderId = document.getElementById('orderId').value;
+        let serviceId = document.getElementById('serviceId').value;
+        let workerId = document.getElementById('workerId').value;
+        let userEmail = document.getElementById('userEmail').value;
+        let reservationDate = document.getElementById('reservationDate').value;
+        let request = document.getElementById('request').value;
+        let address = document.getElementById('address').value;
+        let clientEmail = document.getElementById('clientEmail').value;
+        let serviceStart = document.getElementById('serviceStart').value;
+
         amount = parseFloat(amount);
+        serviceId = parseInt(serviceId);
+        workerId = parseInt(workerId);
+
         localStorage.setItem("reservationAmount", totalAmount);
         localStorage.setItem("reservationOrderId", orderId);
+        localStorage.setItem("serviceId", serviceId);
+        localStorage.setItem("workerId", workerId);
+        // 추가된 부분: 사용자 입력값을 localStorage에 저장
+        localStorage.setItem("userEmail", userEmail);
+        localStorage.setItem("reservationDate", reservationDate);
+        localStorage.setItem("request", request);
+        localStorage.setItem("address", address);
+        localStorage.setItem("clientEmail", clientEmail);
+        localStorage.setItem("serviceStart", serviceStart);
+        let reservationGoodsId = [12, 13];  // You may dynamically populate this array based on your needs
+
+// JSON 배열로 저장하지 않고 각 값이 개별적으로 저장
+        reservationGoodsId.forEach(id => {
+            localStorage.setItem(`reservationGoodsId_${id}`, id);
+        });
+
+        // 추가된 부분 끝
 
         // 예약 정보 생성
         let reservationDto = {
             reservationGoodsId: [9, 11],
             orderId: orderId,
-            serviceId: document.getElementById('serviceId').value,
-            workerId: document.getElementById('workerId').value,
-            userEmail: "qwe@naber.com",
-            reservationDate: "2023-11-15",
-            serviceStart: "12:00",
-            serviceEnd: "15:00",
+            serviceId: serviceId,
+            workerId: workerId,
+            userEmail: userEmail,
+            reservationDate: reservationDate,
+            serviceStart:serviceStart,
             paymentAmount: totalAmount,
-            request: "!!!!!!",
-            address: "부산시 해운대구 우동 센텀 리더스마크 4층",
-            clientEmail: "client1"
+            request: request,
+            address: address,
+            clientEmail: clientEmail
         };
 
         // 서버에 주문 요청 보내기

@@ -49,8 +49,8 @@ public class Reservation extends BaseEntity {
     private LocalDate reservationDate;
     @Column(nullable = false, name = "service_start")
     private LocalTime serviceStart;
-    @Column(nullable = false, name = "service_end")
-    private LocalTime serviceEnd;
+/*    @Column(nullable = false, name = "service_end")
+    private LocalTime serviceEnd;*/
     @Column(nullable = false)
     @Convert(converter = ReservationStateConverter.class)
     private ReservationState reservationState;
@@ -74,7 +74,7 @@ public class Reservation extends BaseEntity {
 
     public static Reservation createReservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId,
                                                 Worker worker, LocalDate reservationDate, LocalTime serviceStart,
-                                                LocalTime serviceEnd, int totalPrice, String cancelDesc,
+                                                int totalPrice, String cancelDesc,
                                                 String request, String address,String orderId) {
         return Reservation.builder()
                 .reservationGoods(reservationGoods)
@@ -83,7 +83,6 @@ public class Reservation extends BaseEntity {
                 .worker(worker)
                 .reservationDate(reservationDate)
                 .serviceStart(serviceStart)
-                .serviceEnd(serviceEnd)
                 .reservationState(ReservationState.PAYMENT_WAITING)
                 .totalPrice(totalPrice)
                 .cancelDesc(cancelDesc)
@@ -95,7 +94,7 @@ public class Reservation extends BaseEntity {
 
     @Builder
     private Reservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId, Worker worker,
-                       LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,
+                       LocalDate reservationDate, LocalTime serviceStart,
                        ReservationState reservationState, int totalPrice, String cancelDesc, String request,
                        String address,String orderId) {
         this.reservationItems = reservationGoods.stream().map(item-> new ReservationItem(this,item)).collect(Collectors.toList());
@@ -104,7 +103,7 @@ public class Reservation extends BaseEntity {
         this.worker = worker;
         this.reservationDate = reservationDate;
         this.serviceStart = serviceStart;
-        this.serviceEnd = serviceEnd;
+
         this.reservationState = reservationState;
         this.totalPrice = totalPrice;
         this.cancelDesc = cancelDesc;

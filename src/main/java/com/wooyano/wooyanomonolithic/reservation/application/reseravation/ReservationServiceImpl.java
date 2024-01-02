@@ -54,7 +54,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public ReservationCreateResponse createReservation(ReservationCreateRequest request) {
+    public void createReservation(ReservationCreateRequest request) {
         log.info("createReservation");
         List<Long> reservationGoodsIdList = request.getReservationGoodsId();
         Long workerId = request.getWorkerId();
@@ -70,21 +70,21 @@ public class ReservationServiceImpl implements ReservationService {
         if(workerTime.isPresent()){
             throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
         }
-        else{
+        /*else{
             WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(request.getServiceStart(),worker);
             workerTimeRepository.save(saveWorkerTime);
-        }
+        }*/
 
         List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
         log.info("reservationGoods: {}",reservationGoods);
 
-        //예약정보 저장
+      /*  //예약정보 저장
         Reservation reservations = Reservation.createReservation(reservationGoods, request.getUserEmail(),
                 request.getServiceId(), worker, request.getReservationDate(), request.getServiceStart(),
                 request.getServiceEnd(), request.getPaymentAmount(),null,request.getRequest(),
                 request.getAddress(),request.getOrderId());
         Reservation saveReservation = reservationRepository.save(reservations);
-        log.info("save: {}",saveReservation);
+        log.info("save: {}",saveReservation);*/
         //결제 정보 저장
         Payment payment = Payment.builder()
                 .totalAmount(request.getPaymentAmount())
@@ -94,7 +94,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
                 .orderId(request.getOrderId()).build();
         paymentRepository.save(payment);
-        return ReservationCreateResponse.of(saveReservation);
+      //  return ReservationCreateResponse.of(saveReservation);
     }
 
     @Transactional

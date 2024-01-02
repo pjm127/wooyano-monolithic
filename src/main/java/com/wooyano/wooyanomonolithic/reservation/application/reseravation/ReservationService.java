@@ -11,7 +11,7 @@ public interface ReservationService {
 
 
     // 서비스 신청(결제 요청 - 인증)
-    ReservationCreateResponse createReservation(ReservationCreateRequest reservationNewServiceRequest);
+    void createReservation(ReservationCreateRequest reservationNewServiceRequest);
 
     //결제 승인 후 예약 상태 변경
     void approveReservation(String orderId, Integer amount, String paymentKey);

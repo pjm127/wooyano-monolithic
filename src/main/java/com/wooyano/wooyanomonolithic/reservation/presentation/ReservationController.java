@@ -29,9 +29,9 @@ public class ReservationController {
             description = "유저의 예약상품 예약")
     @PostMapping("/create")
     public BaseResponse<?> reservationNewService(@RequestBody ReservationCreateRequest request) {
-        ReservationCreateResponse reservation = reservationService.createReservation(request);
+       reservationService.createReservation(request);
 
-        return new BaseResponse<>(reservation);
+        return new BaseResponse<>();
     }
 
     @Operation(summary = "결제 후 예약 상태 변경",
@@ -65,11 +65,6 @@ public class ReservationController {
     }
 
 
-    @PostMapping("/new/reservationGoods")
-    public BaseResponse<?> reservationNewServiceGoods(@RequestBody ReservationCreateRequest request) {
-        ReservationCreateResponse reservation = reservationService.createReservation(request);
 
-        return new BaseResponse<>(reservation);
-    }
 
 }
