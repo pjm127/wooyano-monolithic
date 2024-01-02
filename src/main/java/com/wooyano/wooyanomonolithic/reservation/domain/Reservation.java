@@ -83,7 +83,7 @@ public class Reservation extends BaseEntity {
                 .worker(worker)
                 .reservationDate(reservationDate)
                 .serviceStart(serviceStart)
-                .reservationState(ReservationState.PAYMENT_WAITING)
+                .reservationState(ReservationState.WAIT)
                 .totalPrice(totalPrice)
                 .cancelDesc(cancelDesc)
                 .request(request)

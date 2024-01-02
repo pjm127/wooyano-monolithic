@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.reservation.dto.reservation;
+package com.wooyano.wooyanomonolithic.payment.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class ReservationCreateRequest {
+public class PaymentCreateRequest {
 
     private List<Long> reservationGoodsId; //예약 상품id
     private String orderId; //주문번호
@@ -21,8 +21,7 @@ public class ReservationCreateRequest {
     private Long workerId; //작업자id
     private String userEmail; //유저 이메일
     private LocalDate reservationDate; //예약 날짜
-    private LocalTime serviceStart; // 서비스 시작 시간
-   // private LocalTime serviceEnd;  // 서비스 종료 시간
+    private LocalTime serviceStartTime; // 서비스 시작 시간
     private int paymentAmount; //결제 금액
     private String request; //요청사항
     private String address; //주소

@@ -3,6 +3,7 @@ package com.wooyano.wooyanomonolithic.payment.presentation;
 
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import com.wooyano.wooyanomonolithic.payment.application.PaymentService;
+import com.wooyano.wooyanomonolithic.payment.dto.PaymentCreateRequest;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentRequest;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentResponse;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentResultResponse;
@@ -39,51 +40,18 @@ public class PaymentController {
         return ResponseEntity.ok().body(new SingleResponse<>(paymentResDto));
     }
 */
-    // 결제 요청 데이터 임시 저장
-    @PostMapping("/request")
-    public BaseResponse<?> requeste(@RequestBody PaymentRequest paymentRequest) {
 
-        paymentService.savePayment(paymentRequest);
 
-        //return ResponseEntity.ok(paymentResponse);
+
+    @Operation(summary = "예약상품 예약",
+            description = "유저의 예약상품 예약")
+    @PostMapping("/create")
+    public BaseResponse<?> reservationNewService(@RequestBody PaymentCreateRequest request) {
+        paymentService.createPayment(request);
+
         return new BaseResponse<>();
     }
 
-
-
-
-    @Operation(summary = "결제 승인",
-          description = "토스 api로 통신")
-    @GetMapping("/success")
-    public BaseResponse<?> reservationApproveService(  @RequestParam(name = "serviceId") Long serviceId,
-                                                       @RequestParam(name = "workerId") Long workerId,
-                                                       @RequestParam(name = "userEmail") String userEmail,
-                                                       @RequestParam(name = "reservationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate reservationDate,
-                                                       @RequestParam(name = "request") String request,
-                                                       @RequestParam(name = "address") String address,
-                                                       @RequestParam(name = "clientEmail") String clientEmail,
-                                                       @RequestParam(name = "orderId") String orderId,
-                                                       @RequestParam(name = "paymentKey") String paymentKey,
-                                                       @RequestParam(name = "amount") int amount,
-                                                       @RequestParam(name = "serviceStart") @DateTimeFormat(pattern = "HH:mm") LocalTime serviceStart,
-                                                       @RequestParam(name = "reservationGoodsId") List<Long> reservationGoodsId) {
-
-        PaymentResponse paymentResponse = paymentService.approvePayment(paymentKey, orderId, amount,
-                serviceId, workerId, userEmail, reservationDate, request, address, clientEmail, serviceStart,reservationGoodsId);
-
-        //return ResponseEntity.ok(paymentResponse);
-        return new BaseResponse<>(paymentResponse);
-    }
-
-
-
-
-    // 결제완료,취소된 데이터 저장
-    @PostMapping("/save")
-    public ResponseEntity<String> savePayment(@RequestBody PaymentRequest paymentRequest) {
-        paymentService.savePayment(paymentRequest);
-        return ResponseEntity.ok("결제 데이터 저장");
-    }
 
 
     // 결제완료,취소 건들의 리스트 조회

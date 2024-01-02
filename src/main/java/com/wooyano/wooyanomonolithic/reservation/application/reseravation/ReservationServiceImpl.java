@@ -3,35 +3,48 @@ package com.wooyano.wooyanomonolithic.reservation.application.reseravation;
 
 
 import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.CANNOT_FIND_RESERVATION_GOODS;
+import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.PAYMENT_AMOUNT_MISMATCH;
 
 import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
+import com.wooyano.wooyanomonolithic.global.config.toss.TossPaymentConfig;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentMethod;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
+import com.wooyano.wooyanomonolithic.payment.dto.PaymentResponse;
 import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.PaymentCompletionRequest;
-import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCreateRequest;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCreateResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationListResponse;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationResponse;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import com.wooyano.wooyanomonolithic.worker.domain.WorkerTime;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerTimeRepository;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 
 @Slf4j
@@ -51,51 +64,106 @@ public class ReservationServiceImpl implements ReservationService {
     private final PaymentRepository paymentRepository;
     private final WorkerRepository workerRepository;
     private final WorkerTimeRepository workerTimeRepository;
+    private final TossPaymentConfig tossPaymentConfig;
 
+
+    // 작업자+예약 저장 및 결제 승인 및 결제,주문저장
     @Transactional
     @Override
-    public void createReservation(ReservationCreateRequest request) {
-        log.info("createReservation");
-        List<Long> reservationGoodsIdList = request.getReservationGoodsId();
-        Long workerId = request.getWorkerId();
-        LocalTime serviceStart = request.getServiceStart();
+    public ReservationResponse saveWorkTimeAndReservationAndPayment(String paymentKey, String orderId, int amount,
+                                                                Long serviceId, Long workerId, String userEmail,
+                                                                LocalDate reservationDate, String request, String address,
+                                                                String clientEmail, LocalTime serviceStart, List<Long> reservationGoodsId){
+
+        Worker worker = checkAndUpdateWorkerAvailability(workerId, reservationDate, serviceStart);
+        Payment payment = verifyPayment(orderId, amount);
+        PaymentResponse paymentResponse = requestPaymentAccept(paymentKey, orderId, amount);
+
+        Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
+                address, serviceStart, reservationGoodsId, worker);
+
+        approvePayment(paymentKey, payment, paymentResponse);
+        return ReservationResponse.of(reservation);
+    }
+
+    private static void approvePayment(String paymentKey, Payment payment, PaymentResponse paymentResponse) {
+        String method = paymentResponse.getMethod(); //간단결제
+        String status = paymentResponse.getStatus(); //DONE
+        PaymentMethod paymentMethod = PaymentMethod.fromCode(method);
+        PaymentStatus paymentStatus = PaymentStatus.fromCode(status);
+        payment.approvePayment(paymentKey,paymentStatus, paymentMethod);
+    }
+
+    private Reservation saveReservation(String orderId, int amount, Long serviceId, String userEmail,
+                                        LocalDate reservationDate, String request, String address,
+                                        LocalTime serviceStart, List<Long> reservationGoodsId, Worker worker) {
+        List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsId);
+
+        //예약정보 저장
+        Reservation reservations = Reservation.createReservation(reservationGoods, userEmail,
+                serviceId, worker, reservationDate, serviceStart,
+                amount,null, request, address, orderId);
+        return reservationRepository.save(reservations);
+
+    }
+
+    private Worker checkAndUpdateWorkerAvailability(Long workerId, LocalDate reservationDate, LocalTime serviceStart) {
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작업자입니다."));
-       // validateReservationGoodsExistence(reservationGoodsIdList);
-        //validateDuplicateReservationGoodsWithWorker(reservationGoodsIdList, workerId);
+        LocalDate today = LocalDate.now();
+        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker, serviceStart,today);
 
-        //해당 작업자 시간 테이블 조회해서 없으면 저장 있으면 예외
-        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker,serviceStart);
-        log.info("workerTime: {}",workerTime);
         if(workerTime.isPresent()){
             throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
         }
-        /*else{
-            WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(request.getServiceStart(),worker);
+        else{
+            WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(serviceStart,worker, reservationDate);
             workerTimeRepository.save(saveWorkerTime);
-        }*/
-
-        List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
-        log.info("reservationGoods: {}",reservationGoods);
-
-      /*  //예약정보 저장
-        Reservation reservations = Reservation.createReservation(reservationGoods, request.getUserEmail(),
-                request.getServiceId(), worker, request.getReservationDate(), request.getServiceStart(),
-                request.getServiceEnd(), request.getPaymentAmount(),null,request.getRequest(),
-                request.getAddress(),request.getOrderId());
-        Reservation saveReservation = reservationRepository.save(reservations);
-        log.info("save: {}",saveReservation);*/
-        //결제 정보 저장
-        Payment payment = Payment.builder()
-                .totalAmount(request.getPaymentAmount())
-                .paymentStatus(PaymentStatus.WAIT)
-                .paymentType(PaymentMethod.WAIT)
-                .approvedAt(LocalDateTime.now())
-                .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
-                .orderId(request.getOrderId()).build();
-        paymentRepository.save(payment);
-      //  return ReservationCreateResponse.of(saveReservation);
+        }
+        return worker;
     }
+
+
+    //토스페이먼츠 외부 api 결제 승인 요청
+    private PaymentResponse requestPaymentAccept(String paymentKey, String orderId, Integer amount) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = getHeaders();
+        JSONObject params = new JSONObject();
+        params.put("paymentKey", paymentKey);
+        params.put("orderId", orderId);
+        params.put("amount", amount);
+
+
+        String u = TossPaymentConfig.URL + "confirm" ; //"https://api.tosspayments.com/v1/payments/confirm"
+        HttpEntity<String> jsonObjectHttpEntity = new HttpEntity<>(params.toString(), headers);
+
+        PaymentResponse paymentSuccessDto = restTemplate.postForObject(u,
+                jsonObjectHttpEntity,
+                PaymentResponse.class);
+        return paymentSuccessDto;
+
+    }
+    //헤더 필수값
+    private HttpHeaders getHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        String encodedAuthKey = new String(
+                Base64.getEncoder().encode((tossPaymentConfig.getTestSecretApiKey() + ":").getBytes(StandardCharsets.UTF_8)));
+        headers.setBasicAuth(encodedAuthKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        UUID randomUUID = UUID.randomUUID();
+        headers.set("Idempotency-Key", randomUUID.toString());
+        return headers;
+    }
+
+    private Payment verifyPayment(String orderId, Integer amount) {
+        Payment payment = paymentRepository.findByOrderId(orderId);
+        log.info("payment : {}", payment.getOrderId());
+        if (!Objects.equals(payment.getTotalAmount(), amount)) {
+            throw new CustomException(PAYMENT_AMOUNT_MISMATCH);
+        }
+        return payment;
+    }
+
 
     @Transactional
     @Override

@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.AccessLevel;
@@ -28,6 +29,8 @@ public class WorkerTime  extends BaseEntity {
 
     private LocalTime serviceTime;
 
+    private LocalDate registeredDate;
+
  /*   @Version
     private Integer version;*/
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,15 +38,17 @@ public class WorkerTime  extends BaseEntity {
     private Worker worker;
 
     @Builder
-    private WorkerTime( LocalTime serviceTime, Worker worker) {
+    private WorkerTime( LocalTime serviceTime, Worker worker, LocalDate registeredDate) {
         this.serviceTime = serviceTime;
         this.worker = worker;
+        this.registeredDate = registeredDate;
     }
 
-    public static WorkerTime createWorkerTime(LocalTime serviceTime, Worker worker) {
+    public static WorkerTime createWorkerTime(LocalTime serviceTime, Worker worker, LocalDate registeredDate) {
         return WorkerTime.builder()
                 .serviceTime(serviceTime)
                 .worker(worker)
+                .registeredDate(registeredDate)
                 .build();
     }
 }

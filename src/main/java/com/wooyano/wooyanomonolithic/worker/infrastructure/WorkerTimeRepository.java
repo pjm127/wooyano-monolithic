@@ -4,6 +4,7 @@ import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import com.wooyano.wooyanomonolithic.worker.domain.WorkerTime;
 import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,8 +16,8 @@ public interface WorkerTimeRepository  extends JpaRepository<WorkerTime, Long> {
 
    // @Lock(LockModeType.NONE)
     @Query("select wt from WorkerTime wt "
-            + "where wt.worker = :worker and wt.serviceTime = :serviceTime")
+            + "where wt.worker = :worker and wt.serviceTime = :serviceTime and wt.registeredDate = :today")
     Optional<WorkerTime> findByWorkerAndServiceTime(@Param("worker") Worker worker,
-                                                    @Param("serviceTime") LocalTime serviceTime);
-
+                                                    @Param("serviceTime") LocalTime serviceTime,
+                                                    @Param("today") LocalDate today);
 }
