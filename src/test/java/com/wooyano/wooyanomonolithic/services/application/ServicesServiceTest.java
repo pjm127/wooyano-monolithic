@@ -15,6 +15,8 @@ import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
 import java.time.LocalTime;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,13 @@ class ServicesServiceTest {
     private ServicesRepository servicesRepository;
     @Autowired
     private WorkerRepository workerRepository;
+
+    @AfterEach
+    void tearDown() {
+        workerRepository.deleteAllInBatch();
+        servicesRepository.deleteAllInBatch();
+    }
+
 
     @DisplayName("신규 서비스를 등록한다")
     @Test
