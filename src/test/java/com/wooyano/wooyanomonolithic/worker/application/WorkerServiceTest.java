@@ -28,7 +28,6 @@ class WorkerServiceTest {
 
     @AfterEach
     void tearDown() {
-
         servicesRepository.deleteAllInBatch();
     }
 

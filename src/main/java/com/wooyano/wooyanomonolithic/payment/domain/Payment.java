@@ -64,6 +64,7 @@ public class Payment extends BaseEntity{
         this.approvedAt = approvedAt;
         this.paymentStatus = payStatus;
         this.orderId = orderId;
+        this.paymentKey = paymentKey;
     }
 
     public static Payment createPayment(String clientEmail, PaymentMethod payType, int totalAmount,
@@ -79,9 +80,5 @@ public class Payment extends BaseEntity{
                 .build();
     }
 
-    public void approvePayment(String paymentKey,PaymentStatus paymentStatus, PaymentMethod paymentType) {
-        this.paymentKey = paymentKey;
-        this.paymentType = paymentType;
-        this.paymentStatus = paymentStatus;
-    }
+
 }
