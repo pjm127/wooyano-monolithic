@@ -123,8 +123,8 @@ public class ReservationServiceImpl implements ReservationService {
     private Worker checkAndUpdateWorkerAvailability(Long workerId, LocalDate reservationDate, LocalTime serviceStart) {
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작업자입니다."));
-        LocalDate today = LocalDate.now();
-        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker, serviceStart,today);
+
+        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker, serviceStart,reservationDate);
 
         if(workerTime.isPresent()){
             throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
