@@ -6,6 +6,7 @@ import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.
 import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.PAYMENT_AMOUNT_MISMATCH;
 
 import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
+import com.wooyano.wooyanomonolithic.global.config.redis.RedisService;
 import com.wooyano.wooyanomonolithic.global.config.toss.TossPaymentConfig;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
@@ -58,6 +59,7 @@ public class ReservationServiceImpl implements ReservationService {
     private static final int ALPHABET_COUNT = 26;
     private static final int ASCII_LOWER_A = 97;*/
 
+    private final RedisService redisService;
 
     private final ReservationRepository reservationRepository;
     private final ReservationGoodsRepository reservationGoodsRepository;
@@ -76,22 +78,33 @@ public class ReservationServiceImpl implements ReservationService {
                                                                 String clientEmail, LocalTime serviceStart, List<Long> reservationGoodsId){
 
         Worker worker = checkAndUpdateWorkerAvailability(workerId, reservationDate, serviceStart);
-        Payment payment = verifyPayment(orderId, amount);
+        verifyPayment(orderId, amount);
         PaymentResponse paymentResponse = requestPaymentAccept(paymentKey, orderId, amount);
 
         Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, reservationGoodsId, worker);
 
-        approvePayment(paymentKey, payment, paymentResponse);
+        savePayment(amount,clientEmail,orderId,paymentKey, paymentResponse);
+
         return ReservationResponse.of(reservation);
     }
 
-    private static void approvePayment(String paymentKey, Payment payment, PaymentResponse paymentResponse) {
-        String method = paymentResponse.getMethod(); //간단결제
-        String status = paymentResponse.getStatus(); //DONE
+    private void savePayment(int amount, String clientEmail,
+                                       String orderId,String paymentKey,PaymentResponse paymentResponse) {
+        String method = paymentResponse.getMethod();
+        String status = paymentResponse.getStatus();
         PaymentMethod paymentMethod = PaymentMethod.fromCode(method);
         PaymentStatus paymentStatus = PaymentStatus.fromCode(status);
-        payment.approvePayment(paymentKey,paymentStatus, paymentMethod);
+
+        Payment payment = Payment.builder()
+                .totalAmount(amount)
+                .paymentStatus(paymentStatus)
+                .paymentType(paymentMethod)
+                .approvedAt(LocalDateTime.now())
+                .clientEmail(clientEmail)
+                .paymentKey(paymentKey)
+                .orderId(orderId).build();
+        paymentRepository.save(payment);
     }
 
     private Reservation saveReservation(String orderId, int amount, Long serviceId, String userEmail,
@@ -155,13 +168,12 @@ public class ReservationServiceImpl implements ReservationService {
         return headers;
     }
 
-    private Payment verifyPayment(String orderId, Integer amount) {
-        Payment payment = paymentRepository.findByOrderId(orderId);
-        log.info("payment : {}", payment.getOrderId());
-        if (!Objects.equals(payment.getTotalAmount(), amount)) {
+    private void verifyPayment(String orderId, Integer amount) {
+        String values = redisService.getValues(orderId);
+        Integer payment = Integer.valueOf(values);
+        if (!Objects.equals(payment, amount)) {
             throw new CustomException(PAYMENT_AMOUNT_MISMATCH);
         }
-        return payment;
     }
 
 

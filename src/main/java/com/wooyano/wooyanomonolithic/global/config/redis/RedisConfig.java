@@ -1,5 +1,6 @@
 package com.wooyano.wooyanomonolithic.global.config.redis;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+@RequiredArgsConstructor
 @Configuration
 public class RedisConfig {
 
@@ -17,7 +19,6 @@ public class RedisConfig {
     @Value("${spring.data.redis.host}")
     private String host;
 
-    // port와 host를 불러와서 Redis와 연결해주는 역할
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(host, port);
@@ -25,14 +26,10 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, String> redisTemplate() {
-        // redisTemplate를 받아와서 set, get, delete를 사용
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        // setKeySerializer, setValueSerializer 설정
-        // redis-cli을 통해 직접 데이터를 조회 시 알아볼 수 없는 형태로 출력되는 것을 방지
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
-
         return redisTemplate;
     }
 

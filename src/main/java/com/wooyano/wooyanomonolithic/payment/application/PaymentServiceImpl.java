@@ -4,6 +4,7 @@ package com.wooyano.wooyanomonolithic.payment.application;
 import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.PAYMENT_AMOUNT_MISMATCH;
 
 import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
+import com.wooyano.wooyanomonolithic.global.config.redis.RedisService;
 import com.wooyano.wooyanomonolithic.global.config.toss.TossPaymentConfig;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
@@ -23,6 +24,7 @@ import com.wooyano.wooyanomonolithic.worker.domain.WorkerTime;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerTimeRepository;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -49,17 +51,15 @@ import org.springframework.web.client.RestTemplate;
 public class PaymentServiceImpl implements PaymentService  {
 
     private final PaymentRepository paymentRepository;
-    private final ReservationRepository reservationRepository;
-    private final ReservationGoodsRepository reservationGoodsRepository;
-    private final TossPaymentConfig tossPaymentConfig;
 
     private final WorkerRepository workerRepository;
     private final WorkerTimeRepository workerTimeRepository;
+    private final RedisService redisService;
+
 
     @Transactional
     @Override
-    public void createPayment(PaymentCreateRequest request) {
-        List<Long> reservationGoodsIdList = request.getReservationGoodsId();
+    public void savePaymentTemporarily(PaymentCreateRequest request) {
         Long workerId = request.getWorkerId();
         LocalTime serviceStartTime = request.getServiceStartTime();
         LocalDate reservationDate = request.getReservationDate();
@@ -75,14 +75,18 @@ public class PaymentServiceImpl implements PaymentService  {
 
 
         //결제 정보 저장
-        Payment payment = Payment.builder()
+      /*  Payment payment = Payment.builder()
                 .totalAmount(request.getPaymentAmount())
                 .paymentStatus(PaymentStatus.WAIT)
                 .paymentType(PaymentMethod.WAIT)
                 .approvedAt(LocalDateTime.now())
                 .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
                 .orderId(request.getOrderId()).build();
-        paymentRepository.save(payment);
+        paymentRepository.save(payment);*/
+        String paymentKey = request.getOrderId();
+        String paymentValue = String.valueOf(request.getPaymentAmount());
+        Duration expirationDuration = Duration.ofMinutes(30);
+        redisService.setValues(paymentKey, paymentValue, expirationDuration);
     }
 
 

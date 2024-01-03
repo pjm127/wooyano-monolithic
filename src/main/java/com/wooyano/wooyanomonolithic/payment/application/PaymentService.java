@@ -12,7 +12,7 @@ import java.util.List;
 public interface PaymentService {
 
 
-    void createPayment(PaymentCreateRequest reservationNewServiceRequest);
+    void savePaymentTemporarily(PaymentCreateRequest reservationNewServiceRequest);
 
 
     List<PaymentResultResponse> getPaymentsList();

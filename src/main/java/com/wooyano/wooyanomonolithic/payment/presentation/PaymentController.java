@@ -47,7 +47,7 @@ public class PaymentController {
             description = "유저의 예약상품 예약")
     @PostMapping("/create")
     public BaseResponse<?> reservationNewService(@RequestBody PaymentCreateRequest request) {
-        paymentService.createPayment(request);
+        paymentService.savePaymentTemporarily(request);
 
         return new BaseResponse<>();
     }
