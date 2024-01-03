@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class WorkerService {
@@ -20,11 +22,11 @@ public class WorkerService {
     private final ServicesRepository servicesRepository;
 
 
+    @Transactional
     public WorkerResponse createWorker(WorkerCreateRequest request ) {
         Long serviceId = request.getServiceId();
         Services services = servicesRepository.findById(serviceId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 서비스입니다."));
-
         Worker worker = request.toEntity(services);
         Worker save = workerRepository.save(worker);
         return WorkerResponse.of(save);
