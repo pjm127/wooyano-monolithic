@@ -26,7 +26,7 @@ class WorkerTimeRepositoryTest {
     @Autowired
     private WorkerRepository workerRepository;
 
-    @DisplayName("해당하는 작업자가 예약하고 싶은 날짜의 시간에 작업이 있으면 WorkTime을 반환한다")
+    @DisplayName("해당하는 작업자가 예약하고 싶은 날짜의 시간에 작업이 있는지 조회한다")
     @Test
     public void findByWorkerAndServiceTime(){
         // given
@@ -39,17 +39,11 @@ class WorkerTimeRepositoryTest {
         Optional<WorkerTime> byWorkerAndServiceTime = workerTimeRepository.findByWorkerAndServiceTime(saveWorker,
                 serviceStart, reservationDate);
         // then
-        assertThat(byWorkerAndServiceTime.get().getId()).isEqualTo(workerTime.getId());
-    }
-
-    @DisplayName("해당하는 작업자가 예약하고 싶은 날짜의 시간에 작업이 없으면 NULL을 반환한다")
-    @Test
-    public void 테스트이름(){
-        // given
-
-        // when
-
-        // then
+        assertThat(byWorkerAndServiceTime)
+                .isPresent()
+                .get()
+                .extracting("id", "serviceTime", "worker", "registeredDate")
+                .contains(workerTime.getId(), serviceStart, saveWorker, reservationDate);
     }
 
 
