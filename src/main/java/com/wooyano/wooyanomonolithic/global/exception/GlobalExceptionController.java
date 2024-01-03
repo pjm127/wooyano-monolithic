@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice("spharos.reservation.reservations.presentation")
+@RestControllerAdvice
 public class GlobalExceptionController {
 
     @ExceptionHandler(value = { CustomException.class })
     public ResponseEntity<?> customExHandle(CustomException e) {
-        log.error("[exceptionHandle] ex", e);
+        log.error("[exceptionHandle] ex={}", e.getMessage());
+
         return ErrorResponse.toResponseEntity(e.getResponseCode());
     }
 

@@ -1,5 +1,8 @@
 package com.wooyano.wooyanomonolithic.worker.application;
 
+import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.NOT_FOUND_SERVICE;
+
+import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
@@ -26,7 +29,7 @@ public class WorkerService {
     public WorkerResponse createWorker(WorkerCreateRequest request ) {
         Long serviceId = request.getServiceId();
         Services services = servicesRepository.findById(serviceId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 서비스입니다."));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_SERVICE));
         Worker worker = request.toEntity(services);
         Worker save = workerRepository.save(worker);
         return WorkerResponse.of(save);

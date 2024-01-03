@@ -1,14 +1,18 @@
 package com.wooyano.wooyanomonolithic.worker.application;
 
+import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.NOT_FOUND_SERVICE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerCreateRequest;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
 import java.time.LocalTime;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,12 @@ class WorkerServiceTest {
     private WorkerService workerService;
     @Autowired
     private ServicesRepository servicesRepository;
+
+    @AfterEach
+    void tearDown() {
+
+        servicesRepository.deleteAllInBatch();
+    }
 
     @DisplayName("신규 작업자를 등록한다")
     @Test
@@ -40,6 +50,25 @@ class WorkerServiceTest {
         assertThat(worker)
                 .extracting("name", "phone", "description")
                 .contains("작업자1", "작업자1 폰", "작업자1 설명");
+    }
+
+    @DisplayName("신규 작업자를 등록하는데 해당하는 서비스가 없으면 예외가 발생한다")
+    @Test
+    public void createWorkerWithNonExistingService(){
+        // given
+        Services services = getServices();
+        WorkerCreateRequest request = WorkerCreateRequest.builder()
+                .name("작업자1")
+                .phone("작업자1 폰")
+                .description("작업자1 설명")
+                .serviceId(2l)
+                .build();
+        // when
+
+        // then
+        assertThatThrownBy(() -> workerService.createWorker(request))
+                .isInstanceOf(CustomException.class)
+                .hasMessage("서비스가 존재하지 않습니다.");
     }
 
     private Services getServices() {
