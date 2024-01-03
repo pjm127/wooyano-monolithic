@@ -20,13 +20,14 @@ public class WorkerService {
     private final ServicesRepository servicesRepository;
 
 
-    public void createWorker(WorkerCreateRequest request ) {
+    public WorkerResponse createWorker(WorkerCreateRequest request ) {
         Long serviceId = request.getServiceId();
         Services services = servicesRepository.findById(serviceId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 서비스입니다."));
 
         Worker worker = request.toEntity(services);
-        workerRepository.save(worker);
+        Worker save = workerRepository.save(worker);
+        return WorkerResponse.of(save);
     }
 
 

@@ -21,8 +21,8 @@ public class WorkerController {
     private final WorkerService workerService;
 
     @PostMapping("/new")
-    public void createWorker(@RequestBody WorkerCreateRequest request) {
-        workerService.createWorker(request);
+    public WorkerResponse createWorker(@RequestBody WorkerCreateRequest request) {
+        return workerService.createWorker(request);
     }
 
     @GetMapping("/list/{serviceId}")
