@@ -84,13 +84,13 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, reservationGoodsId, worker);
 
-        savePayment(amount,clientEmail,orderId,paymentKey, paymentResponse);
+        savePayment(amount,clientEmail,orderId,paymentKey, paymentResponse,paymentResponse.getSuppliedAmount(),paymentResponse.getVat());
 
         return ReservationResponse.of(reservation);
     }
 
-    private void savePayment(int amount, String clientEmail,
-                                       String orderId,String paymentKey,PaymentResponse paymentResponse) {
+    private void savePayment(int amount, String clientEmail, String orderId,String paymentKey,
+                             PaymentResponse paymentResponse,int suppliedAmount,int vat) {
         String method = paymentResponse.getMethod();
         String status = paymentResponse.getStatus();
         PaymentMethod paymentMethod = PaymentMethod.fromCode(method);
@@ -103,7 +103,10 @@ public class ReservationServiceImpl implements ReservationService {
                 .approvedAt(LocalDateTime.now())
                 .clientEmail(clientEmail)
                 .paymentKey(paymentKey)
-                .orderId(orderId).build();
+                .orderId(orderId)
+                .suppliedAmount(suppliedAmount)
+                .vat(vat)
+                .build();
         paymentRepository.save(payment);
     }
 
@@ -170,21 +173,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     private void verifyPayment(String orderId, Integer amount) {
         String values = redisService.getValues(orderId);
-        Integer payment = Integer.valueOf(values);
+        Integer payment = Integer.parseInt(values);
         if (!Objects.equals(payment, amount)) {
             throw new CustomException(PAYMENT_AMOUNT_MISMATCH);
         }
     }
 
 
-    @Transactional
-    @Override
-    public void approveReservation(String orderId, Integer amount, String paymentKey) {
-        Reservation reservation = reservationRepository.findByOrderIdList(orderId);
-        Payment payment = paymentRepository.findByOrderId(orderId);
-        reservation.approveStatus(ReservationState.WAIT);
-
-    }
 
     @Override
     public List<ReservationListResponse> findWaitReservationsList(Long serviceId) {
@@ -200,36 +195,5 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
-    //예약상품 리스트 안에 상품 있는지부터 확인
-    private void validateReservationGoodsExistence(List<Long> reservationGoodsIdList) {
-        boolean allReservationGoodsExist = reservationGoodsIdList.stream()
-                .allMatch(reservationGoodsId -> reservationGoodsRepository.findById(reservationGoodsId).isPresent());
 
-        if (!allReservationGoodsExist) {
-            throw new CustomException(CANNOT_FIND_RESERVATION_GOODS);
-        }
-    }
-
-    //작업자+예약 상품 중복 검사
-  /*  private void validateDuplicateReservationGoodsWithWorker(List<Long> reservationGoodsIdList, Long workerId) {
-        boolean isDuplicateReservationGoods = reservationGoodsIdList.stream()
-                .anyMatch(reservationGoodsId ->  reservationRepository.findByReservationGoodsId(reservationGoodsId, workerId).isPresent());
-
-        if (isDuplicateReservationGoods) {
-            throw new CustomException(ResponseCode.DUPLICATED_RESERVATION);
-        }
-    }*/
-  /*  // 랜덤 예약번호 생성
-    private String generateRandomReservationNum() {
-        Random random = new Random();
-        StringBuilder randomBuf = new StringBuilder();
-        for (int i = 0; i < RANDOM_STRING_LENGTH; i++) {
-            if (random.nextBoolean()) {
-                randomBuf.append((char) ((int) (random.nextInt(ALPHABET_COUNT)) + ASCII_LOWER_A));
-            } else {
-                randomBuf.append(random.nextInt(10));
-            }
-        }
-        return randomBuf.toString();
-    }*/
 }

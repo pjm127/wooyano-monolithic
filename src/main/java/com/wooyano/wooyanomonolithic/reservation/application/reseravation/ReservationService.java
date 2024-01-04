@@ -18,8 +18,7 @@ public interface ReservationService {
                                                              Long serviceId, Long workerId, String userEmail,
                                                              LocalDate reservationDate, String request, String address,
                                                              String clientEmail, LocalTime serviceStart, List<Long> reservationGoodsId);
-    //결제 승인 후 예약 상태 변경
-    void approveReservation(String orderId, Integer amount, String paymentKey);
+
 
     // 클라이언트 별 예약 대기 상태 목록 조회
     List<ReservationListResponse>  findWaitReservationsList(Long serviceId);

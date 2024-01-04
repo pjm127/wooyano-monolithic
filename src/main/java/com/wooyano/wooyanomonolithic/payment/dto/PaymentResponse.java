@@ -12,10 +12,10 @@ public class PaymentResponse {
     private String orderName;
     private String currency;
     private String method;
-    private String totalAmount;
-    private String balanceAmount;
-    private String suppliedAmount;
-    private String vat;
+    private int totalAmount;
+    private int balanceAmount;
+    private int suppliedAmount;
+    private int vat;
     private String status;
     private String requestedAt;
     private String approvedAt;

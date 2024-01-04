@@ -65,7 +65,7 @@ public class PaymentServiceImpl implements PaymentService  {
         LocalDate reservationDate = request.getReservationDate();
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작업자입니다."));
-        LocalDate today = LocalDate.now();
+
         //해당 작업자 시간 테이블 조회해서 없으면 저장 있으면 예외
         Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker,serviceStartTime,reservationDate);
 
@@ -74,15 +74,7 @@ public class PaymentServiceImpl implements PaymentService  {
         }
 
 
-        //결제 정보 저장
-      /*  Payment payment = Payment.builder()
-                .totalAmount(request.getPaymentAmount())
-                .paymentStatus(PaymentStatus.WAIT)
-                .paymentType(PaymentMethod.WAIT)
-                .approvedAt(LocalDateTime.now())
-                .clientEmail(request.getClientEmail()) //원래는 serviceId로 clientId찾아서 해야함
-                .orderId(request.getOrderId()).build();
-        paymentRepository.save(payment);*/
+        //결제 정보 임시 저장
         String paymentKey = request.getOrderId();
         String paymentValue = String.valueOf(request.getPaymentAmount());
         Duration expirationDuration = Duration.ofMinutes(30);
