@@ -28,8 +28,7 @@ public class ReservationGoods extends BaseEntity {
     private String serviceItemName;
     @Column(nullable = false, name = "price")
     private int price;
-    @Column(nullable = false, name = "service_time")
-    private int serviceTime;
+
     @Column(nullable = false, length = 20, name = "super_category")
     private String superCategory;
     @Column(nullable = false, length = 20, name = "base_category")
@@ -42,23 +41,21 @@ public class ReservationGoods extends BaseEntity {
     private Services service;
 
     @Builder
-    public ReservationGoods(String serviceItemName, int price, int serviceTime, String superCategory,
+    public ReservationGoods(String serviceItemName, int price, String superCategory,
                             String baseCategory, String subCategory, Services service) {
         this.serviceItemName = serviceItemName;
         this.price = price;
-        this.serviceTime = serviceTime;
         this.superCategory = superCategory;
         this.baseCategory = baseCategory;
         this.subCategory = subCategory;
         this.service = service;
     }
 
-    public static ReservationGoods createReservationGoods(String serviceItemName, int price, int serviceTime,
+    public static ReservationGoods createReservationGoods(String serviceItemName, int price,
                                           String superCategory, String baseCategory, String subCategory,Services service) {
         return ReservationGoods.builder()
                 .serviceItemName(serviceItemName)
                 .price(price)
-                .serviceTime(serviceTime)
                 .superCategory(superCategory)
                 .baseCategory(baseCategory)
                 .subCategory(subCategory)
