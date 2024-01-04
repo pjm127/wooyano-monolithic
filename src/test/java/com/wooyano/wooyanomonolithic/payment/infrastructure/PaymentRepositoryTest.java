@@ -22,7 +22,7 @@ class PaymentRepositoryTest {
     public void findByOrderId(){
         // given
         Payment payment = Payment.createPayment("테스트 이메일", PaymentMethod.EASY_PAYMENT, 1000, LocalDateTime.now()
-                , PaymentStatus.DONE, "test order id", "test payment key");
+                , PaymentStatus.DONE, "test order id", "test payment key",900,100);
         Payment save = paymentRepository.save(payment);
         // when
         Payment savePayment = paymentRepository.findByOrderId(payment.getOrderId());
