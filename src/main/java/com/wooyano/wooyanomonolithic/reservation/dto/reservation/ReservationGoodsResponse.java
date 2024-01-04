@@ -12,19 +12,18 @@ public class ReservationGoodsResponse {
 
     private String serviceItemName;
     private Integer price;
-    private Integer serviceTime;
+
     private String superCategory;
     private String baseCategory;
     private String subCategory;
     private Services service;
 
     @Builder
-    private ReservationGoodsResponse(Long id, String serviceItemName, Integer price, Integer serviceTime,
+    private ReservationGoodsResponse(Long id, String serviceItemName, Integer price,
                                     String superCategory, String baseCategory, String subCategory,Services service) {
         this.id = id;
         this.serviceItemName = serviceItemName;
         this.price = price;
-        this.serviceTime = serviceTime;
         this.superCategory = superCategory;
         this.baseCategory = baseCategory;
         this.subCategory = subCategory;
@@ -36,7 +35,6 @@ public class ReservationGoodsResponse {
                 .id(reservationGoods.getId())
                 .serviceItemName(reservationGoods.getServiceItemName())
                 .price(reservationGoods.getPrice())
-                .serviceTime(reservationGoods.getServiceTime())
                 .superCategory(reservationGoods.getSuperCategory())
                 .baseCategory(reservationGoods.getBaseCategory())
                 .subCategory(reservationGoods.getSubCategory())

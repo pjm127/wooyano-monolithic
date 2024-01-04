@@ -13,18 +13,16 @@ public class ReservationGoodsCreateRequest {
     private int price;
     private Long serviceId;
     private String serviceItemName;
-    private int serviceTime;
     private String subCategory;
     private String superCategory;
 
     @Builder
     private ReservationGoodsCreateRequest(String baseCategory, int price, Long serviceId, String serviceItemName,
-                                          int serviceTime, String subCategory, String superCategory, Services service) {
+                                          String subCategory, String superCategory, Services service) {
         this.baseCategory = baseCategory;
         this.price = price;
         this.serviceId = serviceId;
         this.serviceItemName = serviceItemName;
-        this.serviceTime = serviceTime;
         this.subCategory = subCategory;
         this.superCategory = superCategory;
     }
@@ -34,7 +32,6 @@ public class ReservationGoodsCreateRequest {
                 .baseCategory(baseCategory)
                 .price(price)
                 .serviceItemName(serviceItemName)
-                .serviceTime(serviceTime)
                 .subCategory(subCategory)
                 .superCategory(superCategory)
                 .service(services)
