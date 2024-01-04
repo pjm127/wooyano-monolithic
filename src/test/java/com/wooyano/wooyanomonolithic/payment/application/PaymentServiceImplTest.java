@@ -1,9 +1,11 @@
 package com.wooyano.wooyanomonolithic.payment.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.wooyano.wooyanomonolithic.global.config.redis.RedisService;
+import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentCreateRequest;
 import com.wooyano.wooyanomonolithic.payment.dto.PaymentCreateRequest.PaymentCreateRequestBuilder;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
@@ -55,6 +57,25 @@ class PaymentServiceImplTest {
         int amount = Integer.parseInt(values);
 
         assertThat(request.getPaymentAmount()).isEqualTo(amount);
+    }
+
+    @DisplayName("결제 요청 전에 예약이 있는지 확인하고 예약이 있으면 예외를 반환한다")
+    @Test
+    public void savePaymentTemporarilyException() {
+        // given
+        Worker worker = getWorker();
+
+        PaymentCreateRequest request = PaymentCreateRequest.builder()
+                .workerId(worker.getId())
+                .serviceStartTime(LocalTime.of(9, 0, 0))
+                .reservationDate(LocalDate.of(2024, 01, 04))
+                .orderId("주문번호")
+                .paymentAmount(3000)
+                .build();
+        // when // then
+        assertThatThrownBy(() -> paymentService.savePaymentTemporarily(request))
+                .isInstanceOf(CustomException.class)
+                .hasMessage("이미 예약된 서비스입니다.");
     }
 
     private Worker getWorker() {
