@@ -18,7 +18,7 @@ public class ReservationGoodsCreateRequest {
 
     @Builder
     private ReservationGoodsCreateRequest(String baseCategory, int price, Long serviceId, String serviceItemName,
-                                          String subCategory, String superCategory, Services service) {
+                                          String subCategory, String superCategory) {
         this.baseCategory = baseCategory;
         this.price = price;
         this.serviceId = serviceId;
