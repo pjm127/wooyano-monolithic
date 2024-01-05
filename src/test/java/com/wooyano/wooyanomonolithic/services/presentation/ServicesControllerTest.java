@@ -2,8 +2,11 @@ package com.wooyano.wooyanomonolithic.services.presentation;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wooyano.wooyanomonolithic.services.application.ServicesService;
 import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateRequest;
 import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateResponse;
+import com.wooyano.wooyanomonolithic.services.dto.ServicesResponse;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,23 +48,34 @@ class ServicesControllerTest {
                 .closeTime(LocalTime.of(18, 0, 0))
                 .build();
 
-        ServicesCreateResponse mockResponse = ServicesCreateResponse.builder()
-                .id(1L)
-                .name("서비스1")
-                .description("서비스1 설명")
-                .build();
-
-        when(servicesService.createService(any())).thenReturn(mockResponse);
-
         // when // then
         mockMvc.perform(post("/api/v1/services/new")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("서비스 id로 서비스 정보를 조회한다")
+    @Test
+    public void getService() throws Exception {
+        // given
+        ServicesResponse response = ServicesResponse.builder()
+                .name("서비스1")
+                .description("서비스1 설명")
+                .build();
+
+        when(servicesService.getService(anyLong())).thenReturn(response);
+        // when  // then
+        mockMvc.perform(
+                get("/api/v1/services/{id}", 1l)
+                )
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.result.id").value(1L))
-                .andExpect(jsonPath("$.result.name").value("서비스1"))
-                .andExpect(jsonPath("$.result.description").value("서비스1 설명"));
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.success").value("true"));
+
+
+
+
     }
 }

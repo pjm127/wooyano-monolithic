@@ -27,9 +27,9 @@ public class ServicesController {
     }
 
     @GetMapping("/{serviceId}")
-    public ServicesResponse getService(@PathVariable(name = "serviceId") Long serviceId){
+    public BaseResponse<?>  getService(@PathVariable(name = "serviceId") Long serviceId){
         ServicesResponse service = servicesService.getService(serviceId);
-        return service;
+        return new BaseResponse<>(service);
     }
 
 }
