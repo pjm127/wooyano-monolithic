@@ -1,5 +1,6 @@
 package com.wooyano.wooyanomonolithic.worker.presentation;
 
+import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import com.wooyano.wooyanomonolithic.worker.application.WorkerService;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerCreateRequest;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
@@ -21,13 +22,13 @@ public class WorkerController {
     private final WorkerService workerService;
 
     @PostMapping("/new")
-    public WorkerResponse createWorker(@RequestBody WorkerCreateRequest request) {
-        return workerService.createWorker(request);
+    public BaseResponse<?> createWorker(@RequestBody WorkerCreateRequest request) {
+        return new BaseResponse<>(workerService.createWorker(request));
     }
 
     @GetMapping("/list/{serviceId}")
-    public List<WorkerResponse> getWorkerList(@PathVariable Long serviceId) {
-        return workerService.getWorkerList(serviceId);
+    public BaseResponse<?> getWorkerList(@PathVariable Long serviceId) {
+        return new BaseResponse<>(workerService.getWorkerList(serviceId));
     }
 }
 

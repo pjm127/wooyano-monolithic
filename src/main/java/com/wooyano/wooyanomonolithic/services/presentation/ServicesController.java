@@ -1,5 +1,6 @@
 package com.wooyano.wooyanomonolithic.services.presentation;
 
+import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import com.wooyano.wooyanomonolithic.services.application.ServicesService;
 import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateRequest;
 import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateResponse;
@@ -20,9 +21,9 @@ public class ServicesController {
     private final ServicesService servicesService;
 
     @PostMapping("/new")
-    public ServicesCreateResponse createService(@RequestBody ServicesCreateRequest request){
+    public BaseResponse<?> createService(@RequestBody ServicesCreateRequest request){
         ServicesCreateResponse service = servicesService.createService(request);
-        return service;
+        return new BaseResponse<>(service);
     }
 
     @GetMapping("/{serviceId}")
