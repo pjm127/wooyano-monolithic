@@ -100,7 +100,6 @@ public class ReservationServiceImpl implements ReservationService {
                 .totalAmount(amount)
                 .paymentStatus(paymentStatus)
                 .paymentType(paymentMethod)
-                .approvedAt(LocalDateTime.now())
                 .clientEmail(clientEmail)
                 .paymentKey(paymentKey)
                 .orderId(orderId)

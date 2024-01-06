@@ -40,8 +40,6 @@ public class Payment extends BaseEntity{
     @Column(name = "total_Amount")
     private int totalAmount; //결제 금액
 
-    @Column(name = "approved_At")
-    private LocalDateTime approvedAt; //결제 완료,취소가 일어난 날짜와 시간 정보
 
     @Column(name = "payment_Status")
     @Convert(converter = PaymentStatusConverter.class)
@@ -63,12 +61,11 @@ public class Payment extends BaseEntity{
 
     @Builder
     private Payment(String clientEmail, PaymentMethod payType, int totalAmount,
-                    LocalDateTime approvedAt, PaymentStatus payStatus, String orderId, String paymentKey,
+                    PaymentStatus payStatus, String orderId, String paymentKey,
                     int suppliedAmount, int vat) {
         this.clientEmail = clientEmail;
         this.paymentType = payType;
         this.totalAmount = totalAmount;
-        this.approvedAt = approvedAt;
         this.paymentStatus = payStatus;
         this.orderId = orderId;
         this.paymentKey = paymentKey;
@@ -77,13 +74,12 @@ public class Payment extends BaseEntity{
     }
 
     public static Payment createPayment(String clientEmail, PaymentMethod payType, int totalAmount,
-                                        LocalDateTime approvedAt, PaymentStatus paymentStatus, String orderId,
+                                        PaymentStatus paymentStatus, String orderId,
                                         String paymentKey, int suppliedAmount, int vat) {
         return Payment.builder()
                 .clientEmail(clientEmail)
                 .paymentType(payType)
                 .totalAmount(totalAmount)
-                .approvedAt(approvedAt)
                 .paymentStatus(paymentStatus)
                 .orderId(orderId)
                 .paymentKey(paymentKey)
