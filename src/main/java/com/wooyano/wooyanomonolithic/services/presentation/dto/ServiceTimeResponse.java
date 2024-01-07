@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.services.dto;
+package com.wooyano.wooyanomonolithic.services.presentation.dto;
 
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import java.time.LocalTime;

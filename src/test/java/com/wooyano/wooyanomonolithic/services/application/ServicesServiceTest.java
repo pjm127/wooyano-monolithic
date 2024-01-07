@@ -1,14 +1,13 @@
 package com.wooyano.wooyanomonolithic.services.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
-import com.wooyano.wooyanomonolithic.services.dto.ServiceTimeResponse;
-import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateRequest;
-import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateResponse;
-import com.wooyano.wooyanomonolithic.services.dto.ServicesResponse;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServiceTimeResponse;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateRequest;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateResponse;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesResponse;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
@@ -16,7 +15,6 @@ import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
 import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +51,7 @@ class ServicesServiceTest {
                 .closeTime(closeTime)
                 .build();
         // when
-        ServicesCreateResponse service = servicesService.createService(request);
+        ServicesCreateResponse service = servicesService.createService(request.toServiceRequest());
         // then
         assertThat(service)
                 .extracting("name", "description" )

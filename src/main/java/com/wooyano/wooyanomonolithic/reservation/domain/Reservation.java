@@ -103,7 +103,6 @@ public class Reservation extends BaseEntity {
         this.worker = worker;
         this.reservationDate = reservationDate;
         this.serviceStart = serviceStart;
-
         this.reservationState = reservationState;
         this.totalPrice = totalPrice;
         this.cancelDesc = cancelDesc;

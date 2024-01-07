@@ -1,6 +1,5 @@
 package com.wooyano.wooyanomonolithic.services.presentation;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -10,12 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wooyano.wooyanomonolithic.services.application.ServicesService;
-import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateRequest;
-import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateResponse;
-import com.wooyano.wooyanomonolithic.services.dto.ServicesResponse;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateRequest;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesResponse;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

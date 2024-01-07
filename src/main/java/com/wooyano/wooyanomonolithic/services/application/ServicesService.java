@@ -1,9 +1,10 @@
 package com.wooyano.wooyanomonolithic.services.application;
 
+import com.wooyano.wooyanomonolithic.services.application.dto.ServicesCreateServiceRequest;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
-import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateRequest;
-import com.wooyano.wooyanomonolithic.services.dto.ServicesCreateResponse;
-import com.wooyano.wooyanomonolithic.services.dto.ServicesResponse;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateRequest;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateResponse;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesResponse;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServiceTimeRepository;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class ServicesService {
     private final ServiceTimeRepository serviceTimeRepository;
 
     @Transactional
-    public ServicesCreateResponse createService(ServicesCreateRequest request) {
+    public ServicesCreateResponse createService(ServicesCreateServiceRequest request) {
         Services services = request.toEntity();
         Services save = servicesRepository.save(services);
         return ServicesCreateResponse.of(save);

@@ -68,7 +68,7 @@ public class SettleJobConfig {
     public Step settleStep(@Value("#{jobParameters['requestDate']}") String requestDate ) {
         return new StepBuilder("settleStep", jobRepository)
                 .<PaymentResult, DailySettle>chunk(CHUNK_SIZE,transactionManager) // Chunk 크기를 지정
-                .reader(reader())
+                .reader(reader(null))
                 .processor(paymentItemProcessor)
                 .writer(jdbcBatchItemWriter())
                 .build();
@@ -79,9 +79,8 @@ public class SettleJobConfig {
     //@Value("#{jobParameters['requestDate']}") String requestDate
     @Bean
     @StepScope
-    public JpaPagingItemReader<PaymentResult> reader() {
+    public JpaPagingItemReader<PaymentResult> reader(@Value("#{jobParameters['requestDate']}") String requestDate) {
 
-        String requestDate = "2023-12-26";
         Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("startDateTime", LocalDateTime.parse(requestDate + "T00:00:00"));
         parameters.put("endDateTime", LocalDateTime.parse(requestDate + "T23:59:59"));
@@ -93,12 +92,11 @@ public class SettleJobConfig {
         JpaPagingItemReaderBuilder<PaymentResult> jpaPagingItemReaderBuilder  = new JpaPagingItemReaderBuilder<>();
         JpaPagingItemReader<PaymentResult> paymentItemReader = jpaPagingItemReaderBuilder
                 .name("paymentItemReader")
-                .entityManagerFactory(entityManagerFactory) //readerEntityManagerFactory.getObject()
+                .entityManagerFactory(entityManagerFactory)
                 .parameterValues(parameters)
                 .queryString(queryString)
                 .pageSize(10)
                 .build();
-        log.info("reader={}",paymentItemReader.toString());
         return paymentItemReader;
     }
 

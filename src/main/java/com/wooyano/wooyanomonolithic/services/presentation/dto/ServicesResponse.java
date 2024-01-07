@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.services.dto;
+package com.wooyano.wooyanomonolithic.services.presentation.dto;
 
 import com.wooyano.wooyanomonolithic.reservation.dto.reservationGoods.ReservationGoodsResponse;
 import com.wooyano.wooyanomonolithic.services.domain.Services;

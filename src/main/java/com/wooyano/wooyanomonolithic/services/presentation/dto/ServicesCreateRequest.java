@@ -1,5 +1,6 @@
-package com.wooyano.wooyanomonolithic.services.dto;
+package com.wooyano.wooyanomonolithic.services.presentation.dto;
 
+import com.wooyano.wooyanomonolithic.services.application.dto.ServicesCreateServiceRequest;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import java.time.LocalTime;
@@ -15,7 +16,7 @@ public class ServicesCreateRequest {
     private String description;
     private String name;
     @DateTimeFormat(pattern = "kk:mm:ss")
-    private LocalTime openTime; // ServiceTime에서 필요한 필드들을 직접 받아옴
+    private LocalTime openTime;
     @DateTimeFormat(pattern = "kk:mm:ss")
     private LocalTime closeTime;
 
@@ -35,6 +36,15 @@ public class ServicesCreateRequest {
                         .openTime(openTime)
                         .closeTime(closeTime)
                         .build())
+                .build();
+    }
+
+    public ServicesCreateServiceRequest toServiceRequest(){
+        return ServicesCreateServiceRequest.builder()
+                .description(description)
+                .name(name)
+                .openTime(openTime)
+                .closeTime(closeTime)
                 .build();
     }
 }
