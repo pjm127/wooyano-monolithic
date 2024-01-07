@@ -42,7 +42,7 @@ class WorkerServiceTest {
                 .build();
 
         // when
-        WorkerResponse worker = workerService.createWorker(request);
+        WorkerResponse worker = workerService.createWorker(request.toServiceRequest());
         // then
         assertThat(worker)
                 .extracting("name", "phone", "description")
