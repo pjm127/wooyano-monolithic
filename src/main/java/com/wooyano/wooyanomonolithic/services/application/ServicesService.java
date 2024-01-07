@@ -2,9 +2,8 @@ package com.wooyano.wooyanomonolithic.services.application;
 
 import com.wooyano.wooyanomonolithic.services.application.dto.ServicesCreateServiceRequest;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
-import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateRequest;
 import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateResponse;
-import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesResponse;
+import com.wooyano.wooyanomonolithic.services.application.dto.ServicesResponse;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServiceTimeRepository;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
 import lombok.RequiredArgsConstructor;

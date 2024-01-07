@@ -5,9 +5,10 @@ import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
+import com.wooyano.wooyanomonolithic.worker.application.dto.WorkerCreateServiceRequest;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
-import com.wooyano.wooyanomonolithic.worker.dto.WorkerCreateRequest;
-import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
+import com.wooyano.wooyanomonolithic.worker.presentation.dto.WorkerCreateRequest;
+import com.wooyano.wooyanomonolithic.worker.application.dto.WorkerResponse;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class WorkerService {
 
 
     @Transactional
-    public WorkerResponse createWorker(WorkerCreateRequest request ) {
+    public WorkerResponse createWorker(WorkerCreateServiceRequest request ) {
         Long serviceId = request.getServiceId();
         Services services = servicesRepository.findById(serviceId)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_SERVICE));

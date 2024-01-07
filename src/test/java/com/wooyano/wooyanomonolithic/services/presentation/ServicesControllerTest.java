@@ -11,8 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wooyano.wooyanomonolithic.services.application.ServicesService;
-import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateRequest;
-import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesResponse;
+import com.wooyano.wooyanomonolithic.services.application.dto.ServicesCreateRequest;
+import com.wooyano.wooyanomonolithic.services.application.dto.ServicesResponse;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

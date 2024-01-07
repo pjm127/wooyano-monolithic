@@ -1,8 +1,9 @@
-package com.wooyano.wooyanomonolithic.services.presentation.dto;
+package com.wooyano.wooyanomonolithic.services.application.dto;
 
 import com.wooyano.wooyanomonolithic.reservation.dto.reservationGoods.ReservationGoodsResponse;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
-import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServiceTimeResponse;
+import com.wooyano.wooyanomonolithic.worker.application.dto.WorkerResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;

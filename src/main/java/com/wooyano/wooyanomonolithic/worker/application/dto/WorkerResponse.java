@@ -1,7 +1,6 @@
-package com.wooyano.wooyanomonolithic.worker.dto;
+package com.wooyano.wooyanomonolithic.worker.application.dto;
 
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
-import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

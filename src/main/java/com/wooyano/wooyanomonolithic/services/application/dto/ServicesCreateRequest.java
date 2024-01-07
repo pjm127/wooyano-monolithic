@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.services.presentation.dto;
+package com.wooyano.wooyanomonolithic.services.application.dto;
 
 import com.wooyano.wooyanomonolithic.services.application.dto.ServicesCreateServiceRequest;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
@@ -28,16 +28,7 @@ public class ServicesCreateRequest {
         this.closeTime = closeTime;
     }
 
-    public Services toEntity() {
-        return Services.builder()
-                .description(description)
-                .name(name)
-                .serviceTime(ServiceTime.builder()
-                        .openTime(openTime)
-                        .closeTime(closeTime)
-                        .build())
-                .build();
-    }
+
 
     public ServicesCreateServiceRequest toServiceRequest(){
         return ServicesCreateServiceRequest.builder()

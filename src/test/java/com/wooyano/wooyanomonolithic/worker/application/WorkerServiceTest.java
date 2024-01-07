@@ -1,16 +1,14 @@
 package com.wooyano.wooyanomonolithic.worker.application;
 
-import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.NOT_FOUND_SERVICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
-import com.wooyano.wooyanomonolithic.worker.dto.WorkerCreateRequest;
-import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
+import com.wooyano.wooyanomonolithic.worker.presentation.dto.WorkerCreateRequest;
+import com.wooyano.wooyanomonolithic.worker.application.dto.WorkerResponse;
 import java.time.LocalTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -65,7 +63,7 @@ class WorkerServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> workerService.createWorker(request))
+        assertThatThrownBy(() -> workerService.createWorker(request.toServiceRequest()))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("서비스가 존재하지 않습니다.");
     }

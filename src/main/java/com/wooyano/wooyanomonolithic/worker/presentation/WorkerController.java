@@ -2,10 +2,7 @@ package com.wooyano.wooyanomonolithic.worker.presentation;
 
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import com.wooyano.wooyanomonolithic.worker.application.WorkerService;
-import com.wooyano.wooyanomonolithic.worker.dto.WorkerCreateRequest;
-import com.wooyano.wooyanomonolithic.worker.dto.WorkerResponse;
-import java.util.List;
-import lombok.Getter;
+import com.wooyano.wooyanomonolithic.worker.presentation.dto.WorkerCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +20,7 @@ public class WorkerController {
 
     @PostMapping("/new")
     public BaseResponse<?> createWorker(@RequestBody WorkerCreateRequest request) {
-        return new BaseResponse<>(workerService.createWorker(request));
+        return new BaseResponse<>(workerService.createWorker(request.toServiceRequest()));
     }
 
     @GetMapping("/list/{serviceId}")
