@@ -2,7 +2,6 @@ package com.wooyano.wooyanomonolithic.reservation.application.reseravation;
 
 
 
-import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.CANNOT_FIND_RESERVATION_GOODS;
 import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.PAYMENT_AMOUNT_MISMATCH;
 
 import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
@@ -12,13 +11,11 @@ import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentMethod;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
-import com.wooyano.wooyanomonolithic.payment.dto.PaymentResponse;
+import com.wooyano.wooyanomonolithic.payment.presentation.dto.PaymentResponse;
 import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
 import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
 import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
 import com.wooyano.wooyanomonolithic.reservation.domain.enumPackage.ReservationState;
-import com.wooyano.wooyanomonolithic.reservation.dto.reservation.PaymentCompletionRequest;
-import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCreateResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationResponse;
 import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
@@ -29,9 +26,7 @@ import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerTimeRepository;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;

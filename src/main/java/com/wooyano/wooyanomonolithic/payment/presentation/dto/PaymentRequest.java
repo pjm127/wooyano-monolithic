@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.payment.dto;
+package com.wooyano.wooyanomonolithic.payment.presentation.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;

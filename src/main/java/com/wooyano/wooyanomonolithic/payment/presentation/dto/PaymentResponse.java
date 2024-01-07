@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.payment.dto;
+package com.wooyano.wooyanomonolithic.payment.presentation.dto;
 
 
 import lombok.Data;

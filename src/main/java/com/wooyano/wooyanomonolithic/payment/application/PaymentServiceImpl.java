@@ -1,47 +1,26 @@
 package com.wooyano.wooyanomonolithic.payment.application;
 
 
-import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.PAYMENT_AMOUNT_MISMATCH;
-
 import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
 import com.wooyano.wooyanomonolithic.global.config.redis.RedisService;
-import com.wooyano.wooyanomonolithic.global.config.toss.TossPaymentConfig;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
-import com.wooyano.wooyanomonolithic.payment.domain.Payment;
-import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
-import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentMethod;
-import com.wooyano.wooyanomonolithic.payment.dto.PaymentCreateRequest;
-import com.wooyano.wooyanomonolithic.payment.dto.PaymentRequest;
-import com.wooyano.wooyanomonolithic.payment.dto.PaymentResponse;
-import com.wooyano.wooyanomonolithic.payment.dto.PaymentResultResponse;
+import com.wooyano.wooyanomonolithic.payment.application.dto.PaymentCreateServiceRequest;
+import com.wooyano.wooyanomonolithic.payment.presentation.dto.PaymentCreateRequest;
+import com.wooyano.wooyanomonolithic.payment.presentation.dto.PaymentResultResponse;
 import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
-import com.wooyano.wooyanomonolithic.reservation.domain.Reservation;
-import com.wooyano.wooyanomonolithic.reservation.domain.ReservationGoods;
-import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationGoodsRepository;
-import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import com.wooyano.wooyanomonolithic.worker.domain.WorkerTime;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerTimeRepository;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Base64;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 
 @Transactional(readOnly = true)
@@ -59,7 +38,7 @@ public class PaymentServiceImpl implements PaymentService  {
 
     @Transactional
     @Override
-    public void savePaymentTemporarily(PaymentCreateRequest request) {
+    public void savePaymentTemporarily(PaymentCreateServiceRequest request) {
         Long workerId = request.getWorkerId();
         LocalTime serviceStartTime = request.getServiceStartTime();
         LocalDate reservationDate = request.getReservationDate();

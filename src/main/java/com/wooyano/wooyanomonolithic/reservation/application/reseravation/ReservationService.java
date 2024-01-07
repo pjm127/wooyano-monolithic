@@ -1,8 +1,5 @@
 package com.wooyano.wooyanomonolithic.reservation.application.reseravation;
 
-import com.wooyano.wooyanomonolithic.payment.dto.PaymentResponse;
-import com.wooyano.wooyanomonolithic.reservation.dto.reservation.PaymentCompletionRequest;
-import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCreateResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationResponse;
 import java.time.LocalDate;

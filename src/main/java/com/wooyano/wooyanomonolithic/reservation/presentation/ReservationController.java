@@ -1,11 +1,8 @@
 package com.wooyano.wooyanomonolithic.reservation.presentation;
 
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
-import com.wooyano.wooyanomonolithic.payment.dto.PaymentResponse;
 import com.wooyano.wooyanomonolithic.reservation.application.reseravation.ReservationService;
-import com.wooyano.wooyanomonolithic.reservation.dto.reservation.PaymentCompletionRequest;
 
-import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationCreateResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,8 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

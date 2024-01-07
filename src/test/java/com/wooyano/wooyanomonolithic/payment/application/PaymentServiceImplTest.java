@@ -2,12 +2,10 @@ package com.wooyano.wooyanomonolithic.payment.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.wooyano.wooyanomonolithic.global.config.redis.RedisService;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
-import com.wooyano.wooyanomonolithic.payment.dto.PaymentCreateRequest;
-import com.wooyano.wooyanomonolithic.payment.dto.PaymentCreateRequest.PaymentCreateRequestBuilder;
+import com.wooyano.wooyanomonolithic.payment.presentation.dto.PaymentCreateRequest;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
@@ -51,7 +49,7 @@ class PaymentServiceImplTest {
                 .paymentAmount(3000)
                 .build();
         // when
-        paymentService.savePaymentTemporarily(request);
+        paymentService.savePaymentTemporarily(request.toServiceRequest());
         // then
         String values = redisService.getValues(request.getOrderId());
         int amount = Integer.parseInt(values);
@@ -73,7 +71,7 @@ class PaymentServiceImplTest {
                 .paymentAmount(3000)
                 .build();
         // when // then
-        assertThatThrownBy(() -> paymentService.savePaymentTemporarily(request))
+        assertThatThrownBy(() -> paymentService.savePaymentTemporarily(request.toServiceRequest()))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("이미 예약된 서비스입니다.");
     }
