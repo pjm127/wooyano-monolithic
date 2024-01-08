@@ -11,6 +11,7 @@ import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ class ReservationGoodsRepositoryTest {
     @Autowired
     private ServicesRepository servicesRepository;
 
+
+
     @DisplayName("id로 예약 상품을 조회한다")
     @Test
     public void findById(){
@@ -32,9 +35,9 @@ class ReservationGoodsRepositoryTest {
         ReservationGoods reservationGoods = getReservationGoods();
 
         // when
-        Optional<ReservationGoods> byId = reservationGoodsRepository.findById(reservationGoods.getId());
+        Optional<ReservationGoods> reservationGood = reservationGoodsRepository.findById(reservationGoods.getId());
         // then
-        assertThat(byId)
+        assertThat(reservationGood)
                 .isPresent()
                 .get()
                 .extracting("id", "serviceItemName", "price" ,"superCategory", "baseCategory", "subCategory")
@@ -49,7 +52,7 @@ class ReservationGoodsRepositoryTest {
     public void findByIdIn(){
         // given
         getReservationGoodsList();
-        List<Long> reservationGoodsIdList = List.of(1l, 2l);
+        List<Long> reservationGoodsIdList = List.of(2l, 3l);
 
         // when
         List<ReservationGoods> reservationGoodsList = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);

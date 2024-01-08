@@ -3,6 +3,7 @@ package com.wooyano.wooyanomonolithic.reservation.presentation;
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import com.wooyano.wooyanomonolithic.reservation.application.reseravation.ReservationService;
 
+import com.wooyano.wooyanomonolithic.reservation.application.reseravation.TossRequestPaymentAccept;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationListResponse;
 import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,11 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/reservation")
 public class ReservationController {
 
+    private final TossRequestPaymentAccept tossRequestPaymentAccept;
     private final ReservationService reservationService;
 
     @Operation(summary = "결제 승인",
             description = "토스 api로 통신")
-
     @GetMapping("/success")
     public BaseResponse<?> reservationApproveService(  @RequestParam(name = "serviceId") Long serviceId,
                                                        @RequestParam(name = "workerId") Long workerId,
@@ -42,7 +43,7 @@ public class ReservationController {
                                                        @RequestParam(name = "serviceStart") @DateTimeFormat(pattern = "HH:mm") LocalTime serviceStart,
                                                        @RequestParam(name = "reservationGoodsId") List<Long> reservationGoodsId) {
 
-        ReservationResponse reservationResponse = reservationService.saveWorkTimeAndReservationAndPayment(paymentKey, orderId, amount,
+        ReservationResponse reservationResponse = tossRequestPaymentAccept.createReservation(paymentKey, orderId, amount,
                 serviceId, workerId, userEmail, reservationDate, request, address, clientEmail, serviceStart,reservationGoodsId);
 
         //return ResponseEntity.ok(paymentResponse);
