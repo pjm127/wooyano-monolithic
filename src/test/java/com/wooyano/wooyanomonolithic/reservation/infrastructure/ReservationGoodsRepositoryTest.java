@@ -37,10 +37,9 @@ class ReservationGoodsRepositoryTest {
         assertThat(byId)
                 .isPresent()
                 .get()
-                .extracting("id", "serviceItemName", "price", "serviceTime", "superCategory", "baseCategory", "subCategory")
+                .extracting("id", "serviceItemName", "price" ,"superCategory", "baseCategory", "subCategory")
                 .contains(reservationGoods.getId(), reservationGoods.getServiceItemName(), reservationGoods.getPrice()
-                        , reservationGoods.getSuperCategory(), reservationGoods.getBaseCategory(),
-                        reservationGoods.getSubCategory());
+                        , reservationGoods.getSuperCategory(), reservationGoods.getBaseCategory(), reservationGoods.getSubCategory());
 
 
     }
@@ -49,8 +48,9 @@ class ReservationGoodsRepositoryTest {
     @Test
     public void findByIdIn(){
         // given
-        List<Long> reservationGoodsIdList = List.of(1l, 2l);
         getReservationGoodsList();
+        List<Long> reservationGoodsIdList = List.of(1l, 2l);
+
         // when
         List<ReservationGoods> reservationGoodsList = reservationGoodsRepository.findByIdIn(reservationGoodsIdList);
         // then
@@ -58,7 +58,7 @@ class ReservationGoodsRepositoryTest {
                 .extracting("serviceItemName", "price")
                 .containsExactlyInAnyOrder(
                         tuple("아이템1", 5000),
-                        tuple("아이템1", 5000)
+                        tuple("아이템2", 5000)
                 );
 
     }
@@ -76,16 +76,17 @@ class ReservationGoodsRepositoryTest {
                 .serviceTime(servicesTime)
                 .build();
         servicesRepository.save(service);
-        String serviceItemName = "아이템1";
+        String serviceItemName1 = "아이템1";
+        String serviceItemName2 = "아이템2";
         int price = 5000;
         String superCategory = "가전제품";
         String baseCategory = "에어컨";
         String subCategory = "시스템에어컨";
         ReservationGoods reservationGoods1 = ReservationGoods.createReservationGoods(
-                serviceItemName, price, superCategory, baseCategory, subCategory, service
+                serviceItemName1, price, superCategory, baseCategory, subCategory, service
         );
         ReservationGoods reservationGoods2 = ReservationGoods.createReservationGoods(
-                serviceItemName, price, superCategory, baseCategory, subCategory, service
+                serviceItemName2, price, superCategory, baseCategory, subCategory, service
         );
         return reservationGoodsRepository.saveAll(List.of(reservationGoods1, reservationGoods2));
     }
