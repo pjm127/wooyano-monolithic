@@ -79,13 +79,12 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, reservationGoodsId, worker);
 
-        savePayment(amount,clientEmail,orderId,paymentKey, paymentResponse,paymentResponse.getSuppliedAmount(),paymentResponse.getVat());
+        savePayment(amount,clientEmail,orderId,paymentKey, paymentResponse);
 
         return ReservationResponse.of(reservation);
     }
 
-    private void savePayment(int amount, String clientEmail, String orderId,String paymentKey,
-                             PaymentResponse paymentResponse,int suppliedAmount,int vat) {
+    private void savePayment(int amount, String clientEmail, String orderId,String paymentKey, PaymentResponse paymentResponse) {
         String method = paymentResponse.getMethod();
         String status = paymentResponse.getStatus();
         PaymentMethod paymentMethod = PaymentMethod.fromCode(method);
@@ -98,8 +97,8 @@ public class ReservationServiceImpl implements ReservationService {
                 .clientEmail(clientEmail)
                 .paymentKey(paymentKey)
                 .orderId(orderId)
-                .suppliedAmount(suppliedAmount)
-                .vat(vat)
+                .suppliedAmount(paymentResponse.getSuppliedAmount())
+                .vat(paymentResponse.getVat())
                 .build();
         paymentRepository.save(payment);
     }
