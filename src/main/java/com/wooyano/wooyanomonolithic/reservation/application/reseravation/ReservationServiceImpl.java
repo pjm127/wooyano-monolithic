@@ -2,6 +2,7 @@ package com.wooyano.wooyanomonolithic.reservation.application.reseravation;
 
 
 
+import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.NOT_FOUND_WORKER;
 import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.PAYMENT_AMOUNT_MISMATCH;
 
 import com.wooyano.wooyanomonolithic.global.common.response.ResponseCode;
@@ -70,18 +71,26 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationResponse saveWorkTimeAndReservationAndPayment(String paymentKey, String orderId, int amount,
                                                                 Long serviceId, Long workerId, String userEmail,
                                                                 LocalDate reservationDate, String request, String address,
-                                                                String clientEmail, LocalTime serviceStart, List<Long> reservationGoodsId){
+                                                                String clientEmail, LocalTime serviceStart,
+                                                                    List<Long> reservationGoodsId){
+        Worker worker = workerRepository.findById(workerId)
+                .orElseThrow(() -> new CustomException(NOT_FOUND_WORKER));
 
-        Worker worker = checkAndUpdateWorkerAvailability(workerId, reservationDate, serviceStart);
+        checkWorkerAvailability(worker, reservationDate, serviceStart);
         verifyPayment(orderId, amount);
-        PaymentResponse paymentResponse = requestPaymentAccept(paymentKey, orderId, amount);
+        PaymentResponse paymentResponse = requestPaymentAccept(paymentKey, orderId, amount); //토스 외부 api
 
+        saveReservedTime(reservationDate, serviceStart, worker);
         Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, reservationGoodsId, worker);
-
         savePayment(amount,clientEmail,orderId,paymentKey, paymentResponse);
-
+        //throw new RuntimeException();
         return ReservationResponse.of(reservation);
+    }
+
+    private void saveReservedTime(LocalDate reservationDate, LocalTime serviceStart, Worker worker) {
+        WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(serviceStart, worker, reservationDate);
+        workerTimeRepository.save(saveWorkerTime);
     }
 
     private void savePayment(int amount, String clientEmail, String orderId,String paymentKey, PaymentResponse paymentResponse) {
@@ -116,20 +125,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
-    private Worker checkAndUpdateWorkerAvailability(Long workerId, LocalDate reservationDate, LocalTime serviceStart) {
-        Worker worker = workerRepository.findById(workerId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 작업자입니다."));
-
+    private void checkWorkerAvailability(Worker worker, LocalDate reservationDate, LocalTime serviceStart) {
         Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker, serviceStart,reservationDate);
-
         if(workerTime.isPresent()){
             throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
         }
-        else{
-            WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(serviceStart,worker, reservationDate);
-            workerTimeRepository.save(saveWorkerTime);
-        }
-        return worker;
     }
 
 

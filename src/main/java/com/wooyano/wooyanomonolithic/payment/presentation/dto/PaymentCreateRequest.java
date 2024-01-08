@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 
 @Getter
+@NoArgsConstructor
 public class PaymentCreateRequest {
 
     private String orderId; //주문번호 77

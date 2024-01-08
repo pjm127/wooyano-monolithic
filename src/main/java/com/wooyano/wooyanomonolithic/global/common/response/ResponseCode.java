@@ -27,7 +27,8 @@ public enum ResponseCode {
     INCORRECT_RESERVATION_STATE(HttpStatus.BAD_REQUEST, false, 3030, "잘못된 예약상태입니다."),
     WRONG_APPROACH(HttpStatus.BAD_REQUEST, false, 3040, "잘못된 접근입니다."),
     PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, false, 3050, "결제 금액이 일치하지 않습니다."),
-    NOT_FOUND_SERVICE(HttpStatus.BAD_REQUEST, false, 3060, "서비스가 존재하지 않습니다.");
+    NOT_FOUND_SERVICE(HttpStatus.BAD_REQUEST, false, 3060, "서비스가 존재하지 않습니다."),
+    NOT_FOUND_WORKER(HttpStatus.BAD_REQUEST, false, 3070, "작업자가 존재하지 않습니다."),;
 
 
 
