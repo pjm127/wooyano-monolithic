@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko" >
 
 <head>
     <title>예약하기</title>
     <meta charset="UTF-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="stylesheet" href="./bulma.min.css">
 </head>
@@ -27,6 +27,12 @@
             <label class="label">주문 금액</label>
             <div class="control">
                 <input class="input" type="number" id="amount" placeholder="주문 금액을 입력하세요">
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">예약상품 ID</label>
+            <div class="control">
+                <input class="input" type="text" id="reservationGoodsId" placeholder="예약상품 ID를 입력하세요">
             </div>
         </div>
         <div class="field">
@@ -98,6 +104,7 @@
         // 사용자 입력값 가져오기
         let totalAmount = document.getElementById('amount').value;
         let orderId = document.getElementById('orderId').value;
+        let reservationGoodsId = document.getElementById('reservationGoodsId').value;
         let serviceId = document.getElementById('serviceId').value;
         let workerId = document.getElementById('workerId').value;
         let userEmail = document.getElementById('userEmail').value;
@@ -122,18 +129,16 @@
         localStorage.setItem("address", address);
         localStorage.setItem("clientEmail", clientEmail);
         localStorage.setItem("serviceStart", serviceStart);
-        let reservationGoodsId = [12, 13];  // You may dynamically populate this array based on your needs
+        localStorage.setItem("reservationGoodsId", reservationGoodsId);
 
 // JSON 배열로 저장하지 않고 각 값이 개별적으로 저장
-        reservationGoodsId.forEach(id => {
-            localStorage.setItem(`reservationGoodsId_${id}`, id);
-        });
+
 
         // 추가된 부분 끝
 
         // 예약 정보 생성
         let reservationDto = {
-            reservationGoodsId: [9, 11],
+            reservationGoodsId:reservationGoodsId,
             orderId: orderId,
             serviceId: serviceId,
             workerId: workerId,

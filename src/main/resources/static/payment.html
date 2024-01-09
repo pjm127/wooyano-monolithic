@@ -39,7 +39,7 @@
     let address = localStorage.getItem("address");
     let clientEmail = localStorage.getItem("clientEmail");
     let serviceStart = localStorage.getItem("serviceStart");
-    let reservationGoodsId = JSON.parse(localStorage.getItem("reservationGoodsId"));
+    let reservationGoodsId = localStorage.getItem("reservationGoodsId");
 
     if (!amount || !orderId) {
         alert('예약 정보가 없습니다. 먼저 예약 페이지에서 정보를 입력하세요.');
@@ -70,7 +70,7 @@
             "amount": amount,
             "orderId":  orderId,
             "orderName": "토스 티셔츠 외 2건",
-            "successUrl": `${successUrl}?serviceId=${serviceId}&workerId=${workerId}&userEmail=${userEmail}&reservationDate=${reservationDate}&request=${request}&address=${address}&clientEmail=${clientEmail}&serviceStart=${serviceStart}&reservationGoodsId=${JSON.stringify(reservationGoodsId)}`,
+            "successUrl": `${successUrl}?serviceId=${serviceId}&workerId=${workerId}&userEmail=${userEmail}&reservationDate=${reservationDate}&request=${request}&address=${address}&clientEmail=${clientEmail}&serviceStart=${serviceStart}&reservationGoodsId=${reservationGoodsId}`,
             "failUrl": failUrl,
             "cardCompany": null,
             "cardInstallmentPlan": null,

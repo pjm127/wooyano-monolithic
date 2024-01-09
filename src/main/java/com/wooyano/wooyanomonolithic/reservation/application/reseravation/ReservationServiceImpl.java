@@ -89,12 +89,11 @@ public class ReservationServiceImpl implements ReservationService {
                                                                 String clientEmail, LocalTime serviceStart,
                                                                 List<Long> reservationGoodsId,int suppliedAmount, int vat
                                                                 ,String status, String method, Worker worker){
-
         saveReservedTime(reservationDate, serviceStart, worker);
         Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, reservationGoodsId, worker);
         savePayment(amount,clientEmail,orderId,paymentKey, suppliedAmount, vat,status,method);
-        //throw new RuntimeException();
+
         return ReservationResponse.of(reservation);
     }
 

@@ -11,7 +11,6 @@ public interface PaymentService {
 
     void savePaymentTemporarily(PaymentCreateServiceRequest request);
 
-
     List<PaymentResultResponse> getPaymentsList();
 
 }

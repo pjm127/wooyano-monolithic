@@ -69,13 +69,13 @@ public class TossRequestPaymentAccept {
         params.put("amount", amount);
 
 
-        String u = TossPaymentConfig.URL + "confirm" ; //"https://api.tosspayments.com/v1/payments/confirm"
+        String url = TossPaymentConfig.URL + "confirm" ; //"https://api.tosspayments.com/v1/payments/confirm"
         HttpEntity<String> jsonObjectHttpEntity = new HttpEntity<>(params.toString(), headers);
 
-        PaymentResponse paymentSuccessDto = restTemplate.postForObject(u,
+        PaymentResponse paymentResponse = restTemplate.postForObject(url,
                 jsonObjectHttpEntity,
                 PaymentResponse.class);
-        return paymentSuccessDto;
+        return paymentResponse;
 
     }
     //헤더 필수값
