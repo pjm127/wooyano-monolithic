@@ -8,21 +8,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class RedisService {
+public class RedisServiceWebhook {
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-
+    @Qualifier("redisTemplateTwo")
+    private RedisTemplate<String, String> redisTemplateTwo;
 
     public void setValues(String key, String value, Duration duration){
-        redisTemplate.opsForValue().set(key, value, duration);
+        redisTemplateTwo.opsForValue().set(key, value, duration);
     }
     @Transactional(readOnly = true)
     public String getValues(String key){
-        return redisTemplate.opsForValue().get(key);
+        return redisTemplateTwo.opsForValue().get(key);
     }
-
-
-
-
-
 }
