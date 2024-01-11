@@ -1,6 +1,10 @@
 package com.wooyano.wooyanomonolithic.webhook.domain;
 
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatusConverter;
+import com.wooyano.wooyanomonolithic.webhook.domain.enumPackage.PaymentStatus;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
@@ -21,16 +25,20 @@ public class ReservationHistoryWebhook {
     private String orderId;
     private LocalDateTime createdAt;
 
+    @Convert(converter = PaymentStatusConverter.class)
+    private PaymentStatus paymentStatus;
     @Builder
-    private ReservationHistoryWebhook(String orderId, LocalDateTime createdAt) {
+    private ReservationHistoryWebhook(String orderId, LocalDateTime createdAt, PaymentStatus paymentStatus) {
         this.orderId = orderId;
         this.createdAt = createdAt;
+        this.paymentStatus = paymentStatus;
     }
 
-    public static ReservationHistoryWebhook create(String orderId, LocalDateTime createdAt) {
+    public static ReservationHistoryWebhook create(String orderId, LocalDateTime createdAt, PaymentStatus paymentStatus) {
         return ReservationHistoryWebhook.builder()
             .orderId(orderId)
             .createdAt(createdAt)
+            .paymentStatus(paymentStatus)
             .build();
     }
 }
