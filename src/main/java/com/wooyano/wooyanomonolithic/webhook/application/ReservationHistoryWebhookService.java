@@ -1,8 +1,8 @@
 package com.wooyano.wooyanomonolithic.webhook.application;
 
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
 import com.wooyano.wooyanomonolithic.webhook.application.dto.WebhookServiceRequest;
 import com.wooyano.wooyanomonolithic.webhook.domain.ReservationHistoryWebhook;
-import com.wooyano.wooyanomonolithic.webhook.domain.enumPackage.PaymentStatus;
 import com.wooyano.wooyanomonolithic.webhook.infrastructure.ReservationHistoryRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;

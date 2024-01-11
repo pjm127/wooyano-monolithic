@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/webhook")
 public class ReservationHistoryWebhookController {
     private final ReservationHistoryWebhookService webhookService;
-    @PostMapping("/test")
-    public void test(@RequestBody WebhookRequest webhookRequest) {
+    @PostMapping("/save")
+    public void saveWebhook(@RequestBody WebhookRequest webhookRequest) {
         webhookService.saveWebhook(webhookRequest.toServiceRequest());
     }
 

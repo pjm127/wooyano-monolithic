@@ -55,8 +55,6 @@ public class TossRequestPaymentAccept {
                 userEmail, reservationDate, request, address, clientEmail, serviceStart, reservationGoodsId,paymentResponse.getSuppliedAmount(),
                 paymentResponse.getVat(),paymentResponse.getStatus(),paymentResponse.getMethod(),worker);
 
-
-
     }
 
     //토스페이먼츠 외부 api 결제 승인 요청

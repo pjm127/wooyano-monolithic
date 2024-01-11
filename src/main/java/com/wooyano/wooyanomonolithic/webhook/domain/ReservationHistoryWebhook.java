@@ -1,7 +1,7 @@
 package com.wooyano.wooyanomonolithic.webhook.domain;
 
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatusConverter;
-import com.wooyano.wooyanomonolithic.webhook.domain.enumPackage.PaymentStatus;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
