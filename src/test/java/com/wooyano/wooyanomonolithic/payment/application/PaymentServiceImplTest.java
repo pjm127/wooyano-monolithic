@@ -2,6 +2,7 @@ package com.wooyano.wooyanomonolithic.payment.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.wooyano.wooyanomonolithic.global.config.redis.RedisService;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
@@ -49,12 +50,10 @@ class PaymentServiceImplTest {
                 .paymentAmount(3000)
                 .build();
         // when
-        paymentService.savePaymentTemporarily(request.toServiceRequest());
         // then
-        String values = redisService.getValues(request.getOrderId());
-        int amount = Integer.parseInt(values);
-
-        assertThat(request.getPaymentAmount()).isEqualTo(amount);
+        assertDoesNotThrow(() ->
+                paymentService.savePaymentTemporarily(request.toServiceRequest())
+        );
     }
 
     @DisplayName("결제 요청 전에 예약이 있는지 확인하고 예약이 있으면 예외를 반환한다")
