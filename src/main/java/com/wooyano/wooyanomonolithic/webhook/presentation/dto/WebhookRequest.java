@@ -1,6 +1,8 @@
 package com.wooyano.wooyanomonolithic.webhook.presentation.dto;
 
 import com.wooyano.wooyanomonolithic.webhook.application.dto.WebhookServiceRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +20,11 @@ public class WebhookRequest {
     }
 
     public WebhookServiceRequest toServiceRequest() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+        LocalDateTime createdAtDateTime = LocalDateTime.parse(createdAt, formatter);
+
         return WebhookServiceRequest.builder()
-            .createdAt(createdAt)
+            .createdAt(createdAtDateTime)
             .data(data)
             .build();
     }

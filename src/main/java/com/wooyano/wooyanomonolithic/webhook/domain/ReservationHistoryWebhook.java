@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReservationHistory {
+public class ReservationHistoryWebhook {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
@@ -22,13 +22,13 @@ public class ReservationHistory {
     private LocalDateTime createdAt;
 
     @Builder
-    private ReservationHistory(String orderId, LocalDateTime createdAt) {
+    private ReservationHistoryWebhook(String orderId, LocalDateTime createdAt) {
         this.orderId = orderId;
         this.createdAt = createdAt;
     }
 
-    public static ReservationHistory create(String orderId, LocalDateTime createdAt) {
-        return ReservationHistory.builder()
+    public static ReservationHistoryWebhook create(String orderId, LocalDateTime createdAt) {
+        return ReservationHistoryWebhook.builder()
             .orderId(orderId)
             .createdAt(createdAt)
             .build();
