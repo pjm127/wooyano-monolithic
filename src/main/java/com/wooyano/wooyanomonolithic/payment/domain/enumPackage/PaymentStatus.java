@@ -27,7 +27,7 @@ public enum PaymentStatus implements CodeValue {
     public String getValue() {
         return value;
     }
-    public static PaymentStatus fromCode(String value) {
+    public static PaymentStatus findByValue(String value) {
         for (PaymentStatus status : values()) {
             if (status.value.equals(value)) {
                 return status;

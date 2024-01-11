@@ -13,16 +13,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.data.redis1.port}")
+    @Value("${spring.data.redis.port}")
     private int port1;
 
-    @Value("${spring.data.redis1.host}")
+    @Value("${spring.data.redis.host}")
     private String host1;
-
-    @Value("${spring.data.redis2.port}")
-    private int port2;
-    @Value("${spring.data.redis2.host}")
-    private String host2;
 
 
 
@@ -30,25 +25,14 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactoryOne() {
         return new LettuceConnectionFactory(host1, port1);
     }
-    @Bean
-    public RedisConnectionFactory redisConnectionFactoryTwo() {
-        return new LettuceConnectionFactory(host2, port2);
-    }
 
-    @Bean(name = "redisTemplate")
-    public RedisTemplate<String, String> redisTemplateOne() {
+    @Bean
+    public RedisTemplate<String, String> redisTemplate() {
         RedisTemplate<String, String> redisTemplateOne = new RedisTemplate<>();
         redisTemplateOne.setKeySerializer(new StringRedisSerializer());
         redisTemplateOne.setValueSerializer(new StringRedisSerializer());
         redisTemplateOne.setConnectionFactory(redisConnectionFactoryOne());
         return redisTemplateOne;
     }
-    @Bean
-    public RedisTemplate<String, String> redisTemplateTwo() {
-        RedisTemplate<String, String> redisTemplateTwo = new RedisTemplate<>();
-        redisTemplateTwo.setKeySerializer(new StringRedisSerializer());
-        redisTemplateTwo.setValueSerializer(new StringRedisSerializer());
-        redisTemplateTwo.setConnectionFactory(redisConnectionFactoryTwo());
-        return redisTemplateTwo;
-    }
+
 }

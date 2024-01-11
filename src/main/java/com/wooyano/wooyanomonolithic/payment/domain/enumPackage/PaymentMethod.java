@@ -28,7 +28,7 @@ public enum PaymentMethod implements CodeValue {
         return value;
     }
 
-    public static PaymentMethod fromCode(String value) {
+    public static PaymentMethod findByValue(String value) {
         for (PaymentMethod type : values()) {
             if (type.value.equals(value)) {
                 return type;

@@ -24,7 +24,7 @@ public enum ReservationState implements CodeValue {
         this.value = value;
     }
     @JsonCreator
-    public static ReservationState fromCode(String code) {
+    public static ReservationState findByValue(String code) {
         for (ReservationState type : values()) {
             if (type.code.equals(code)) {
                 return type;

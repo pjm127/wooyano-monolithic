@@ -104,8 +104,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     private void savePayment(int amount, String clientEmail, String orderId,String paymentKey,
                              int suppliedAmount, int vat,String status, String method) {
-        PaymentMethod paymentMethod = PaymentMethod.fromCode(method);
-        PaymentStatus paymentStatus = PaymentStatus.fromCode(status);
+        PaymentMethod paymentMethod = PaymentMethod.findByValue(method);
+        PaymentStatus paymentStatus = PaymentStatus.findByValue(status);
         Payment payment = Payment.builder()
                 .totalAmount(amount)
                 .paymentStatus(paymentStatus)
