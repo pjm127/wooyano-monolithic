@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import com.wooyano.wooyanomonolithic.TestContainerConfig;
 import com.wooyano.wooyanomonolithic.global.config.redis.RedisService;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.payment.presentation.dto.PaymentCreateRequest;
@@ -18,9 +19,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+@ExtendWith(TestContainerConfig.class)
 @SpringBootTest
 class PaymentServiceImplTest {
 
@@ -46,7 +49,7 @@ class PaymentServiceImplTest {
                 .workerId(worker.getId())
                 .serviceStartTime(LocalTime.of(10, 0, 0))
                 .reservationDate(LocalDate.of(2024, 01, 04))
-                .orderId("주문번호")
+                .orderId("testOrderId")
                 .paymentAmount(3000)
                 .build();
         // when
