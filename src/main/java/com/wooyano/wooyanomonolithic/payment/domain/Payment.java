@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Payment extends BaseEntity{
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,11 +59,13 @@ public class Payment extends BaseEntity{
     private int vat; //부가세 10퍼
 
 
+    private OffsetDateTime approvedAt; //결제 승인 날짜 시간
+
 
     @Builder
     private Payment(String clientEmail, PaymentMethod payType, int totalAmount,
                     PaymentStatus payStatus, String orderId, String paymentKey,
-                    int suppliedAmount, int vat) {
+                    int suppliedAmount, int vat, OffsetDateTime  approvedAt ) {
         this.clientEmail = clientEmail;
         this.paymentType = payType;
         this.totalAmount = totalAmount;
@@ -71,11 +74,12 @@ public class Payment extends BaseEntity{
         this.paymentKey = paymentKey;
         this.suppliedAmount = suppliedAmount;
         this.vat = vat;
+        this.approvedAt  = approvedAt ;
     }
 
     public static Payment createPayment(String clientEmail, PaymentMethod payType, int totalAmount,
                                         PaymentStatus paymentStatus, String orderId,
-                                        String paymentKey, int suppliedAmount, int vat) {
+                                        String paymentKey, int suppliedAmount, int vat, OffsetDateTime approvedAt ) {
         return Payment.builder()
                 .clientEmail(clientEmail)
                 .paymentType(payType)
@@ -85,6 +89,7 @@ public class Payment extends BaseEntity{
                 .paymentKey(paymentKey)
                 .suppliedAmount(suppliedAmount)
                 .vat(vat)
+                .approvedAt (approvedAt )
                 .build();
     }
 

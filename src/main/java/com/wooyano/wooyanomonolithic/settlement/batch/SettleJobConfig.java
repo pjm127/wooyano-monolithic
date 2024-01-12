@@ -79,8 +79,8 @@ public class SettleJobConfig {
     //@Value("#{jobParameters['requestDate']}") String requestDate
     @Bean
     @StepScope
-    public JpaPagingItemReader<PaymentResult> reader(@Value("#{jobParameters['requestDate']}") String requestDate) {
-
+    public JpaPagingItemReader<PaymentResult> reader(@Value("#{jobParameters['requestDate']}") String requestDate2) {
+        String requestDate = "2023-11-09";
         Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("startDateTime", LocalDateTime.parse(requestDate + "T00:00:00"));
         parameters.put("endDateTime", LocalDateTime.parse(requestDate + "T23:59:59"));
