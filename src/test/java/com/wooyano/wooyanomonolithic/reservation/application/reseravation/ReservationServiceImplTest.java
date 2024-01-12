@@ -1,11 +1,13 @@
 package com.wooyano.wooyanomonolithic.reservation.application.reseravation;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.wooyano.wooyanomonolithic.TestContainerConfig;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
@@ -70,11 +72,25 @@ class ReservationServiceImplTest {
         LocalTime serviceStart = LocalTime.of(9, 0,0);
 
         // when, then
-        assertThrows(CustomException.class, () ->
+
+        assertThatThrownBy(() ->
                 reservationService.checkWorkerAvailability(worker, reservationDate, serviceStart)
-        );
+        )
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining("이미 예약된 서비스입니다.");
 
     }
+
+    @DisplayName("레디스에 임시저장했던 주문번호와 금액을 비교한다")
+    @Test
+    public void verifyPayment(){
+        // given
+
+        // when
+
+        // then
+    }
+
 
     private Worker getWorker() {
         LocalTime openTime = LocalTime.of(9, 0, 0);
