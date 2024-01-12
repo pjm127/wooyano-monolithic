@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface ReservationService {
 
-    void checkWorkerAvailability(Worker worker,LocalDate reservationDate,LocalTime serviceStart);
-    void verifyPayment(String orderId, int amount);
+//    void checkWorkerAvailability(Worker worker,LocalDate reservationDate,LocalTime serviceStart);
+    //void verifyPayment(String orderId, int amount);
 
 
 
@@ -21,7 +21,7 @@ public interface ReservationService {
                                                              LocalDate reservationDate, String request, String address,
                                                              String clientEmail, LocalTime serviceStart, List<Long> reservationGoodsId
                                                             , int suppliedAmount, int vat, String status, String method,
-                                                             Worker worker);
+                                                             Worker worker, String approvedAt);
 
 
     // 클라이언트 별 예약 대기 상태 목록 조회

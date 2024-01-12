@@ -110,12 +110,13 @@ class ReservationServiceImplTest {
         int vat = 2000;
         String status = "DONE";
         String method = "간편결제";
+        String approvedAt = "2022-01-01T00:00:00+09:00";
         Worker worker = getWorker();
         // when
         ReservationResponse reservationResponse = reservationService.saveWorkTimeAndReservationAndPayment(paymentKey,
                 orderId, amount, serviceId, workerId,
                 userEmail, reservationDate, request, address, clientEmail, serviceStart, reservationGoodsId,
-                suppliedAmount, vat, status, method, worker);
+                suppliedAmount, vat, status, method, worker,approvedAt);
         // then
         assertThat(reservationResponse)
                 .extracting("orderId", "amount", "reservationDate", "request", "address", "serviceStart")

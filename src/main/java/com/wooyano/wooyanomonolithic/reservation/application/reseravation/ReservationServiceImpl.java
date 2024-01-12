@@ -28,6 +28,8 @@ import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerTimeRepository;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -64,21 +66,6 @@ public class ReservationServiceImpl implements ReservationService {
     private final TossPaymentConfig tossPaymentConfig;
 
 
-    public void checkWorkerAvailability(Worker worker, LocalDate reservationDate, LocalTime serviceStart) {
-        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker, serviceStart,reservationDate);
-        if(workerTime.isPresent()){
-            throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
-        }
-    }
-
-    public void verifyPayment(String orderId, int amount) {
-        String values = redisService.getValues(orderId);
-        int saveAmount= Integer.parseInt(values);
-        if (!Objects.equals(saveAmount, amount)) {
-            throw new CustomException(PAYMENT_AMOUNT_MISMATCH);
-        }
-    }
-
 
     // 작업자+예약 저장 및 결제 승인 및 결제,주문저장
     @Transactional
@@ -88,11 +75,11 @@ public class ReservationServiceImpl implements ReservationService {
                                                                 LocalDate reservationDate, String request, String address,
                                                                 String clientEmail, LocalTime serviceStart,
                                                                 List<Long> reservationGoodsId,int suppliedAmount, int vat
-                                                                ,String status, String method, Worker worker){
+                                                                ,String status, String method, Worker worker, String approvedAt){
         saveReservedTime(reservationDate, serviceStart, worker);
         Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, reservationGoodsId, worker);
-        savePayment(amount,clientEmail,orderId,paymentKey, suppliedAmount, vat,status,method);
+        savePayment(amount,clientEmail,orderId,paymentKey, suppliedAmount, vat,status,method,approvedAt);
 
         return ReservationResponse.of(reservation);
     }
@@ -103,9 +90,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private void savePayment(int amount, String clientEmail, String orderId,String paymentKey,
-                             int suppliedAmount, int vat,String status, String method) {
+                             int suppliedAmount, int vat,String status, String method, String stringApprovedAt) {
         PaymentMethod paymentMethod = PaymentMethod.findByValue(method);
         PaymentStatus paymentStatus = PaymentStatus.findByValue(status);
+        OffsetDateTime approvedAt = OffsetDateTime.parse(stringApprovedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
         Payment payment = Payment.builder()
                 .totalAmount(amount)
                 .paymentStatus(paymentStatus)
@@ -115,6 +104,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .orderId(orderId)
                 .suppliedAmount(suppliedAmount)
                 .vat(vat)
+                .approvedAt(approvedAt)
                 .build();
         paymentRepository.save(payment);
     }
