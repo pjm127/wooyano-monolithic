@@ -1,5 +1,6 @@
 package com.wooyano.wooyanomonolithic.reservation.application.reseravation;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -9,6 +10,8 @@ import static org.mockito.Mockito.when;
 
 import com.wooyano.wooyanomonolithic.TestContainerConfig;
 import com.wooyano.wooyanomonolithic.global.exception.CustomException;
+import com.wooyano.wooyanomonolithic.reservation.dto.reservation.ReservationResponse;
+import com.wooyano.wooyanomonolithic.reservation.infrastructure.ReservationRepository;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;
@@ -18,6 +21,8 @@ import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerRepository;
 import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerTimeRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,9 +45,12 @@ class ReservationServiceImplTest {
     private WorkerRepository workerRepository;
     @Autowired
     private WorkerTimeRepository workerTimeRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @AfterEach
     void tearDown() {
+        reservationRepository.deleteAllInBatch();
         workerTimeRepository.deleteAllInBatch();
         workerRepository.deleteAllInBatch();
         servicesRepository.deleteAllInBatch();
@@ -81,16 +89,38 @@ class ReservationServiceImplTest {
 
     }
 
-    @DisplayName("레디스에 임시저장했던 주문번호와 금액을 비교한다")
+    @DisplayName("작업자의 작업일정, 예약 정보, 결제 정보를 저장한다")
     @Test
-    public void verifyPayment(){
+    public void saveWorkTimeAndReservationAndPayment(){
         // given
 
+        String paymentKey = "paymentKey";
+        String orderId = "testOrderId2";
+        int amount = 10000;
+        Long serviceId = 3L;
+        Long workerId = 2L;
+        String userEmail = "user@example.com";
+        LocalDate reservationDate = LocalDate.of(2024, 01, 04);
+        String request = "request";
+        String address = "address";
+        String clientEmail = "client@example.com";
+        LocalTime serviceStart = LocalTime.of(10, 0, 0);
+        List<Long> reservationGoodsId = List.of(1L, 2L);
+        int suppliedAmount = 8000;
+        int vat = 2000;
+        String status = "DONE";
+        String method = "간편결제";
+        Worker worker = getWorker();
         // when
-
+        ReservationResponse reservationResponse = reservationService.saveWorkTimeAndReservationAndPayment(paymentKey,
+                orderId, amount, serviceId, workerId,
+                userEmail, reservationDate, request, address, clientEmail, serviceStart, reservationGoodsId,
+                suppliedAmount, vat, status, method, worker);
         // then
+        assertThat(reservationResponse)
+                .extracting("orderId", "amount", "reservationDate", "request", "address", "serviceStart")
+                .contains("testOrderId2", 10000, LocalDate.of(2024, 01, 04), "request", "address", LocalTime.of(10, 0, 0));
     }
-
 
     private Worker getWorker() {
         LocalTime openTime = LocalTime.of(9, 0, 0);
