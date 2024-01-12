@@ -33,10 +33,10 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class ReservationAccept {
     private final ReservationService reservationService;
-    private final TossPaymentConfig tossPaymentConfig;
     private final WorkerRepository workerRepository;
     private final WorkerTimeRepository workerTimeRepository;
     private final RedisService redisService;
+    private final TossPaymentAccept tossPaymentAccept;
 
     public ReservationResponse createReservation(String paymentKey, String orderId, int amount,
                      Long serviceId, Long workerId, String userEmail,
@@ -49,7 +49,7 @@ public class ReservationAccept {
         checkWorkerAvailability(worker, reservationDate, serviceStart);
         verifyPayment(orderId, amount);
 
-        PaymentResponse paymentResponse = requestPaymentAccept(paymentKey, orderId, amount); //토스 외부 api
+        PaymentResponse paymentResponse = tossPaymentAccept.requestPaymentAccept(paymentKey, orderId, amount);
 
         return reservationService.saveWorkTimeAndReservationAndPayment(paymentKey,
                 orderId, amount, serviceId, workerId,
@@ -74,36 +74,7 @@ public class ReservationAccept {
 
 
 
-    //토스페이먼츠 외부 api 결제 승인 요청
-    private PaymentResponse requestPaymentAccept(String paymentKey, String orderId, Integer amount) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = getHeaders();
-        JSONObject params = new JSONObject();
-        params.put("paymentKey", paymentKey);
-        params.put("orderId", orderId);
-        params.put("amount", amount);
 
-
-        String url = TossPaymentConfig.URL + "confirm" ; //"https://api.tosspayments.com/v1/payments/confirm"
-        HttpEntity<String> jsonObjectHttpEntity = new HttpEntity<>(params.toString(), headers);
-
-        PaymentResponse paymentResponse = restTemplate.postForObject(url,
-                jsonObjectHttpEntity,
-                PaymentResponse.class);
-        return paymentResponse;
-
-    }
-    //헤더 필수값
-    private HttpHeaders getHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        String encodedAuthKey = new String(
-                Base64.getEncoder().encode((tossPaymentConfig.getTestSecretApiKey() + ":").getBytes(StandardCharsets.UTF_8)));
-        headers.setBasicAuth(encodedAuthKey);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        UUID randomUUID = UUID.randomUUID();
-        headers.set("Idempotency-Key", randomUUID.toString());
-        return headers;
-    }
 
 }
 
