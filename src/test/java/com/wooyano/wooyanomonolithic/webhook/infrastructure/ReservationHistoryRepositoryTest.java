@@ -1,7 +1,6 @@
 package com.wooyano.wooyanomonolithic.webhook.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
 import com.wooyano.wooyanomonolithic.webhook.domain.ReservationHistoryWebhook;
@@ -16,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class ReservationHistoryRepositoryTest {
 
     @Autowired
-    private ReservationHistoryRepository reservationHistoryRepository;
+    private ReservationHistoryWebhookRepository reservationHistoryRepository;
 
     @DisplayName("10분 간격으로 저장된 웹훅의 갯수를 count한다")
     @Test

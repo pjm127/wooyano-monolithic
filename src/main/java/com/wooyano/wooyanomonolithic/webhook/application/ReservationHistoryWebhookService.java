@@ -1,9 +1,12 @@
 package com.wooyano.wooyanomonolithic.webhook.application;
 
+import static com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus.DONE;
+
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
+import com.wooyano.wooyanomonolithic.payment.infrastructure.PaymentRepository;
 import com.wooyano.wooyanomonolithic.webhook.application.dto.WebhookServiceRequest;
 import com.wooyano.wooyanomonolithic.webhook.domain.ReservationHistoryWebhook;
-import com.wooyano.wooyanomonolithic.webhook.infrastructure.ReservationHistoryRepository;
+import com.wooyano.wooyanomonolithic.webhook.infrastructure.ReservationHistoryWebhookRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +16,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class ReservationHistoryWebhookService {
-    private final ReservationHistoryRepository reservationHistoryRepository;
+    private final ReservationHistoryWebhookRepository reservationHistoryRepository;
+    private final PaymentRepository paymentRepository;
 
     public void saveWebhook(WebhookServiceRequest request) {
         String orderId = request.getData().getOrderId();
@@ -25,7 +29,14 @@ public class ReservationHistoryWebhookService {
         reservationHistoryRepository.save(reservationHistory);
     }
 
-    public long countByApprovedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return reservationHistoryRepository.countByApprovedAtBetween(startDateTime, endDateTime,PaymentStatus.DONE);
+    public boolean comparePaymentAndWebhookCount(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        long countWebhook = reservationHistoryRepository.countByApprovedAtBetweenAndStatus(startDateTime, endDateTime, DONE);
+        long countPayment = paymentRepository.countByApprovedAtBetweenAndStatus(startDateTime, endDateTime, DONE);
+
+        return countWebhook == countPayment;
+
     }
+
+
+
 }

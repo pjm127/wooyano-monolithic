@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ReservationHistoryRepository extends JpaRepository<ReservationHistoryWebhook,Long> {
+public interface ReservationHistoryWebhookRepository extends JpaRepository<ReservationHistoryWebhook,Long> {
 
     @Query("SELECT COUNT(e) FROM ReservationHistoryWebhook e WHERE e.approvedAt BETWEEN :startDateTime AND :endDateTime"
             + " AND e.paymentStatus = :status")
