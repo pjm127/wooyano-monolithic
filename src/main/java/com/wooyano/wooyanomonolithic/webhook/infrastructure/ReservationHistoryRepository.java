@@ -11,7 +11,7 @@ public interface ReservationHistoryRepository extends JpaRepository<ReservationH
 
     @Query("SELECT COUNT(e) FROM ReservationHistoryWebhook e WHERE e.approvedAt BETWEEN :startDateTime AND :endDateTime"
             + " AND e.paymentStatus = :status")
-    long countByApprovedAtBetween(@Param("startDateTime") LocalDateTime startDateTime,
+    long countByApprovedAtBetweenAndStatus(@Param("startDateTime") LocalDateTime startDateTime,
                                   @Param("endDateTime") LocalDateTime endDateTime,
                                   @Param("status") PaymentStatus status);
 }

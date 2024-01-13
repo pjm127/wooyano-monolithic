@@ -1,6 +1,7 @@
 package com.wooyano.wooyanomonolithic.payment.infrastructure;
 
 import com.wooyano.wooyanomonolithic.payment.domain.Payment;
+import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
 import com.wooyano.wooyanomonolithic.payment.presentation.dto.PaymentResultResponse;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +18,12 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                                                                  @Param("endDate") LocalDateTime endDate);*/
 
     Payment findByOrderId(String orderId);
+
+    @Query("SELECT COUNT(p) FROM Payment p WHERE p.approvedAt BETWEEN :startDateTime AND :endDateTime"
+            + " AND p.paymentStatus = :status")
+    long countByApprovedAtBetweenAndStatus(@Param("startDateTime") LocalDateTime startDateTime,
+                                  @Param("endDateTime") LocalDateTime endDateTime,
+                                  @Param("status") PaymentStatus status);
 
 }
 
