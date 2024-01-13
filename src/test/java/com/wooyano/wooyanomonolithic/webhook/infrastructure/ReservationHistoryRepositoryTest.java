@@ -20,7 +20,7 @@ class ReservationHistoryRepositoryTest {
 
     @DisplayName("10분 간격으로 저장된 웹훅의 갯수를 count한다")
     @Test
-    public void countByApprovedAtBetween(){
+    public void countByApprovedAtBetweenAndStatus(){
         // given
         LocalDateTime startDateTime = LocalDateTime.of(2021, 9, 1, 0, 0, 0);
         ReservationHistoryWebhook webhook1 = ReservationHistoryWebhook.create("testOrderId2", startDateTime,
@@ -31,7 +31,7 @@ class ReservationHistoryRepositoryTest {
                 PaymentStatus.DONE);
         reservationHistoryRepository.saveAll(List.of(webhook1,webhook2,webhook3));
         // when
-        long count = reservationHistoryRepository.countByApprovedAtBetween(startDateTime, startDateTime.plusMinutes(10),
+        long count = reservationHistoryRepository.countByApprovedAtBetweenAndStatus(startDateTime, startDateTime.plusMinutes(10),
                 PaymentStatus.DONE);
         // then
         assertThat(count).isEqualTo(2);
