@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,7 +69,7 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false, length = 30, name = "order_id")
     private String orderId;
 
-    private OffsetDateTime approvedAt;
+    private LocalDateTime approvedAt;
 
 
     public void approveStatus(ReservationState status) {
@@ -79,7 +79,7 @@ public class Reservation extends BaseEntity {
     public static Reservation createReservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId,
                                                 Worker worker, LocalDate reservationDate, LocalTime serviceStart,
                                                 int totalPrice, String cancelDesc,
-                                                String request, String address,String orderId,OffsetDateTime approvedAt) {
+                                                String request, String address,String orderId,LocalDateTime approvedAt) {
         return Reservation.builder()
                 .reservationGoods(reservationGoods)
                 .userEmail(userEmail)
@@ -101,7 +101,7 @@ public class Reservation extends BaseEntity {
     private Reservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId, Worker worker,
                        LocalDate reservationDate, LocalTime serviceStart,
                        ReservationState reservationState, int totalPrice, String cancelDesc, String request,
-                       String address,String orderId,OffsetDateTime approvedAt) {
+                       String address,String orderId,LocalDateTime approvedAt) {
         this.reservationItems = reservationGoods.stream().map(item-> new ReservationItem(this,item)).collect(Collectors.toList());
         this.userEmail = userEmail;
         this.serviceId = serviceId;

@@ -23,21 +23,21 @@ public class ReservationHistoryWebhook {
     private Long id;
 
     private String orderId;
-    private LocalDateTime createdAt;
+    private LocalDateTime approvedAt;
 
     @Convert(converter = PaymentStatusConverter.class)
     private PaymentStatus paymentStatus;
     @Builder
-    private ReservationHistoryWebhook(String orderId, LocalDateTime createdAt, PaymentStatus paymentStatus) {
+    private ReservationHistoryWebhook(String orderId, LocalDateTime approvedAt, PaymentStatus paymentStatus) {
         this.orderId = orderId;
-        this.createdAt = createdAt;
+        this.approvedAt = approvedAt;
         this.paymentStatus = paymentStatus;
     }
 
-    public static ReservationHistoryWebhook create(String orderId, LocalDateTime createdAt, PaymentStatus paymentStatus) {
+    public static ReservationHistoryWebhook create(String orderId, LocalDateTime approvedAt, PaymentStatus paymentStatus) {
         return ReservationHistoryWebhook.builder()
             .orderId(orderId)
-            .createdAt(createdAt)
+            .approvedAt(approvedAt)
             .paymentStatus(paymentStatus)
             .build();
     }

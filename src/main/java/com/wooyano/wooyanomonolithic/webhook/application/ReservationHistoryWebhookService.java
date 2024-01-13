@@ -23,6 +23,9 @@ public class ReservationHistoryWebhookService {
         log.info("orderId: {},createdAt: {},status={}", orderId, createdAt,status);
         ReservationHistoryWebhook reservationHistory = ReservationHistoryWebhook.create(orderId, createdAt,paymentStatus);
         reservationHistoryRepository.save(reservationHistory);
+    }
 
+    public long countByApprovedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return reservationHistoryRepository.countByApprovedAtBetween(startDateTime, endDateTime,PaymentStatus.DONE);
     }
 }

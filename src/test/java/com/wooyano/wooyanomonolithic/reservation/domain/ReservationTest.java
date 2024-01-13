@@ -8,6 +8,7 @@ import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.worker.domain.Worker;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +36,10 @@ class ReservationTest {
         String request = "요청사항";
         String address = "서울시 강남구";
         String orderId = "주문번호";
+        LocalDateTime approvedAt = LocalDateTime.of(2024, 1, 4, 10, 0, 0);
         // when
         Reservation reservation = Reservation.createReservation(reservationGoods, userEmail, serviceId, worker,
-                reservationDate, serviceStart, totalPrice, cancelDesc, request, address, orderId);
+                reservationDate, serviceStart, totalPrice, cancelDesc, request, address, orderId,approvedAt);
         // then
         assertThat(reservation.getReservationState()).isEqualByComparingTo(ReservationState.WAIT);
     }

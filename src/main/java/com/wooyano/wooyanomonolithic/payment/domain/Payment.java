@@ -12,7 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,13 +59,13 @@ public class Payment {
     private int vat; //부가세 10퍼
 
 
-    private OffsetDateTime approvedAt; //결제 승인 날짜 시간
+    private LocalDateTime approvedAt; //결제 승인 날짜 시간
 
 
     @Builder
     private Payment(String clientEmail, PaymentMethod payType, int totalAmount,
                     PaymentStatus payStatus, String orderId, String paymentKey,
-                    int suppliedAmount, int vat, OffsetDateTime  approvedAt ) {
+                    int suppliedAmount, int vat, LocalDateTime  approvedAt ) {
         this.clientEmail = clientEmail;
         this.paymentType = payType;
         this.totalAmount = totalAmount;
@@ -79,7 +79,7 @@ public class Payment {
 
     public static Payment createPayment(String clientEmail, PaymentMethod payType, int totalAmount,
                                         PaymentStatus paymentStatus, String orderId,
-                                        String paymentKey, int suppliedAmount, int vat, OffsetDateTime approvedAt ) {
+                                        String paymentKey, int suppliedAmount, int vat, LocalDateTime approvedAt ) {
         return Payment.builder()
                 .clientEmail(clientEmail)
                 .paymentType(payType)

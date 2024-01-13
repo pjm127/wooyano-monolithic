@@ -7,7 +7,7 @@ import com.wooyano.wooyanomonolithic.payment.domain.Payment;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentMethod;
 import com.wooyano.wooyanomonolithic.payment.domain.enumPackage.PaymentStatus;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,10 +23,10 @@ class PaymentRepositoryTest {
     @Test
     public void findByOrderId(){
         // given
-        OffsetDateTime offsetDateTime = OffsetDateTime.of(2022, 1, 1, 0, 0, 0, 0, ZoneOffset.ofHours(9));
+        LocalDateTime localDateTime = LocalDateTime.of(2021, 9, 1, 0, 0, 0);
         Payment payment = Payment.createPayment("테스트 이메일", PaymentMethod.EASY_PAYMENT, 1000
                 , PaymentStatus.DONE, "test order id", "test payment key",900,100,
-                offsetDateTime);
+                localDateTime);
         Payment save = paymentRepository.save(payment);
         // when
         Payment savePayment = paymentRepository.findByOrderId(payment.getOrderId());

@@ -28,7 +28,7 @@ import com.wooyano.wooyanomonolithic.worker.infrastructure.WorkerTimeRepository;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
@@ -91,7 +91,8 @@ public class ReservationServiceImpl implements ReservationService {
                                                                 List<Long> reservationGoodsId,int suppliedAmount, int vat
                                                                 ,String status, String method, Worker worker, String stringApprovedAt){
 
-        OffsetDateTime approvedAt = OffsetDateTime.parse(stringApprovedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        LocalDateTime approvedAt = LocalDateTime.parse(stringApprovedAt, formatter);
         saveReservedTime(reservationDate, serviceStart, worker);
         Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, reservationGoodsId, worker,approvedAt);
@@ -106,7 +107,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private void savePayment(int amount, String clientEmail, String orderId,String paymentKey,
-                             int suppliedAmount, int vat,String status, String method, OffsetDateTime approvedAt) {
+                             int suppliedAmount, int vat,String status, String method, LocalDateTime approvedAt) {
         PaymentMethod paymentMethod = PaymentMethod.findByValue(method);
         PaymentStatus paymentStatus = PaymentStatus.findByValue(status);
 
@@ -126,7 +127,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private Reservation saveReservation(String orderId, int amount, Long serviceId, String userEmail,
                                         LocalDate reservationDate, String request, String address,
-                                        LocalTime serviceStart, List<Long> reservationGoodsId, Worker worker,OffsetDateTime approvedAt) {
+                                        LocalTime serviceStart, List<Long> reservationGoodsId, Worker worker,LocalDateTime approvedAt) {
         List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsId);
 
         //예약정보 저장
