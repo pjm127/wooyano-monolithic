@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface ReservationService {
 
-//    void checkWorkerAvailability(Worker worker,LocalDate reservationDate,LocalTime serviceStart);
-    //void verifyPayment(String orderId, int amount);
+   void checkWorkerAvailability(Worker worker,LocalDate reservationDate,LocalTime serviceStart);
+    void verifyPayment(String orderId, int amount);
 
 
 

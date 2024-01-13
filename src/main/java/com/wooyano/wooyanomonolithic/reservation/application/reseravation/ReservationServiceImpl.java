@@ -65,6 +65,20 @@ public class ReservationServiceImpl implements ReservationService {
     private final WorkerTimeRepository workerTimeRepository;
     private final TossPaymentConfig tossPaymentConfig;
 
+    public void checkWorkerAvailability(Worker worker, LocalDate reservationDate, LocalTime serviceStart) {
+        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker, serviceStart,reservationDate);
+        if(workerTime.isPresent()){
+            throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
+        }
+    }
+
+    public void verifyPayment(String orderId, int amount) {
+        String values = redisService.getValues(orderId);
+        int saveAmount= Integer.parseInt(values);
+        if (!Objects.equals(saveAmount, amount)) {
+            throw new CustomException(PAYMENT_AMOUNT_MISMATCH);
+        }
+    }
 
 
     // 작업자+예약 저장 및 결제 승인 및 결제,주문저장
@@ -75,10 +89,12 @@ public class ReservationServiceImpl implements ReservationService {
                                                                 LocalDate reservationDate, String request, String address,
                                                                 String clientEmail, LocalTime serviceStart,
                                                                 List<Long> reservationGoodsId,int suppliedAmount, int vat
-                                                                ,String status, String method, Worker worker, String approvedAt){
+                                                                ,String status, String method, Worker worker, String stringApprovedAt){
+
+        OffsetDateTime approvedAt = OffsetDateTime.parse(stringApprovedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         saveReservedTime(reservationDate, serviceStart, worker);
         Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
-                address, serviceStart, reservationGoodsId, worker);
+                address, serviceStart, reservationGoodsId, worker,approvedAt);
         savePayment(amount,clientEmail,orderId,paymentKey, suppliedAmount, vat,status,method,approvedAt);
 
         return ReservationResponse.of(reservation);
@@ -90,10 +106,9 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private void savePayment(int amount, String clientEmail, String orderId,String paymentKey,
-                             int suppliedAmount, int vat,String status, String method, String stringApprovedAt) {
+                             int suppliedAmount, int vat,String status, String method, OffsetDateTime approvedAt) {
         PaymentMethod paymentMethod = PaymentMethod.findByValue(method);
         PaymentStatus paymentStatus = PaymentStatus.findByValue(status);
-        OffsetDateTime approvedAt = OffsetDateTime.parse(stringApprovedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
         Payment payment = Payment.builder()
                 .totalAmount(amount)
@@ -111,13 +126,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     private Reservation saveReservation(String orderId, int amount, Long serviceId, String userEmail,
                                         LocalDate reservationDate, String request, String address,
-                                        LocalTime serviceStart, List<Long> reservationGoodsId, Worker worker) {
+                                        LocalTime serviceStart, List<Long> reservationGoodsId, Worker worker,OffsetDateTime approvedAt) {
         List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsId);
 
         //예약정보 저장
         Reservation reservations = Reservation.createReservation(reservationGoods, userEmail,
                 serviceId, worker, reservationDate, serviceStart,
-                amount,null, request, address, orderId);
+                amount,null, request, address, orderId,approvedAt);
         return reservationRepository.save(reservations);
 
     }

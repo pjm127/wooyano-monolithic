@@ -46,8 +46,8 @@ public class ReservationAccept {
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_WORKER));
 
-        checkWorkerAvailability(worker, reservationDate, serviceStart);
-        verifyPayment(orderId, amount);
+        reservationService.checkWorkerAvailability(worker, reservationDate, serviceStart);
+        reservationService.verifyPayment(orderId, amount);
 
         PaymentResponse paymentResponse = tossPaymentAccept.requestPaymentAccept(paymentKey, orderId, amount);
 
@@ -56,20 +56,6 @@ public class ReservationAccept {
                 userEmail, reservationDate, request, address, clientEmail, serviceStart, reservationGoodsId,paymentResponse.getSuppliedAmount(),
                 paymentResponse.getVat(),paymentResponse.getStatus(),paymentResponse.getMethod(),worker,paymentResponse.getApprovedAt());
 
-    }
-    private void checkWorkerAvailability(Worker worker, LocalDate reservationDate, LocalTime serviceStart) {
-        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker, serviceStart,reservationDate);
-        if(workerTime.isPresent()){
-            throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
-        }
-    }
-
-    private void verifyPayment(String orderId, int amount) {
-        String values = redisService.getValues(orderId);
-        int saveAmount= Integer.parseInt(values);
-        if (!Objects.equals(saveAmount, amount)) {
-            throw new CustomException(PAYMENT_AMOUNT_MISMATCH);
-        }
     }
 
 
