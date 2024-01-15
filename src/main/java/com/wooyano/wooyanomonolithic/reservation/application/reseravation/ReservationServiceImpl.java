@@ -2,6 +2,7 @@ package com.wooyano.wooyanomonolithic.reservation.application.reseravation;
 
 
 
+import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.DB_SAVE_FAILURE;
 import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.NOT_FOUND_WORKER;
 import static com.wooyano.wooyanomonolithic.global.common.response.ResponseCode.PAYMENT_AMOUNT_MISMATCH;
 
@@ -63,7 +64,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationGoodsRepository reservationGoodsRepository;
     private final PaymentRepository paymentRepository;
     private final WorkerTimeRepository workerTimeRepository;
-    private final TossPaymentConfig tossPaymentConfig;
+    private final TossPaymentAccept tossPaymentAccept;
 
     public void checkWorkerAvailability(Worker worker, LocalDate reservationDate, LocalTime serviceStart) {
         Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker, serviceStart,reservationDate);
@@ -91,14 +92,23 @@ public class ReservationServiceImpl implements ReservationService {
                                                                 List<Long> reservationGoodsId,int suppliedAmount, int vat
                                                                 ,String status, String method, Worker worker, String stringApprovedAt){
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
         LocalDateTime approvedAt = LocalDateTime.parse(stringApprovedAt, formatter);
-        saveReservedTime(reservationDate, serviceStart, worker);
-        Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
-                address, serviceStart, reservationGoodsId, worker,approvedAt);
-        savePayment(amount,clientEmail,orderId,paymentKey, suppliedAmount, vat,status,method,approvedAt);
 
-        return ReservationResponse.of(reservation);
+        try{
+            saveReservedTime(reservationDate, serviceStart, worker);
+            Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
+                address, serviceStart, reservationGoodsId, worker,approvedAt);
+            savePayment(amount,clientEmail,orderId,paymentKey, suppliedAmount, vat,status,method,approvedAt);
+          //  throw new Exception();
+            return ReservationResponse.of(reservation);
+
+        }
+        catch (Exception e){
+            tossPaymentAccept.cancelPayment(paymentKey,"db 저장실패");
+            throw new CustomException(DB_SAVE_FAILURE);
+        }
+
     }
 
     private void saveReservedTime(LocalDate reservationDate, LocalTime serviceStart, Worker worker) {

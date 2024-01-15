@@ -20,6 +20,8 @@ public class TossPaymentAccept {
     private final TossPaymentConfig tossPaymentConfig;
 
 
+
+
     //토스페이먼츠 외부 api 결제 승인 요청
     public PaymentResponse requestPaymentAccept(String paymentKey, String orderId, Integer amount) {
         RestTemplate restTemplate = new RestTemplate();
@@ -39,6 +41,23 @@ public class TossPaymentAccept {
         return paymentResponse;
 
     }
+
+
+    //결제 취소
+    public PaymentResponse cancelPayment(String paymentKey,String cancelReason) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = getHeaders();
+        JSONObject params = new JSONObject();
+        params.put("cancelReason",cancelReason);
+        HttpEntity<String> jsonObjectHttpEntity = new HttpEntity<>(params.toString(), headers);
+        String apiUrl = TossPaymentConfig.URL + paymentKey + "/cancel";
+
+        PaymentResponse paymentSuccessDto = restTemplate.postForObject(apiUrl,
+                jsonObjectHttpEntity,
+                PaymentResponse.class);
+        return paymentSuccessDto;
+    }
+
     //헤더 필수값
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();

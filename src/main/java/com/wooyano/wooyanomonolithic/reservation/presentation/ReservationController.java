@@ -46,7 +46,6 @@ public class ReservationController {
         ReservationResponse reservationResponse = tossRequestPaymentAccept.createReservation(paymentKey, orderId, amount,
                 serviceId, workerId, userEmail, reservationDate, request, address, clientEmail, serviceStart,reservationGoodsId);
 
-        //return ResponseEntity.ok(paymentResponse);
         return new BaseResponse<>(reservationResponse);
     }
 
