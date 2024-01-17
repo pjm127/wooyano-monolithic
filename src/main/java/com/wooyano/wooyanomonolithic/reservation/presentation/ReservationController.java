@@ -41,10 +41,11 @@ public class ReservationController {
                                                        @RequestParam(name = "paymentKey") String paymentKey,
                                                        @RequestParam(name = "amount") int amount,
                                                        @RequestParam(name = "serviceStart") @DateTimeFormat(pattern = "HH:mm") LocalTime serviceStart,
+                                                       @RequestParam(name = "serviceStart") @DateTimeFormat(pattern = "HH:mm") LocalTime serviceEnd,
                                                        @RequestParam(name = "reservationGoodsId") List<Long> reservationGoodsId) {
 
         ReservationResponse reservationResponse = tossRequestPaymentAccept.createReservation(paymentKey, orderId, amount,
-                serviceId, workerId, userEmail, reservationDate, request, address, clientEmail, serviceStart,reservationGoodsId);
+                serviceId, workerId, userEmail, reservationDate, request, address, clientEmail, serviceStart,serviceEnd,reservationGoodsId);
 
         return new BaseResponse<>(reservationResponse);
     }

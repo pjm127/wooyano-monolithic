@@ -19,8 +19,9 @@ public interface ReservationService {
     ReservationResponse saveWorkTimeAndReservationAndPayment(String paymentKey, String orderId, int amount,
                                                              Long serviceId, Long workerId, String userEmail,
                                                              LocalDate reservationDate, String request, String address,
-                                                             String clientEmail, LocalTime serviceStart, List<Long> reservationGoodsId
-                                                            , int suppliedAmount, int vat, String status, String method,
+                                                             String clientEmail, LocalTime serviceStart,LocalTime serviceEnd,
+                                                             List<Long> reservationGoodsId, int suppliedAmount, int vat,
+                                                             String status, String method,
                                                              Worker worker, String approvedAt);
 
 

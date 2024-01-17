@@ -51,8 +51,8 @@ public class Reservation extends BaseEntity {
     private LocalDate reservationDate;
     @Column(nullable = false, name = "service_start")
     private LocalTime serviceStart;
-/*    @Column(nullable = false, name = "service_end")
-    private LocalTime serviceEnd;*/
+    @Column(nullable = false, name = "service_end")
+    private LocalTime serviceEnd;
     @Column(nullable = false)
     @Convert(converter = ReservationStateConverter.class)
     private ReservationState reservationState;
@@ -69,7 +69,7 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false, length = 30, name = "order_id")
     private String orderId;
 
-    private LocalDateTime approvedAt;
+    private LocalDateTime paymentApprovedAt;
 
 
     public void approveStatus(ReservationState status) {
@@ -77,9 +77,9 @@ public class Reservation extends BaseEntity {
     }
 
     public static Reservation createReservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId,
-                                                Worker worker, LocalDate reservationDate, LocalTime serviceStart,
+                                                Worker worker, LocalDate reservationDate, LocalTime serviceStart,LocalTime serviceEnd,
                                                 int totalPrice, String cancelDesc,
-                                                String request, String address,String orderId,LocalDateTime approvedAt) {
+                                                String request, String address,String orderId,LocalDateTime paymentApprovedAt) {
         return Reservation.builder()
                 .reservationGoods(reservationGoods)
                 .userEmail(userEmail)
@@ -87,34 +87,36 @@ public class Reservation extends BaseEntity {
                 .worker(worker)
                 .reservationDate(reservationDate)
                 .serviceStart(serviceStart)
+                .serviceEnd(serviceEnd)
                 .reservationState(ReservationState.WAIT)
                 .totalPrice(totalPrice)
                 .cancelDesc(cancelDesc)
                 .request(request)
                 .address(address)
                 .orderId(orderId)
-                .approvedAt(approvedAt)
+                .paymentApprovedAt(paymentApprovedAt)
                 .build();
     }
 
     @Builder
     private Reservation(List<ReservationGoods> reservationGoods, String userEmail, Long serviceId, Worker worker,
-                       LocalDate reservationDate, LocalTime serviceStart,
+                       LocalDate reservationDate, LocalTime serviceStart,LocalTime serviceEnd,
                        ReservationState reservationState, int totalPrice, String cancelDesc, String request,
-                       String address,String orderId,LocalDateTime approvedAt) {
+                       String address,String orderId,LocalDateTime paymentApprovedAt) {
         this.reservationItems = reservationGoods.stream().map(item-> new ReservationItem(this,item)).collect(Collectors.toList());
         this.userEmail = userEmail;
         this.serviceId = serviceId;
         this.worker = worker;
         this.reservationDate = reservationDate;
         this.serviceStart = serviceStart;
+        this.serviceEnd = serviceEnd;
         this.reservationState = reservationState;
         this.totalPrice = totalPrice;
         this.cancelDesc = cancelDesc;
         this.request = request;
         this.address = address;
         this.orderId = orderId;
-        this.approvedAt = approvedAt;
+        this.paymentApprovedAt = paymentApprovedAt;
     }
 
 

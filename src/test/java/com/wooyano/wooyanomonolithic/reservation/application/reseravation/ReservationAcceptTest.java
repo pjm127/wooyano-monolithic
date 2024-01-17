@@ -82,6 +82,7 @@ class ReservationAcceptTest {
         String address = "Sample address";
         String clientEmail = "client@example.com";
         LocalTime serviceStart = LocalTime.of(10, 0);
+        LocalTime serviceEnd = LocalTime.of(11, 0);
         List<Long> reservationGoodsId = List.of(1l,2l);
         ReservationResponse reservationResponse = ReservationResponse.builder()
                 .reservationId(1L)
@@ -100,7 +101,7 @@ class ReservationAcceptTest {
                         anyString(), anyString(), anyInt(),
                         anyLong(), anyLong(), anyString(),
                         any(LocalDate.class), anyString(), anyString(),
-                        anyString(), any(LocalTime.class), any(List.class),
+                        anyString(), any(LocalTime.class), any(LocalTime.class),any(List.class),
                         anyInt(), anyInt(), anyString(), anyString(),
                         any(Worker.class), anyString()))
                 .willReturn(reservationResponse);
@@ -108,7 +109,7 @@ class ReservationAcceptTest {
         // then
         ReservationResponse reservation = reservationAccept.createReservation(paymentKey, orderId, amount, serviceId,
                 workerId, userEmail,
-                reservationDate, request, address, clientEmail, serviceStart, reservationGoodsId);
+                reservationDate, request, address, clientEmail, serviceStart,serviceEnd, reservationGoodsId);
         //then
         assertThat(reservation.getAmount()).isEqualTo(10000);
         verify(workerRepository,times(1)).findById(anyLong());

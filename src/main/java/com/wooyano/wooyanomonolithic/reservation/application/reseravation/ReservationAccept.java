@@ -40,7 +40,7 @@ public class ReservationAccept {
     public ReservationResponse createReservation(String paymentKey, String orderId, int amount,
                      Long serviceId, Long workerId, String userEmail,
                      LocalDate reservationDate, String request, String address,
-                     String clientEmail, LocalTime serviceStart,
+                     String clientEmail, LocalTime serviceStart,LocalTime serviceEnd,
                      List<Long> reservationGoodsId){
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_WORKER));
@@ -52,7 +52,7 @@ public class ReservationAccept {
 
         return reservationService.saveWorkTimeAndReservationAndPayment(paymentKey,
                 orderId, amount, serviceId, workerId,
-                userEmail, reservationDate, request, address, clientEmail, serviceStart, reservationGoodsId,paymentResponse.getSuppliedAmount(),
+                userEmail, reservationDate, request, address, clientEmail, serviceStart,serviceEnd, reservationGoodsId,paymentResponse.getSuppliedAmount(),
                 paymentResponse.getVat(),paymentResponse.getStatus(),paymentResponse.getMethod(),worker,paymentResponse.getApprovedAt());
 
     }

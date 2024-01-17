@@ -88,7 +88,7 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationResponse saveWorkTimeAndReservationAndPayment(String paymentKey, String orderId, int amount,
                                                                 Long serviceId, Long workerId, String userEmail,
                                                                 LocalDate reservationDate, String request, String address,
-                                                                String clientEmail, LocalTime serviceStart,
+                                                                String clientEmail, LocalTime serviceStart,LocalTime serviceEnd,
                                                                 List<Long> reservationGoodsId,int suppliedAmount, int vat
                                                                 ,String status, String method, Worker worker, String stringApprovedAt){
 
@@ -98,7 +98,7 @@ public class ReservationServiceImpl implements ReservationService {
         try{
             saveReservedTime(reservationDate, serviceStart, worker);
             Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
-                address, serviceStart, reservationGoodsId, worker,approvedAt);
+                address, serviceStart, serviceEnd,reservationGoodsId, worker,approvedAt);
             savePayment(amount,clientEmail,orderId,paymentKey, suppliedAmount, vat,status,method,approvedAt);
           //  throw new Exception();
             return ReservationResponse.of(reservation);
@@ -137,12 +137,12 @@ public class ReservationServiceImpl implements ReservationService {
 
     private Reservation saveReservation(String orderId, int amount, Long serviceId, String userEmail,
                                         LocalDate reservationDate, String request, String address,
-                                        LocalTime serviceStart, List<Long> reservationGoodsId, Worker worker,LocalDateTime approvedAt) {
+                                        LocalTime serviceStart,  LocalTime serviceEnd, List<Long> reservationGoodsId, Worker worker,LocalDateTime approvedAt) {
         List<ReservationGoods> reservationGoods = reservationGoodsRepository.findByIdIn(reservationGoodsId);
 
         //예약정보 저장
         Reservation reservations = Reservation.createReservation(reservationGoods, userEmail,
-                serviceId, worker, reservationDate, serviceStart,
+                serviceId, worker, reservationDate, serviceStart,serviceEnd,
                 amount,null, request, address, orderId,approvedAt);
         return reservationRepository.save(reservations);
 

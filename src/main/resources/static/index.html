@@ -90,12 +90,21 @@
                 <input class="input" type="time" id="serviceStart" placeholder="서비스 시작 시간을 입력하세요">
             </div>
         </div>
+
+        <div class="field">
+            <label class="label">서비스 종료 시간</label>
+            <div class="control">
+                <input class="input" type="time" id="serviceEnd" placeholder="서비스 종료 시간을 입력하세요">
+            </div>
+        </div>
+
         <!-- 추가된 부분 끝 -->
         <div class="field">
             <div class="control">
                 <button class="button is-link" onclick="reserve()">예약하기</button>
             </div>
         </div>
+
     </div>
 </section>
 
@@ -113,6 +122,7 @@
         let address = document.getElementById('address').value;
         let clientEmail = document.getElementById('clientEmail').value;
         let serviceStart = document.getElementById('serviceStart').value;
+        let serviceEnd = document.getElementById('serviceEnd').value;
 
         amount = parseFloat(amount);
         serviceId = parseInt(serviceId);
@@ -130,6 +140,8 @@
         localStorage.setItem("clientEmail", clientEmail);
         localStorage.setItem("serviceStart", serviceStart);
         localStorage.setItem("reservationGoodsId", reservationGoodsId);
+        localStorage.setItem("serviceEnd", serviceEnd);
+
 
 // JSON 배열로 저장하지 않고 각 값이 개별적으로 저장
 

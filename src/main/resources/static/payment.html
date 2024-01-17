@@ -39,6 +39,7 @@
     let address = localStorage.getItem("address");
     let clientEmail = localStorage.getItem("clientEmail");
     let serviceStart = localStorage.getItem("serviceStart");
+    let serviceEnd = localStorage.getItem("serviceEnd");
     let reservationGoodsId = localStorage.getItem("reservationGoodsId");
 
     if (!amount || !orderId) {
@@ -61,7 +62,7 @@
     }
 
     let path = "/";
-    let successUrl = window.location.origin + "/api/v1/reservation/success";
+    let successUrl = "http://localhost:9010/api/v1/payment/success";
     let failUrl = window.location.origin + "/api/v1/reservation/fail";
     let callbackUrl = window.location.origin + path + "va_callback";
 
@@ -70,7 +71,7 @@
             "amount": amount,
             "orderId":  orderId,
             "orderName": "토스 티셔츠 외 2건",
-            "successUrl": `${successUrl}?serviceId=${serviceId}&workerId=${workerId}&userEmail=${userEmail}&reservationDate=${reservationDate}&request=${request}&address=${address}&clientEmail=${clientEmail}&serviceStart=${serviceStart}&reservationGoodsId=${reservationGoodsId}`,
+            "successUrl": `${successUrl}?serviceId=${serviceId}&workerId=${workerId}&userEmail=${userEmail}&reservationDate=${reservationDate}&request=${request}&address=${address}&clientEmail=${clientEmail}&serviceStart=${serviceStart}&serviceEnd=${serviceEnd}&reservationGoodsId=${reservationGoodsId}`,
             "failUrl": failUrl,
             "cardCompany": null,
             "cardInstallmentPlan": null,
