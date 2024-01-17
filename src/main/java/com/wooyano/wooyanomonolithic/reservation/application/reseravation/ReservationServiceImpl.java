@@ -105,8 +105,8 @@ public class ReservationServiceImpl implements ReservationService {
 
         }
         catch (Exception e){
-            tossPaymentAccept.cancelPayment(paymentKey,"db 저장실패");
-            throw new CustomException(DB_SAVE_FAILURE);
+            tossPaymentAccept.cancelPayment(paymentKey,"error");
+            throw new RuntimeException("error");
         }
 
     }
@@ -124,7 +124,7 @@ public class ReservationServiceImpl implements ReservationService {
         Payment payment = Payment.builder()
                 .totalAmount(amount)
                 .paymentStatus(paymentStatus)
-                .paymentType(paymentMethod)
+                .paymentMethod(paymentMethod)
                 .clientEmail(clientEmail)
                 .paymentKey(paymentKey)
                 .orderId(orderId)

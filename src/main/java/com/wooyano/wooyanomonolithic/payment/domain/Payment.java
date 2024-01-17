@@ -23,8 +23,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment {
 
@@ -36,7 +34,7 @@ public class Payment {
     private String clientEmail; //사업자 이메일
     @Column(name = "payment_Method")
     @Convert(converter = PaymentMethodConverter.class)
-    private PaymentMethod paymentType; //결제수단  카드, 간편결제
+    private PaymentMethod paymentMethod; //결제수단  카드, 간편결제
 
     @Column(name = "total_Amount")
     private int totalAmount; //결제 금액
@@ -63,26 +61,26 @@ public class Payment {
 
 
     @Builder
-    private Payment(String clientEmail, PaymentMethod payType, int totalAmount,
-                    PaymentStatus payStatus, String orderId, String paymentKey,
-                    int suppliedAmount, int vat, LocalDateTime  approvedAt ) {
+    private Payment(String clientEmail, PaymentMethod paymentMethod, int totalAmount, PaymentStatus paymentStatus,
+                   String orderId, String paymentKey, int suppliedAmount, int vat, LocalDateTime approvedAt) {
         this.clientEmail = clientEmail;
-        this.paymentType = payType;
+        this.paymentMethod = paymentMethod;
         this.totalAmount = totalAmount;
-        this.paymentStatus = payStatus;
+        this.paymentStatus = paymentStatus;
         this.orderId = orderId;
         this.paymentKey = paymentKey;
         this.suppliedAmount = suppliedAmount;
         this.vat = vat;
-        this.approvedAt  = approvedAt ;
+        this.approvedAt = approvedAt;
     }
 
-    public static Payment createPayment(String clientEmail, PaymentMethod payType, int totalAmount,
+
+    public static Payment createPayment(String clientEmail, PaymentMethod paymentMethod, int totalAmount,
                                         PaymentStatus paymentStatus, String orderId,
                                         String paymentKey, int suppliedAmount, int vat, LocalDateTime approvedAt ) {
         return Payment.builder()
                 .clientEmail(clientEmail)
-                .paymentType(payType)
+                .paymentMethod(paymentMethod)
                 .totalAmount(totalAmount)
                 .paymentStatus(paymentStatus)
                 .orderId(orderId)

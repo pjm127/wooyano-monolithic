@@ -29,7 +29,7 @@ public class ReservationController {
 
     @Operation(summary = "결제 승인",
             description = "토스 api로 통신")
-    @GetMapping("/success")
+    @GetMapping("/success1")
     public BaseResponse<?> reservationApproveService(  @RequestParam(name = "serviceId") Long serviceId,
                                                        @RequestParam(name = "workerId") Long workerId,
                                                        @RequestParam(name = "userEmail") String userEmail,

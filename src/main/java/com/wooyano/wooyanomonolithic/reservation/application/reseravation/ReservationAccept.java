@@ -34,8 +34,7 @@ import org.springframework.web.client.RestTemplate;
 public class ReservationAccept {
     private final ReservationService reservationService;
     private final WorkerRepository workerRepository;
-    private final WorkerTimeRepository workerTimeRepository;
-    private final RedisService redisService;
+
     private final TossPaymentAccept tossPaymentAccept;
 
     public ReservationResponse createReservation(String paymentKey, String orderId, int amount,
