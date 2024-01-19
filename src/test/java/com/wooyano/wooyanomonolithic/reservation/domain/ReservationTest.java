@@ -31,6 +31,7 @@ class ReservationTest {
         Worker worker = Worker.create("작업자1", "작업자1 폰", "작업자1 설명", service);
         LocalDate reservationDate = LocalDate.of(2024, 1, 4);
         LocalTime serviceStart = LocalTime.of(10, 0);
+        LocalTime serviceEnd = LocalTime.of(11, 0);
         int totalPrice = 10000;
         String cancelDesc = "취소 설명";
         String request = "요청사항";
@@ -39,7 +40,7 @@ class ReservationTest {
         LocalDateTime approvedAt = LocalDateTime.of(2024, 1, 4, 10, 0, 0);
         // when
         Reservation reservation = Reservation.createReservation(reservationGoods, userEmail, serviceId, worker,
-                reservationDate, serviceStart, totalPrice, cancelDesc, request, address, orderId,approvedAt);
+                reservationDate, serviceStart, serviceEnd,totalPrice, cancelDesc, request, address, orderId,approvedAt);
         // then
         assertThat(reservation.getReservationState()).isEqualByComparingTo(ReservationState.WAIT);
     }

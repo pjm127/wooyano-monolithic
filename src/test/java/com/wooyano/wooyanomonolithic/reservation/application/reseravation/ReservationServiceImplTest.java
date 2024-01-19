@@ -105,6 +105,7 @@ class ReservationServiceImplTest {
         String address = "address";
         String clientEmail = "client@example.com";
         LocalTime serviceStart = LocalTime.of(10, 0, 0);
+        LocalTime serviceEnd = LocalTime.of(11, 0, 0);
         List<Long> reservationGoodsId = List.of(1L, 2L);
         int suppliedAmount = 8000;
         int vat = 2000;
@@ -115,7 +116,7 @@ class ReservationServiceImplTest {
         // when
         ReservationResponse reservationResponse = reservationService.saveWorkTimeAndReservationAndPayment(paymentKey,
                 orderId, amount, serviceId, workerId,
-                userEmail, reservationDate, request, address, clientEmail, serviceStart, reservationGoodsId,
+                userEmail, reservationDate, request, address, clientEmail, serviceStart, serviceEnd,reservationGoodsId,
                 suppliedAmount, vat, status, method, worker,approvedAt);
         // then
         assertThat(reservationResponse)
