@@ -5,7 +5,9 @@ import com.wooyano.wooyanomonolithic.settlement.domain.DailySettle;
 import com.wooyano.wooyanomonolithic.settlement.dto.PaymentResult;
 import jakarta.persistence.EntityManagerFactory;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -46,11 +48,7 @@ public class SettleJobConfig {
 
     private final static int CHUNK_SIZE = 10;
     private final PaymentItemProcessor paymentItemProcessor;
-    //private final SettleItemWriter settleItemWriter;
 
-    //private final ConsumerConfiguration consumerConfiguration;
-
-    //private final RedisTemplate<String, String> redisTemplate;
 
     /*@Value("${spring.kafka.topic}")
     private String topic;*/
@@ -58,37 +56,37 @@ public class SettleJobConfig {
     @Bean
     public Job createJob() {
         return new JobBuilder("settleJob", jobRepository)
-           //     .validator(new CustomJobParameterValidator())
-                .start(settleStep(null))
+              //  .validator(new CustomJobParameterValidator())
+                .start(settleStep())
                 .build();
     }
 
     @Bean
     @JobScope
-    public Step settleStep(@Value("#{jobParameters['requestDate']}") String requestDate ) {
+    public Step settleStep() {
         return new StepBuilder("settleStep", jobRepository)
                 .<PaymentResult, DailySettle>chunk(CHUNK_SIZE,transactionManager) // Chunk 크기를 지정
-                .reader(reader(null))
+                .reader(reader())
                 .processor(paymentItemProcessor)
                 .writer(jdbcBatchItemWriter())
                 .build();
 
     }
 
-
-    //@Value("#{jobParameters['requestDate']}") String requestDate
+   // @Value("#{jobParameters['requestDate']}") String requestDateStr
     @Bean
     @StepScope
-    public JpaPagingItemReader<PaymentResult> reader(@Value("#{jobParameters['requestDate']}") String requestDate2) {
-        String requestDate = "2023-11-09";
-        Map<String, Object> parameters = new LinkedHashMap<>();
+    public JpaPagingItemReader<PaymentResult> reader() {
+/*        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate requestDate = LocalDate.parse(requestDateStr, formatter);*/
+        LocalDate requestDate = LocalDate.now().minusDays(1);
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("startDateTime", LocalDateTime.parse(requestDate + "T00:00:00"));
         parameters.put("endDateTime", LocalDateTime.parse(requestDate + "T23:59:59"));
 
 
         String queryString = String.format("select new %s(p.clientEmail, sum(p.totalAmount)) From Payment p "
                 + "where p.approvedAt between :startDateTime and :endDateTime group by p.clientEmail", PaymentResult.class.getName());
-        //String queryString = "SELECT p FROM Payment p";
         JpaPagingItemReaderBuilder<PaymentResult> jpaPagingItemReaderBuilder  = new JpaPagingItemReaderBuilder<>();
         JpaPagingItemReader<PaymentResult> paymentItemReader = jpaPagingItemReaderBuilder
                 .name("paymentItemReader")
@@ -99,6 +97,7 @@ public class SettleJobConfig {
                 .build();
         return paymentItemReader;
     }
+
 
 
 
@@ -116,95 +115,9 @@ public class SettleJobConfig {
         return build;
     }
 
-/*
-
-
-    //@Value("#{jobParameters['requestDate']}") String requestDate
-    @Bean
-    @StepScope
-    public JpaPagingItemReader<PaymentResult> reader() {
-
-        String requestDate = "2023-11-09";
-        Map<String, Object> parameters = new LinkedHashMap<>();
-        parameters.put("startDateTime", LocalDateTime.parse(requestDate + "T00:00:00"));
-        parameters.put("endDateTime", LocalDateTime.parse(requestDate + "T23:59:59"));
-
-
-       String queryString = String.format("select new %s(p.clientEmail, sum(p.totalAmount)) From Payment p "
-               + "where p.approvedAt between :startDateTime and :endDateTime group by p.clientEmail", PaymentResult.class.getName());
-        //String queryString = "SELECT p FROM Payment p";
-        JpaPagingItemReaderBuilder<PaymentResult> jpaPagingItemReaderBuilder  = new JpaPagingItemReaderBuilder<>();
-        JpaPagingItemReader<PaymentResult> paymentItemReader = jpaPagingItemReaderBuilder
-                .name("paymentItemReader")
-                .entityManagerFactory(entityManagerFactory) //readerEntityManagerFactory.getObject()
-                .parameterValues(parameters)
-                .queryString(queryString)
-                .pageSize(10)
-                .build();
-        log.info("reader={}",paymentItemReader.toString());
-        return paymentItemReader;
-    }
-
-    //@Value("#{jobParameters['requestDate']}") String requestDate
-    @Bean
-    @StepScope
-    public JpaCursorItemReader<PaymentResult> reader3() {
-        String requestDate = "2023-11-09";
-        Map<String, Object> parameters = new LinkedHashMap<>();
-        parameters.put("startDateTime", LocalDateTime.parse(requestDate + "T00:00:00"));
-        parameters.put("endDateTime", LocalDateTime.parse(requestDate + "T23:59:59"));
-
-        String queryString = String.format("select new %s(p.clientEmail, sum(p.totalAmount)) From Payment p "
-                + "where p.approvedAt between :startDateTime and :endDateTime group by p.clientEmail", PaymentResult.class.getName());
-
-        JpaCursorItemReaderBuilder<PaymentResult> jpaCursorItemReaderBuilder = new JpaCursorItemReaderBuilder<>();
-        JpaCursorItemReader<PaymentResult> paymentItemReader = jpaCursorItemReaderBuilder
-                .name("paymentItemReader")
-                .entityManagerFactory(entityManagerFactory) // readerEntityManagerFactory.getObject()
-                .parameterValues(parameters)
-                .queryString(queryString)
-                .build();
-
-        log.info("reader={}", paymentItemReader);
-        return paymentItemReader;
-    }
 
 
 
-
-@Bean
-public QuerydslPagingItemReader<PaymentResult> reader2(){
-    String requestDate = "2023-11-09";
-    Map<String, Object> parameters = new LinkedHashMap<>();
-    LocalDateTime startDateTime = LocalDateTime.parse(requestDate + "T00:00:00");
-    LocalDateTime endDateTime = LocalDateTime.parse(requestDate + "T23:59:59");
-    //     parameters.put("startDateTime", LocalDateTime.parse(requestDate + "T00:00:00"));
-    //   parameters.put("endDateTime", LocalDateTime.parse(requestDate + "T23:59:59"));
-    QuerydslPagingItemReader<PaymentResult> totalAmount = new QuerydslPagingItemReader<>(entityManagerFactory,
-            CHUNK_SIZE,
-            queryFactory ->
-                    queryFactory.select(Projections.fields(PaymentResult.class, payment.clientEmail,
-                                    payment.totalAmount.sum().as("totalAmount")))
-                            .from(payment)
-                            .where(payment.approvedAt.between(startDateTime, endDateTime))
-                            .groupBy(payment.clientEmail));
-    return totalAmount;
-    //Projections.fields(PaymentResult.class,payment.clientEmail,payment.totalAmount.sum().as("totalAmount"))
-}
-
-
-
-
-
-
-
-    @Bean
-    public JpaItemWriter<DailySettle> writer() {
-        JpaItemWriter<DailySettle> jpaItemWriter = new JpaItemWriter<>();
-        jpaItemWriter.setEntityManagerFactory(entityManagerFactory);
-        return jpaItemWriter;
-    }
-*/
 
 
 

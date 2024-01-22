@@ -13,17 +13,15 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
 @Table(name = "daily_settle")
-@AllArgsConstructor
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class DailySettle {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,name = "start_Date")
-    private LocalDate settlementDate; //정산 시작일
+    @Column(nullable = false)
+    private LocalDate settlementDate; //정산 날짜
 
     @Column(nullable = false,name = "client_Email")
     private String clientEmail; //사업자 이메일
@@ -40,6 +38,7 @@ public class DailySettle {
     @Column(name = "settle_Status")
     private String settleType; //정산 상태 (정산 완료, 정산 예정)
 
+    @Builder
     private DailySettle(LocalDate settlementDate, String clientEmail, Long totalAmount, String settleType
     , Long fee, Long payOutAmount) {
         this.settlementDate = settlementDate;
@@ -52,7 +51,14 @@ public class DailySettle {
 
     public static DailySettle createSettle(String clientEmail, Long totalAmount, LocalDate settlementDate,
                                            String settleType,Long fee,Long payOutAmount) {
-        return new DailySettle(settlementDate, clientEmail, totalAmount, settleType,fee,payOutAmount);
+       return DailySettle.builder()
+           .clientEmail(clientEmail)
+           .totalAmount(totalAmount)
+           .settlementDate(settlementDate)
+           .settleType(settleType)
+           .fee(fee)
+           .payOutAmount(payOutAmount)
+           .build();
     }
 
 }
