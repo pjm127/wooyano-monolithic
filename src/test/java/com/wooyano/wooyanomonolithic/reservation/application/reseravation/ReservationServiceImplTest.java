@@ -107,7 +107,7 @@ class ReservationServiceImplTest {
         LocalTime serviceStart = LocalTime.of(10, 0, 0);
         LocalTime serviceEnd = LocalTime.of(11, 0, 0);
         List<Long> reservationGoodsId = List.of(1L, 2L);
-        int suppliedAmount = 8000;
+        int payOutAmount = 8000;
         int vat = 2000;
         String status = "DONE";
         String method = "간편결제";
@@ -117,7 +117,7 @@ class ReservationServiceImplTest {
         ReservationResponse reservationResponse = reservationService.saveWorkTimeAndReservationAndPayment(paymentKey,
                 orderId, amount, serviceId, workerId,
                 userEmail, reservationDate, request, address, clientEmail, serviceStart, serviceEnd,reservationGoodsId,
-                suppliedAmount, vat, status, method, worker,approvedAt);
+                payOutAmount, vat, status, method, worker,approvedAt);
         // then
         assertThat(reservationResponse)
                 .extracting("orderId", "amount", "reservationDate", "request", "address", "serviceStart")

@@ -61,7 +61,7 @@ class ReservationAcceptTest {
        when(workerRepository.findById(anyLong())).thenReturn(java.util.Optional.of(mockWorker));
 
         PaymentResponse paymentResponse = PaymentResponse.builder()
-                .suppliedAmount(10000)
+                .payOutAmount(10000)
                 .vat(1000)
                 .status("DONE")
                 .method("CARD")

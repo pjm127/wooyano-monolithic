@@ -16,7 +16,7 @@ public class PaymentResponse {
     private String method;
     private int totalAmount;
     private int balanceAmount;
-    private int suppliedAmount;
+    private int payOutAmount;
     private int vat;
     private String status;
     private String requestedAt;

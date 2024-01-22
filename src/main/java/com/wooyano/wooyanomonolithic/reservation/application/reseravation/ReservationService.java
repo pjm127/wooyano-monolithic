@@ -20,7 +20,7 @@ public interface ReservationService {
                                                              Long serviceId, Long workerId, String userEmail,
                                                              LocalDate reservationDate, String request, String address,
                                                              String clientEmail, LocalTime serviceStart,LocalTime serviceEnd,
-                                                             List<Long> reservationGoodsId, int suppliedAmount, int vat,
+                                                             List<Long> reservationGoodsId, int payOutAmount, int vat,
                                                              String status, String method,
                                                              Worker worker, String approvedAt);
 

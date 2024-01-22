@@ -89,7 +89,7 @@ public class ReservationServiceImpl implements ReservationService {
                                                                 Long serviceId, Long workerId, String userEmail,
                                                                 LocalDate reservationDate, String request, String address,
                                                                 String clientEmail, LocalTime serviceStart,LocalTime serviceEnd,
-                                                                List<Long> reservationGoodsId,int suppliedAmount, int vat
+                                                                List<Long> reservationGoodsId,int payOutAmount, int fee
                                                                 ,String status, String method, Worker worker, String stringApprovedAt){
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
@@ -99,7 +99,7 @@ public class ReservationServiceImpl implements ReservationService {
             saveReservedTime(reservationDate, serviceStart, worker);
             Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, serviceEnd,reservationGoodsId, worker,approvedAt);
-            savePayment(amount,clientEmail,orderId,paymentKey, suppliedAmount, vat,status,method,approvedAt);
+            savePayment(amount,clientEmail,orderId,paymentKey, payOutAmount, fee,status,method,approvedAt);
           //  throw new Exception();
             return ReservationResponse.of(reservation);
 
@@ -117,7 +117,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private void savePayment(int amount, String clientEmail, String orderId,String paymentKey,
-                             int suppliedAmount, int vat,String status, String method, LocalDateTime approvedAt) {
+                             int payOutAmount, int fee,String status, String method, LocalDateTime approvedAt) {
         PaymentMethod paymentMethod = PaymentMethod.findByValue(method);
         PaymentStatus paymentStatus = PaymentStatus.findByValue(status);
 
@@ -128,8 +128,8 @@ public class ReservationServiceImpl implements ReservationService {
                 .clientEmail(clientEmail)
                 .paymentKey(paymentKey)
                 .orderId(orderId)
-                .suppliedAmount(suppliedAmount)
-                .vat(vat)
+                .payOutAmount(payOutAmount)
+                .fee(fee)
                 .approvedAt(approvedAt)
                 .build();
         paymentRepository.save(payment);

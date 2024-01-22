@@ -49,12 +49,9 @@ public class Payment {
 
     @Column(name = "payment_Key")
     private String paymentKey;
+    private int payOutAmount ; //지급 금액 결제 금액 amount에서 수수료인 fee를 제외한 금액
 
-    @Column(name = "supplied_Amount")
-    private int suppliedAmount; //공급가액
-
-    @Column(name = "vat")
-    private int vat; //부가세 10퍼
+    private int fee; // 수수료
 
 
     private LocalDateTime approvedAt; //결제 승인 날짜 시간
@@ -62,22 +59,22 @@ public class Payment {
 
     @Builder
     private Payment(String clientEmail, PaymentMethod paymentMethod, int totalAmount, PaymentStatus paymentStatus,
-                   String orderId, String paymentKey, int suppliedAmount, int vat, LocalDateTime approvedAt) {
+                   String orderId, String paymentKey, int payOutAmount, int fee, LocalDateTime approvedAt) {
         this.clientEmail = clientEmail;
         this.paymentMethod = paymentMethod;
         this.totalAmount = totalAmount;
         this.paymentStatus = paymentStatus;
         this.orderId = orderId;
         this.paymentKey = paymentKey;
-        this.suppliedAmount = suppliedAmount;
-        this.vat = vat;
+        this.payOutAmount = payOutAmount;
+        this.fee = fee;
         this.approvedAt = approvedAt;
     }
 
 
     public static Payment createPayment(String clientEmail, PaymentMethod paymentMethod, int totalAmount,
                                         PaymentStatus paymentStatus, String orderId,
-                                        String paymentKey, int suppliedAmount, int vat, LocalDateTime approvedAt ) {
+                                        String paymentKey, int payOutAmount, int fee, LocalDateTime approvedAt ) {
         return Payment.builder()
                 .clientEmail(clientEmail)
                 .paymentMethod(paymentMethod)
@@ -85,8 +82,8 @@ public class Payment {
                 .paymentStatus(paymentStatus)
                 .orderId(orderId)
                 .paymentKey(paymentKey)
-                .suppliedAmount(suppliedAmount)
-                .vat(vat)
+                .payOutAmount(payOutAmount)
+                .fee(fee)
                 .approvedAt (approvedAt )
                 .build();
     }

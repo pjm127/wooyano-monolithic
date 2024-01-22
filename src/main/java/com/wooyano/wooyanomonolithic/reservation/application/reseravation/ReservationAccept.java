@@ -52,7 +52,7 @@ public class ReservationAccept {
 
         return reservationService.saveWorkTimeAndReservationAndPayment(paymentKey,
                 orderId, amount, serviceId, workerId,
-                userEmail, reservationDate, request, address, clientEmail, serviceStart,serviceEnd, reservationGoodsId,paymentResponse.getSuppliedAmount(),
+                userEmail, reservationDate, request, address, clientEmail, serviceStart,serviceEnd, reservationGoodsId,paymentResponse.getPayOutAmount(),
                 paymentResponse.getVat(),paymentResponse.getStatus(),paymentResponse.getMethod(),worker,paymentResponse.getApprovedAt());
 
     }
