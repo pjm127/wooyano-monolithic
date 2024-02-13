@@ -59,7 +59,7 @@ public class Payment {
 
     @Builder
     private Payment(String clientEmail, PaymentMethod paymentMethod, int totalAmount, PaymentStatus paymentStatus,
-                   String orderId, String paymentKey, int payOutAmount, int fee, LocalDateTime approvedAt) {
+                    String orderId, String paymentKey, int payOutAmount, int fee, LocalDateTime approvedAt) {
         this.clientEmail = clientEmail;
         this.paymentMethod = paymentMethod;
         this.totalAmount = totalAmount;

@@ -160,7 +160,6 @@ public class ReservationServiceImpl implements ReservationService {
     public void cancelReservation(String orderId) {
         Reservation reservation = reservationRepository.findByOrderIdList(orderId);
         reservation.approveStatus(ReservationState.PAYMENT_CANCEL);
-
     }
 
 

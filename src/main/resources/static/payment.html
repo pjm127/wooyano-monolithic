@@ -62,7 +62,7 @@
     }
 
     let path = "/";
-    let successUrl = "http://localhost:9010/api/v1/payment/success";
+    let successUrl = window.location.origin + "/api/v1/reservation/success"//"http://localhost:9000/api/v1/payment/success";
     let failUrl = window.location.origin + "/api/v1/reservation/fail";
     let callbackUrl = window.location.origin + path + "va_callback";
 
