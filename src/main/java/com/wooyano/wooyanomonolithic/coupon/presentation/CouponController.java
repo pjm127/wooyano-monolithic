@@ -2,6 +2,7 @@ package com.wooyano.wooyanomonolithic.coupon.presentation;
 
 import com.wooyano.wooyanomonolithic.coupon.application.CouponService;
 import com.wooyano.wooyanomonolithic.coupon.application.dto.CouponResponse;
+import com.wooyano.wooyanomonolithic.coupon.presentation.dto.CouponIssueRequest;
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,8 @@ public class CouponController {
     private final CouponService couponService;
 
     @PostMapping("/issue")
-    public BaseResponse<?> issueCoupon(){
-        CouponResponse couponResponse = couponService.issueCoupon();
+    public BaseResponse<?> issueCoupon(@RequestBody CouponIssueRequest request){
+        CouponResponse couponResponse = couponService.issueCoupon(request.toServiceRequest());
         return new BaseResponse<>(couponResponse);
     }
 

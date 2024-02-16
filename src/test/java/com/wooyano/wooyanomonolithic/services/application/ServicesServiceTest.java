@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
 import com.wooyano.wooyanomonolithic.services.domain.Services;
 import com.wooyano.wooyanomonolithic.services.presentation.dto.ServiceTimeResponse;
-import com.wooyano.wooyanomonolithic.services.application.dto.ServicesCreateRequest;
+import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateRequest;
 import com.wooyano.wooyanomonolithic.services.presentation.dto.ServicesCreateResponse;
 import com.wooyano.wooyanomonolithic.services.application.dto.ServicesResponse;
 import com.wooyano.wooyanomonolithic.services.infrastructure.ServicesRepository;

@@ -16,11 +16,18 @@ public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String code; // 쿠폰 코드
-    private double discountRate; // 할인율 (예: 0.1은 10% 할인)
-    private double discountAmount; // 정확한 금액의 할인 (예: 1000은 1000원 할인)
+    private String name; // 쿠폰 이름
     private boolean used; // 쿠폰 사용 여부
-    private LocalDate expirationDate;  //쿠폰 만료일 = 쿠폰 발급 날짜 당일
     private int totalQuantity; // 쿠폰의 총 수량
 
+    private int remainingQuantity; // 쿠폰의 남은 수량
+
+
+
+    public void decreaseQuantity() {
+        if(remainingQuantity == 0) {
+            throw new IllegalArgumentException("쿠폰의 수량이 없습니다.");
+        }
+        this.remainingQuantity -=1;
+    }
 }

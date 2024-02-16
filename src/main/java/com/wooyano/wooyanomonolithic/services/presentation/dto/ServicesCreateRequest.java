@@ -1,4 +1,4 @@
-package com.wooyano.wooyanomonolithic.services.application.dto;
+package com.wooyano.wooyanomonolithic.services.presentation.dto;
 
 import com.wooyano.wooyanomonolithic.services.application.dto.ServicesCreateServiceRequest;
 import com.wooyano.wooyanomonolithic.services.domain.ServiceTime;
