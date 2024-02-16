@@ -19,8 +19,8 @@ public class CouponController {
 
     @PostMapping("/issue")
     public BaseResponse<?> issueCoupon(@RequestBody CouponIssueRequest request){
-        CouponResponse couponResponse = couponService.issueCoupon(request.toServiceRequest());
-        return new BaseResponse<>(couponResponse);
+        couponService.issueCoupon(request.toServiceRequest());
+        return new BaseResponse<>();
     }
 
 
