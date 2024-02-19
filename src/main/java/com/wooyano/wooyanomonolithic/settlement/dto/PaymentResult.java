@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 public class PaymentResult {
     private String clientEmail; //사업자 이메일
 
-    private long totalAmount; //있
+    private long totalAmount; //결제 금액
+    private long fee; //수수료
+    private long payOutAmount; //지급 금액입니다. 결제 금액 amount에서 수수료인 fee를 제외한 금액입니다.
 
 
 }

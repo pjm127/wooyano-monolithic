@@ -46,8 +46,6 @@ class ReservationAcceptTest {
     @Mock
     private WorkerRepository workerRepository;
 
-
-
     @Mock
     private TossPaymentAccept tossPaymentAccept;
 
