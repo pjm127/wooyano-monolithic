@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDate;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,17 +18,20 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name; // 쿠폰 이름
-    private boolean used; // 쿠폰 사용 여부
     private int totalQuantity; // 쿠폰의 총 수량
 
-    private int remainingQuantity; // 쿠폰의 남은 수량
 
 
+    @Builder
+    private Coupon(String name, int totalQuantity) {
+        this.name = name;
+        this.totalQuantity = totalQuantity;
+    }
 
     public void decreaseQuantity() {
-        if(remainingQuantity == 0) {
+        if(totalQuantity == 0) {
             throw new IllegalArgumentException("쿠폰의 수량이 없습니다.");
         }
-        this.remainingQuantity -=1;
+        this.totalQuantity -=1;
     }
 }

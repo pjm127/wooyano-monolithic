@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CouponController {
 
-    private final CouponService couponService;
+     private final CouponService couponService;
 
     @PostMapping("/issue")
     public BaseResponse<?> issueCoupon(@RequestBody CouponIssueRequest request){
