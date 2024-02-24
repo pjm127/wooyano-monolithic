@@ -12,6 +12,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
+import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,15 @@ class CouponServiceTest {
     @Autowired
     private CouponRepository couponRepository;
 
+    @Autowired
+    private NamedLockStructure namedLockStructure;
+
+    @AfterEach
+    public void tearDown(){
+        couponRepository.deleteAll();
+    }
+
+
     @DisplayName("쿠폰발급하고 개수를 1개 차감한다.")
     @Test
     public void issueCoupon(){
@@ -33,13 +44,13 @@ class CouponServiceTest {
         Coupon coupon = createCoupon();
         couponRepository.save(coupon);
         CouponIssueServiceRequest request = CouponIssueServiceRequest.builder()
-                .name("test1")
+                .id(1l)
                 .build();
         // when
         couponService.issueCoupon(request);
 
         // then
-        Coupon findCoupon = couponRepository.findByName(request.getName()).get();
+        Coupon findCoupon = couponRepository.findById(request.getId()).get();
         assertThat(findCoupon.getTotalQuantity()).isEqualTo(99);
     }
 
@@ -50,7 +61,7 @@ class CouponServiceTest {
         Coupon coupon = createCoupon();
         couponRepository.save(coupon);
         CouponIssueServiceRequest request = CouponIssueServiceRequest.builder()
-                .name("test12")
+                .id(2l)
                 .build();
         // when// then
         assertThatThrownBy(() -> couponService.issueCoupon(request))
@@ -58,21 +69,7 @@ class CouponServiceTest {
                 .hasMessage("존재하지 않는 쿠폰입니다.");
     }
 
-//    @DisplayName("쿠폰 발급시 수량이 떨어지면 예외를 발생한다")
-//    @Test
-//    public void issueCouponWithNoQuantity(){
-//        // given
-//        Coupon coupon = createCoupon();
-//        couponRepository.save(coupon);
-//        CouponIssueServiceRequest request = CouponIssueServiceRequest.builder()
-//                .name("test1")
-//                .build();
-//        // when
-//        for (int i = 0; i < 101; i++) {
-//            couponService.issueCoupon(request);
-//        }
-//        // then
-//    }
+
 
     @DisplayName("쿠폰 발급 동시에 100개를 요청한다")
     @Test
@@ -81,7 +78,7 @@ class CouponServiceTest {
         Coupon coupon = createCoupon();
         couponRepository.save(coupon);
         CouponIssueServiceRequest request = CouponIssueServiceRequest.builder()
-                .name("test1")
+                .id(1l)
                 .build();
 
         int threadSize = 100;
@@ -98,9 +95,44 @@ class CouponServiceTest {
         countDownLatch.await();
 
         // then
-        Coupon findCoupon = couponRepository.findByName(request.getName()).get();
+        Coupon findCoupon = couponRepository.findById(request.getId()).get();
         assertThat(findCoupon.getTotalQuantity()).isEqualTo(0);
     }
+    @Test
+    @DisplayName("네임드 락 적용 - 동시에 100개의 아이템 구매 요청 테스트")
+    public void buyItem_NamedLock_Test() throws InterruptedException {
+
+        Coupon coupon = createCoupon();
+        couponRepository.save(coupon);
+        CouponIssueServiceRequest request = CouponIssueServiceRequest.builder()
+                .id(1l)
+                .build();
+
+
+        int threadCount = 100;
+
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                        try {
+                            namedLockStructure.decrease(request);
+                        } finally {
+                            countDownLatch.countDown();
+                        }
+                    }
+            );
+        }
+
+        countDownLatch.await();
+
+        Coupon findCoupon = couponRepository.findById(request.getId()).get();
+        assertThat(findCoupon.getTotalQuantity()).isEqualTo(0);
+    }
+
+
+
 
     private Coupon createCoupon(){
         return Coupon.builder()

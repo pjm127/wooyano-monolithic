@@ -22,15 +22,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class ReservationAccept {
     private final ReservationService reservationService;
     private final WorkerRepository workerRepository;
@@ -49,7 +52,7 @@ public class ReservationAccept {
         reservationService.verifyPayment(orderId, amount);
 
         PaymentResponse paymentResponse = tossPaymentAccept.requestPaymentAccept(paymentKey, orderId, amount);
-
+        printTxInfo();
         return reservationService.saveWorkTimeAndReservationAndPayment(paymentKey,
                 orderId, amount, serviceId, workerId,
                 userEmail, reservationDate, request, address, clientEmail, serviceStart,serviceEnd, reservationGoodsId,paymentResponse.getPayOutAmount(),
@@ -58,7 +61,11 @@ public class ReservationAccept {
     }
 
 
-
+    private void printTxInfo() {
+        boolean txActive =
+                TransactionSynchronizationManager.isActualTransactionActive();
+        log.info("tx active={}", txActive);
+    }
 
 
 }

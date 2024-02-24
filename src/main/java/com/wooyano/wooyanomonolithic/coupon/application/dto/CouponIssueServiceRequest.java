@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class CouponIssueServiceRequest {
-    private String name;
+    private Long id;
 
     @Builder
-    private CouponIssueServiceRequest(String name) {
-        this.name = name;
+    private CouponIssueServiceRequest(Long id) {
+        this.id = id;
     }
 }

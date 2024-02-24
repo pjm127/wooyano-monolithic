@@ -39,11 +39,13 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -100,6 +102,7 @@ public class ReservationServiceImpl implements ReservationService {
             Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, serviceEnd,reservationGoodsId, worker,approvedAt);
             savePayment(amount,clientEmail,orderId,paymentKey, payOutAmount, fee,status,method,approvedAt);
+            printTxInfo();
           //  throw new Exception();
             return ReservationResponse.of(reservation);
 
@@ -163,5 +166,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
+    private void printTxInfo() {
+        
 
+        boolean txActive =
+                TransactionSynchronizationManager.isActualTransactionActive();
+        log.info("tx active={}", txActive);
+    }
 }

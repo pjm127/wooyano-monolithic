@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,8 +20,6 @@ public class Coupon {
     private Long id;
     private String name; // 쿠폰 이름
     private int totalQuantity; // 쿠폰의 총 수량
-
-
 
     @Builder
     private Coupon(String name, int totalQuantity) {
