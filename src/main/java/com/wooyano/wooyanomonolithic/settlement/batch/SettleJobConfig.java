@@ -2,16 +2,12 @@ package com.wooyano.wooyanomonolithic.settlement.batch;
 
 import com.wooyano.wooyanomonolithic.settlement.batch.processor.PaymentItemProcessor;
 import com.wooyano.wooyanomonolithic.settlement.domain.DailySettle;
-import com.wooyano.wooyanomonolithic.settlement.dto.PaymentResult;
+import com.wooyano.wooyanomonolithic.settlement.dto.SettleResult;
 import jakarta.persistence.EntityManagerFactory;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +22,6 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
-import org.springframework.batch.item.kafka.KafkaItemReader;
-import org.springframework.batch.item.kafka.builder.KafkaItemReaderBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -50,8 +43,7 @@ public class SettleJobConfig {
     private final PaymentItemProcessor paymentItemProcessor;
 
 
-    /*@Value("${spring.kafka.topic}")
-    private String topic;*/
+
 
     @Bean
     public Job createJob() {
@@ -65,7 +57,7 @@ public class SettleJobConfig {
     @JobScope
     public Step settleStep() {
         return new StepBuilder("settleStep", jobRepository)
-                .<PaymentResult, DailySettle>chunk(CHUNK_SIZE,transactionManager) // Chunk 크기를 지정
+                .<SettleResult, DailySettle>chunk(CHUNK_SIZE,transactionManager) // Chunk 크기를 지정
                 .reader(reader())
                 .processor(paymentItemProcessor)
                 .writer(jdbcBatchItemWriter())
@@ -76,7 +68,7 @@ public class SettleJobConfig {
    // @Value("#{jobParameters['requestDate']}") String requestDateStr
     @Bean
     @StepScope
-    public JpaPagingItemReader<PaymentResult> reader() {
+    public JpaPagingItemReader<SettleResult> reader() {
 /*        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate requestDate = LocalDate.parse(requestDateStr, formatter);*/
         LocalDate requestDate = LocalDate.now().minusDays(1);
@@ -85,10 +77,11 @@ public class SettleJobConfig {
         parameters.put("endDateTime", LocalDateTime.parse(requestDate + "T23:59:59"));
 
 
-        String queryString = String.format("select new %s(p.clientEmail, sum(p.totalAmount)) From Payment p "
-                + "where p.approvedAt between :startDateTime and :endDateTime group by p.clientEmail", PaymentResult.class.getName());
-        JpaPagingItemReaderBuilder<PaymentResult> jpaPagingItemReaderBuilder  = new JpaPagingItemReaderBuilder<>();
-        JpaPagingItemReader<PaymentResult> paymentItemReader = jpaPagingItemReaderBuilder
+        String queryString = String.format("select new %s(p.clientEmail, sum(p.totalAmount),sum(p.fee),sum(p.payOutAmount))"
+                + " From Payment p where p.approvedAt between :startDateTime and :endDateTime group by p.clientEmail",
+                SettleResult.class.getName());
+        JpaPagingItemReaderBuilder<SettleResult> jpaPagingItemReaderBuilder  = new JpaPagingItemReaderBuilder<>();
+        JpaPagingItemReader<SettleResult> paymentItemReader = jpaPagingItemReaderBuilder
                 .name("paymentItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .parameterValues(parameters)
@@ -100,15 +93,12 @@ public class SettleJobConfig {
 
 
 
-
-
-
     @Bean
     public JdbcBatchItemWriter<DailySettle> jdbcBatchItemWriter() {
         log.info("jdbcBatchItemWriter");
         JdbcBatchItemWriter<DailySettle> build = new JdbcBatchItemWriterBuilder<DailySettle>()
                 .dataSource(dataSource)
-                .sql("INSERT INTO daily_settle(start_Date, total_Amount, client_Email, settle_Status, fee, pay_Out_Amount) "
+                .sql("INSERT INTO daily_settle(settlement_date, total_Amount, client_Email, settle_Status, fee, pay_Out_Amount) "
                         + "VALUES (:settlementDate, :totalAmount, :clientEmail, :settleType, :fee, :payOutAmount)")
                 .beanMapped()
                 .build();

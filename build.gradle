@@ -50,6 +50,9 @@ dependencies {
     testImplementation 'org.springframework.batch:spring-batch-test'
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    //redisson
+    implementation 'org.redisson:redisson-spring-boot-starter:3.17.6'
+
     //implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 
     //h2

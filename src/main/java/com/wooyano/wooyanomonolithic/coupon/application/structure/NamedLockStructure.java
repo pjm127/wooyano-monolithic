@@ -1,5 +1,6 @@
-package com.wooyano.wooyanomonolithic.coupon.application;
+package com.wooyano.wooyanomonolithic.coupon.application.structure;
 
+import com.wooyano.wooyanomonolithic.coupon.application.CouponService;
 import com.wooyano.wooyanomonolithic.coupon.application.dto.CouponIssueServiceRequest;
 import com.wooyano.wooyanomonolithic.coupon.infrastructure.LockRepository;
 import lombok.extern.slf4j.Slf4j;

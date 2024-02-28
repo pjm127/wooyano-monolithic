@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentResult {
+public class SettleResult {
     private String clientEmail; //사업자 이메일
 
     private long totalAmount; //결제 금액

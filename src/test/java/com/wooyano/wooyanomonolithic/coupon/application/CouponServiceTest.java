@@ -2,23 +2,19 @@ package com.wooyano.wooyanomonolithic.coupon.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.wooyano.wooyanomonolithic.coupon.application.dto.CouponIssueServiceRequest;
+import com.wooyano.wooyanomonolithic.coupon.application.structure.NamedLockStructure;
 import com.wooyano.wooyanomonolithic.coupon.domain.Coupon;
 import com.wooyano.wooyanomonolithic.coupon.infrastructure.CouponRepository;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
-import org.junit.After;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 class CouponServiceTest {
