@@ -1,6 +1,7 @@
 package com.wooyano.wooyanomonolithic.coupon.presentation;
 
 import com.wooyano.wooyanomonolithic.coupon.application.CouponService;
+import com.wooyano.wooyanomonolithic.coupon.application.structure.NamedLockStructure;
 import com.wooyano.wooyanomonolithic.coupon.presentation.dto.CouponIssueRequest;
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CouponController {
 
-     private final CouponService couponService;
+    // private final CouponService couponService;
+
+    private final NamedLockStructure namedLockStructure;
 
     @PostMapping("/issue")
-    public ResponseEntity issueCoupon(@RequestBody CouponIssueRequest request){
-        couponService.issueCoupon(request.toServiceRequest());
+    public ResponseEntity<String> issueCoupon(@RequestBody CouponIssueRequest request){
+        namedLockStructure.issueCoupon(request.toServiceRequest());
         return ResponseEntity.ok("쿠폰 발급");
     }
 
