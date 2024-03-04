@@ -1,7 +1,6 @@
 package com.wooyano.wooyanomonolithic.coupon.presentation;
 
 import com.wooyano.wooyanomonolithic.coupon.application.CouponService;
-import com.wooyano.wooyanomonolithic.coupon.application.dto.CouponResponse;
 import com.wooyano.wooyanomonolithic.coupon.presentation.dto.CouponIssueRequest;
 import com.wooyano.wooyanomonolithic.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;

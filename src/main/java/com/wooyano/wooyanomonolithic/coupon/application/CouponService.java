@@ -18,7 +18,6 @@ public class CouponService {
 
     private final CouponRepository couponRepository;
 
-    //@Transactional
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void issueCoupon(CouponIssueServiceRequest request) {
         Long id= request.getId();

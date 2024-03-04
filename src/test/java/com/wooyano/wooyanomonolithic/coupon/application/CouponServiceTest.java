@@ -95,7 +95,7 @@ class CouponServiceTest {
         assertThat(findCoupon.getTotalQuantity()).isEqualTo(0);
     }
     @Test
-    @DisplayName("네임드 락 적용 - 동시에 100개의 아이템 구매 요청 테스트")
+    @DisplayName("네임드 락 적용 - 동시에 100개의 쿠폰 발급 요청 테스트")
     public void buyItem_NamedLock_Test() throws InterruptedException {
 
         Coupon coupon = createCoupon();
