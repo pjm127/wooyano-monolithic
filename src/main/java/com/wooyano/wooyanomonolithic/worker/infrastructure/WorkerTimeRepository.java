@@ -14,9 +14,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface WorkerTimeRepository  extends JpaRepository<WorkerTime, Long> {
 
-   // @Lock(LockModeType.NONE)
     @Query("select wt from WorkerTime wt "
-            + "where wt.worker = :worker and wt.serviceTime = :serviceTime and wt.registeredDate = :registeredDate")
+            + "where wt.worker = :worker and :serviceTime BETWEEN wt.serviceStartTime AND wt.serviceEndTime and wt.registeredDate = :registeredDate")
     Optional<WorkerTime> findByWorkerAndServiceTime(@Param("worker") Worker worker,
                                                     @Param("serviceTime") LocalTime serviceTime,
                                                     @Param("registeredDate") LocalDate registeredDate);

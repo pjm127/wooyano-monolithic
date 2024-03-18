@@ -33,17 +33,18 @@ class WorkerTimeRepositoryTest {
         Worker saveWorker = getWorker();
         LocalDate reservationDate = LocalDate.of(2024, 01, 03);
         LocalTime serviceStart = LocalTime.of(10, 0, 0);
-        WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(serviceStart,saveWorker, reservationDate);
+        LocalTime serviceEnd = LocalTime.of(12, 0, 0);
+        WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(serviceStart,serviceEnd,saveWorker, reservationDate);
         WorkerTime workerTime = workerTimeRepository.save(saveWorkerTime);
         // when
         Optional<WorkerTime> byWorkerAndServiceTime = workerTimeRepository.findByWorkerAndServiceTime(saveWorker,
-                serviceStart, reservationDate);
+                LocalTime.of(11, 0, 0), reservationDate);
         // then
         assertThat(byWorkerAndServiceTime)
                 .isPresent()
                 .get()
-                .extracting("id", "serviceTime", "worker", "registeredDate")
-                .contains(workerTime.getId(), serviceStart, saveWorker, reservationDate);
+                .extracting("id", "worker", "registeredDate")
+                .contains(workerTime.getId(), saveWorker, reservationDate);
     }
 
 

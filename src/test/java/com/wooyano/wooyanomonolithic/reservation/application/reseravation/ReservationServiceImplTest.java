@@ -140,8 +140,8 @@ class ReservationServiceImplTest {
         Worker worker = Worker.create("작업자1", "작업자1 폰", "작업자1 설명", saveService);
         Worker saveWorker = workerRepository.save(worker);
 
-        WorkerTime workerTime = WorkerTime.createWorkerTime(LocalTime.of(9, 0, 0), saveWorker,
-                LocalDate.now());
+        WorkerTime workerTime = WorkerTime.createWorkerTime(LocalTime.of(9, 0, 0), LocalTime.of(11, 0, 0),
+                saveWorker, LocalDate.now());
         workerTimeRepository.save(workerTime);
         return worker;
     }
