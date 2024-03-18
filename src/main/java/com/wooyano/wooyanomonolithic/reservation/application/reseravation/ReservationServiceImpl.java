@@ -98,11 +98,10 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDateTime approvedAt = LocalDateTime.parse(stringApprovedAt, formatter);
 
         try{
-            saveReservedTime(reservationDate, serviceStart, worker);
+            saveWorkerTime(reservationDate, serviceStart,serviceEnd, worker);
             Reservation reservation = saveReservation(orderId, amount, serviceId, userEmail, reservationDate, request,
                 address, serviceStart, serviceEnd,reservationGoodsId, worker,approvedAt);
             savePayment(amount,clientEmail,orderId,paymentKey, payOutAmount, fee,status,method,approvedAt);
-            printTxInfo();
           //  throw new Exception();
             return ReservationResponse.of(reservation);
 
@@ -114,8 +113,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
-    private void saveReservedTime(LocalDate reservationDate, LocalTime serviceStart, Worker worker) {
-        WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(serviceStart, worker, reservationDate);
+    private void saveWorkerTime(LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,Worker worker) {
+        WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(serviceStart, serviceEnd, worker, reservationDate);
         workerTimeRepository.save(saveWorkerTime);
     }
 

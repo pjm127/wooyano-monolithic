@@ -22,12 +22,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class WorkerTime  extends BaseEntity {
+public class WorkerTime   {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalTime serviceTime;
+    private LocalTime serviceStartTime;
+    private LocalTime serviceEndTime;
 
     private LocalDate registeredDate;
 
@@ -38,15 +39,17 @@ public class WorkerTime  extends BaseEntity {
     private Worker worker;
 
     @Builder
-    private WorkerTime( LocalTime serviceTime, Worker worker, LocalDate registeredDate) {
-        this.serviceTime = serviceTime;
+    private WorkerTime( LocalTime serviceStartTime,LocalTime serviceEndTime,Worker worker, LocalDate registeredDate) {
+        this.serviceStartTime = serviceStartTime;
+        this.serviceEndTime = serviceEndTime;
         this.worker = worker;
         this.registeredDate = registeredDate;
     }
 
-    public static WorkerTime createWorkerTime(LocalTime serviceTime, Worker worker, LocalDate registeredDate) {
+    public static WorkerTime createWorkerTime(LocalTime serviceStartTime, LocalTime serviceEndTime,Worker worker, LocalDate registeredDate) {
         return WorkerTime.builder()
-                .serviceTime(serviceTime)
+                .serviceStartTime(serviceStartTime)
+                .serviceEndTime(serviceEndTime)
                 .worker(worker)
                 .registeredDate(registeredDate)
                 .build();

@@ -51,7 +51,9 @@ public class PaymentServiceImpl implements PaymentService  {
         if(workerTime.isPresent()){
             throw new CustomException(ResponseCode.DUPLICATED_RESERVATION); //작업자는 해당시간에 작업 있음
         }
-
+        else{
+            workerTimeRepository.save(workerTime.get());
+        }
 
         //결제 정보 임시 저장
         String paymentKey = request.getOrderId();

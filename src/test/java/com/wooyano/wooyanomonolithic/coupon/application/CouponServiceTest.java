@@ -113,7 +113,7 @@ class CouponServiceTest {
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                         try {
-                            namedLockStructure.decrease(request);
+                            namedLockStructure.issueCoupon(request);
                         } finally {
                             countDownLatch.countDown();
                         }

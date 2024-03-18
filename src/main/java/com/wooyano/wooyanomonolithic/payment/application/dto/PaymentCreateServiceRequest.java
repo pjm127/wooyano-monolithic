@@ -12,6 +12,8 @@ public class PaymentCreateServiceRequest {
     private Long workerId; //작업자id 77
     private LocalDate reservationDate; //예약 날짜 77
     private LocalTime serviceStartTime; // 서비스 시작 시간 77
+    private LocalTime serviceEndTime; //서비스 종료 시간 77
+
     private int paymentAmount; //결제 금액 77
 
     @Builder
