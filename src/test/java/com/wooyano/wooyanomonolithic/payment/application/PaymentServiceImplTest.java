@@ -67,7 +67,7 @@ class PaymentServiceImplTest {
 
         PaymentCreateRequest request = PaymentCreateRequest.builder()
                 .workerId(worker.getId())
-                .serviceStartTime(LocalTime.of(9, 0, 0))
+                .serviceStartTime(LocalTime.of(10, 0, 0))
                 .reservationDate(LocalDate.of(2024, 01, 04))
                 .orderId("주문번호")
                 .paymentAmount(3000)

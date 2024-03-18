@@ -26,7 +26,7 @@ class WorkerTimeRepositoryTest {
     @Autowired
     private WorkerRepository workerRepository;
 
-    @DisplayName("해당하는 작업자가 예약하고 싶은 날짜의 시간에 작업이 있는지 조회한다")
+    @DisplayName("해당하는 작업자에 예약하고 싶은 날짜와 시간에 작업이 있는지 조회한다")
     @Test
     public void findByWorkerAndServiceTime(){
         // given
