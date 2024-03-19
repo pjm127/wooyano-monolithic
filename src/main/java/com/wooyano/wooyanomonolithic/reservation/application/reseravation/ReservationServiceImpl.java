@@ -113,8 +113,12 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
-    private void saveWorkerTime(LocalDate reservationDate, LocalTime serviceStart, LocalTime serviceEnd,Worker worker) {
-        WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(serviceStart, serviceEnd, worker, reservationDate);
+    private void saveWorkerTime(LocalDate reservationDate, LocalTime serviceStartTime, LocalTime serviceEndTime,Worker worker) {
+        Optional<WorkerTime> workerTime = workerTimeRepository.findByWorkerAndServiceTime(worker,serviceStartTime,reservationDate);
+        if(workerTime.isPresent()){
+            throw new CustomException(ResponseCode.DUPLICATED_RESERVATION);
+        }
+        WorkerTime saveWorkerTime = WorkerTime.createWorkerTime(serviceStartTime, serviceEndTime, worker, reservationDate);
         workerTimeRepository.save(saveWorkerTime);
     }
 

@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -69,6 +70,8 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false, length = 30, name = "order_id")
     private String orderId;
 
+    @Version
+    private Long version;
     private LocalDateTime paymentApprovedAt;
 
 
